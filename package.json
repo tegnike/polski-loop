@@ -1,0 +1,38 @@
+{
+  "name": "polski-loop",
+  "private": true,
+  "version": "0.1.0",
+  "description": "スマートフォン優先の個人用ポーランド語学習PWA",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k -n worker,web -c magenta,cyan \"npm:dev:worker\" \"npm:dev:web\"",
+    "dev:web": "vite --host 127.0.0.1 --port 5173",
+    "dev:worker": "wrangler dev --local --persist-to .wrangler/state --port 8787",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 4173",
+    "typecheck": "tsc -b --pretty false",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "content:validate": "node scripts/validate-content.mjs --db",
+    "api:smoke": "node scripts/api-smoke.mjs",
+    "db:migrate": "wrangler d1 migrations apply polish-loop-local --local",
+    "db:migrate:remote": "wrangler d1 migrations apply DB --remote --env production",
+    "deploy:production": "npm run build && wrangler deploy --env production",
+    "db:export": "wrangler d1 export polish-loop-local --local --output=tmp/polish-loop-local.sql"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^5.0.4",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260821.1",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "concurrently": "^9.2.1",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.3",
+    "vitest": "^3.2.4",
+    "wrangler": "^4.125.0"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "polski-loop",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-08-21",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "polish-loop-local",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "APP_ENV": "local",
+    "PROFILE_ID": "master"
+  },
+  "env": {
+    "production": {
+      "name": "polski-loop",
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "polski-loop-prod",
+          "database_id": "7ea8d07d-16a1-4d92-8183-bca22b4daa8f",
+          "migrations_dir": "migrations"
+        }
+      ],
+      "vars": {
+        "APP_ENV": "production",
+        "PROFILE_ID": "master",
+        "REQUIRE_ACCESS_AUTH": "true",
+        "ACCESS_TEAM_DOMAIN": "muddy-bread-fd2f.cloudflareaccess.com",
+        "ACCESS_AUDIENCE": "101c7a1b6e2e837a6b14af5f56b892556dc19262dd9eb8f568bcde07166156e5"
+      }
+    }
+  }
+}

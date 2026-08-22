@@ -1,0 +1,4490 @@
+{
+  "version": "a1-a2-2026.1",
+  "track": "A1+A2",
+  "units": [
+    {
+      "id": "a1-unit-1",
+      "unitNumber": 1,
+      "level": "A1",
+      "titleJa": "最初の会話",
+      "titlePl": "Pierwsza rozmowa",
+      "description": "A1教材を段階的に復習し、生活場面の入口を作ります。",
+      "lessons": [
+        {
+          "id": "a1-u1-l1",
+          "lessonNumber": 1,
+          "itemIds": [
+            "a1-u1-i01",
+            "a1-u1-i02",
+            "a1-u1-i03",
+            "a1-u1-i04",
+            "a1-u1-i05"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u1-i01",
+            "a1-u1-i02"
+          ],
+          "missionId": "a1-u1-l1-mission",
+          "candoIds": [
+            "a1-u1-c1",
+            "a1-u1-c2",
+            "a1-u1-c3"
+          ]
+        },
+        {
+          "id": "a1-u1-l2",
+          "lessonNumber": 2,
+          "itemIds": [
+            "a1-u1-i06",
+            "a1-u1-i07",
+            "a1-u1-i08",
+            "a1-u1-i09",
+            "a1-u1-i21"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u1-i06",
+            "a1-u1-i07"
+          ],
+          "missionId": "a1-u1-l2-mission",
+          "candoIds": [
+            "a1-u1-c1",
+            "a1-u1-c2",
+            "a1-u1-c3"
+          ]
+        },
+        {
+          "id": "a1-u1-l3",
+          "lessonNumber": 3,
+          "itemIds": [
+            "a1-u1-i10",
+            "a1-u1-i11",
+            "a1-u1-i12",
+            "a1-u1-i13",
+            "a1-u1-i16"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u1-i10",
+            "a1-u1-i11"
+          ],
+          "missionId": "a1-u1-l3-mission",
+          "candoIds": [
+            "a1-u1-c1",
+            "a1-u1-c2",
+            "a1-u1-c3"
+          ]
+        },
+        {
+          "id": "a1-u1-l4",
+          "lessonNumber": 4,
+          "itemIds": [
+            "a1-u1-i14",
+            "a1-u1-i15",
+            "a1-u1-i16",
+            "a1-u1-i03",
+            "a1-u1-i09"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u1-i14",
+            "a1-u1-i15"
+          ],
+          "missionId": "a1-u1-l4-mission",
+          "candoIds": [
+            "a1-u1-c1",
+            "a1-u1-c2",
+            "a1-u1-c3"
+          ]
+        },
+        {
+          "id": "a1-u1-l5",
+          "lessonNumber": 5,
+          "itemIds": [
+            "a1-u1-i17",
+            "a1-u1-i18",
+            "a1-u1-i19",
+            "a1-u1-i20",
+            "a1-u1-i21"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u1-i17",
+            "a1-u1-i18"
+          ],
+          "missionId": "a1-u1-l5-mission",
+          "candoIds": [
+            "a1-u1-c1",
+            "a1-u1-c2",
+            "a1-u1-c3"
+          ]
+        },
+        {
+          "id": "a1-u1-l6",
+          "lessonNumber": 6,
+          "itemIds": [
+            "a1-u1-i22",
+            "a1-u1-i23",
+            "a1-u1-i24",
+            "a1-u1-i10",
+            "a1-u1-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u1-i22",
+            "a1-u1-i23"
+          ],
+          "missionId": "a1-u1-l6-mission",
+          "candoIds": [
+            "a1-u1-c1",
+            "a1-u1-c2",
+            "a1-u1-c3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a1-unit-2",
+      "unitNumber": 2,
+      "level": "A1",
+      "titleJa": "数字と時間",
+      "titlePl": "Liczby i czas",
+      "description": "A1教材を段階的に復習し、生活場面の入口を作ります。",
+      "lessons": [
+        {
+          "id": "a1-u2-l1",
+          "lessonNumber": 1,
+          "itemIds": [
+            "a1-u2-l1-i01",
+            "a1-u2-l1-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u2-l1-i01",
+            "a1-u2-l1-i02"
+          ],
+          "missionId": "a1-u2-l1-mission",
+          "candoIds": [
+            "a1-u2-c1",
+            "a1-u2-c2",
+            "a1-u2-c3"
+          ]
+        },
+        {
+          "id": "a1-u2-l2",
+          "lessonNumber": 2,
+          "itemIds": [
+            "a1-u2-l2-i01",
+            "a1-u2-l2-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u2-l2-i01",
+            "a1-u2-l2-i02"
+          ],
+          "missionId": "a1-u2-l2-mission",
+          "candoIds": [
+            "a1-u2-c1",
+            "a1-u2-c2",
+            "a1-u2-c3"
+          ]
+        },
+        {
+          "id": "a1-u2-l3",
+          "lessonNumber": 3,
+          "itemIds": [
+            "a1-u2-l3-i01",
+            "a1-u2-l3-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u2-l3-i01",
+            "a1-u2-l3-i02"
+          ],
+          "missionId": "a1-u2-l3-mission",
+          "candoIds": [
+            "a1-u2-c1",
+            "a1-u2-c2",
+            "a1-u2-c3"
+          ]
+        },
+        {
+          "id": "a1-u2-l4",
+          "lessonNumber": 4,
+          "itemIds": [
+            "a1-u2-l4-i01",
+            "a1-u2-l4-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u2-l4-i01",
+            "a1-u2-l4-i02"
+          ],
+          "missionId": "a1-u2-l4-mission",
+          "candoIds": [
+            "a1-u2-c1",
+            "a1-u2-c2",
+            "a1-u2-c3"
+          ]
+        },
+        {
+          "id": "a1-u2-l5",
+          "lessonNumber": 5,
+          "itemIds": [
+            "a1-u2-l5-i01",
+            "a1-u2-l5-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u2-l5-i01",
+            "a1-u2-l5-i02"
+          ],
+          "missionId": "a1-u2-l5-mission",
+          "candoIds": [
+            "a1-u2-c1",
+            "a1-u2-c2",
+            "a1-u2-c3"
+          ]
+        },
+        {
+          "id": "a1-u2-l6",
+          "lessonNumber": 6,
+          "itemIds": [
+            "a1-u2-l6-i01",
+            "a1-u2-l6-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u2-l6-i01",
+            "a1-u2-l6-i02"
+          ],
+          "missionId": "a1-u2-l6-mission",
+          "candoIds": [
+            "a1-u2-c1",
+            "a1-u2-c2",
+            "a1-u2-c3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a1-unit-3",
+      "unitNumber": 3,
+      "level": "A1",
+      "titleJa": "買い物",
+      "titlePl": "Zakupy",
+      "description": "A1教材を段階的に復習し、生活場面の入口を作ります。",
+      "lessons": [
+        {
+          "id": "a1-u3-l1",
+          "lessonNumber": 1,
+          "itemIds": [
+            "a1-u3-l1-i01",
+            "a1-u3-l1-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u3-l1-i01",
+            "a1-u3-l1-i02"
+          ],
+          "missionId": "a1-u3-l1-mission",
+          "candoIds": [
+            "a1-u3-c1",
+            "a1-u3-c2",
+            "a1-u3-c3"
+          ]
+        },
+        {
+          "id": "a1-u3-l2",
+          "lessonNumber": 2,
+          "itemIds": [
+            "a1-u3-l2-i01",
+            "a1-u3-l2-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u3-l2-i01",
+            "a1-u3-l2-i02"
+          ],
+          "missionId": "a1-u3-l2-mission",
+          "candoIds": [
+            "a1-u3-c1",
+            "a1-u3-c2",
+            "a1-u3-c3"
+          ]
+        },
+        {
+          "id": "a1-u3-l3",
+          "lessonNumber": 3,
+          "itemIds": [
+            "a1-u3-l3-i01",
+            "a1-u3-l3-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u3-l3-i01",
+            "a1-u3-l3-i02"
+          ],
+          "missionId": "a1-u3-l3-mission",
+          "candoIds": [
+            "a1-u3-c1",
+            "a1-u3-c2",
+            "a1-u3-c3"
+          ]
+        },
+        {
+          "id": "a1-u3-l4",
+          "lessonNumber": 4,
+          "itemIds": [
+            "a1-u3-l4-i01",
+            "a1-u3-l4-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u3-l4-i01",
+            "a1-u3-l4-i02"
+          ],
+          "missionId": "a1-u3-l4-mission",
+          "candoIds": [
+            "a1-u3-c1",
+            "a1-u3-c2",
+            "a1-u3-c3"
+          ]
+        },
+        {
+          "id": "a1-u3-l5",
+          "lessonNumber": 5,
+          "itemIds": [
+            "a1-u3-l5-i01",
+            "a1-u3-l5-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u3-l5-i01",
+            "a1-u3-l5-i02"
+          ],
+          "missionId": "a1-u3-l5-mission",
+          "candoIds": [
+            "a1-u3-c1",
+            "a1-u3-c2",
+            "a1-u3-c3"
+          ]
+        },
+        {
+          "id": "a1-u3-l6",
+          "lessonNumber": 6,
+          "itemIds": [
+            "a1-u3-l6-i01",
+            "a1-u3-l6-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u3-l6-i01",
+            "a1-u3-l6-i02"
+          ],
+          "missionId": "a1-u3-l6-mission",
+          "candoIds": [
+            "a1-u3-c1",
+            "a1-u3-c2",
+            "a1-u3-c3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a1-unit-4",
+      "unitNumber": 4,
+      "level": "A1",
+      "titleJa": "飲食",
+      "titlePl": "Jedzenie i picie",
+      "description": "A1教材を段階的に復習し、生活場面の入口を作ります。",
+      "lessons": [
+        {
+          "id": "a1-u4-l1",
+          "lessonNumber": 1,
+          "itemIds": [
+            "a1-u4-l1-i01",
+            "a1-u4-l1-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u4-l1-i01",
+            "a1-u4-l1-i02"
+          ],
+          "missionId": "a1-u4-l1-mission",
+          "candoIds": [
+            "a1-u4-c1",
+            "a1-u4-c2",
+            "a1-u4-c3"
+          ]
+        },
+        {
+          "id": "a1-u4-l2",
+          "lessonNumber": 2,
+          "itemIds": [
+            "a1-u4-l2-i01",
+            "a1-u4-l2-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u4-l2-i01",
+            "a1-u4-l2-i02"
+          ],
+          "missionId": "a1-u4-l2-mission",
+          "candoIds": [
+            "a1-u4-c1",
+            "a1-u4-c2",
+            "a1-u4-c3"
+          ]
+        },
+        {
+          "id": "a1-u4-l3",
+          "lessonNumber": 3,
+          "itemIds": [
+            "a1-u4-l3-i01",
+            "a1-u4-l3-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u4-l3-i01",
+            "a1-u4-l3-i02"
+          ],
+          "missionId": "a1-u4-l3-mission",
+          "candoIds": [
+            "a1-u4-c1",
+            "a1-u4-c2",
+            "a1-u4-c3"
+          ]
+        },
+        {
+          "id": "a1-u4-l4",
+          "lessonNumber": 4,
+          "itemIds": [
+            "a1-u4-l4-i01",
+            "a1-u4-l4-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u4-l4-i01",
+            "a1-u4-l4-i02"
+          ],
+          "missionId": "a1-u4-l4-mission",
+          "candoIds": [
+            "a1-u4-c1",
+            "a1-u4-c2",
+            "a1-u4-c3"
+          ]
+        },
+        {
+          "id": "a1-u4-l5",
+          "lessonNumber": 5,
+          "itemIds": [
+            "a1-u4-l5-i01",
+            "a1-u4-l5-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u4-l5-i01",
+            "a1-u4-l5-i02"
+          ],
+          "missionId": "a1-u4-l5-mission",
+          "candoIds": [
+            "a1-u4-c1",
+            "a1-u4-c2",
+            "a1-u4-c3"
+          ]
+        },
+        {
+          "id": "a1-u4-l6",
+          "lessonNumber": 6,
+          "itemIds": [
+            "a1-u4-l6-i01",
+            "a1-u4-l6-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u4-l6-i01",
+            "a1-u4-l6-i02"
+          ],
+          "missionId": "a1-u4-l6-mission",
+          "candoIds": [
+            "a1-u4-c1",
+            "a1-u4-c2",
+            "a1-u4-c3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a1-unit-5",
+      "unitNumber": 5,
+      "level": "A1",
+      "titleJa": "移動",
+      "titlePl": "Poruszanie się",
+      "description": "A1教材を段階的に復習し、生活場面の入口を作ります。",
+      "lessons": [
+        {
+          "id": "a1-u5-l1",
+          "lessonNumber": 1,
+          "itemIds": [
+            "a1-u5-l1-i01",
+            "a1-u5-l1-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u5-l1-i01",
+            "a1-u5-l1-i02"
+          ],
+          "missionId": "a1-u5-l1-mission",
+          "candoIds": [
+            "a1-u5-c1",
+            "a1-u5-c2",
+            "a1-u5-c3"
+          ]
+        },
+        {
+          "id": "a1-u5-l2",
+          "lessonNumber": 2,
+          "itemIds": [
+            "a1-u5-l2-i01",
+            "a1-u5-l2-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u5-l2-i01",
+            "a1-u5-l2-i02"
+          ],
+          "missionId": "a1-u5-l2-mission",
+          "candoIds": [
+            "a1-u5-c1",
+            "a1-u5-c2",
+            "a1-u5-c3"
+          ]
+        },
+        {
+          "id": "a1-u5-l3",
+          "lessonNumber": 3,
+          "itemIds": [
+            "a1-u5-l3-i01",
+            "a1-u5-l3-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u5-l3-i01",
+            "a1-u5-l3-i02"
+          ],
+          "missionId": "a1-u5-l3-mission",
+          "candoIds": [
+            "a1-u5-c1",
+            "a1-u5-c2",
+            "a1-u5-c3"
+          ]
+        },
+        {
+          "id": "a1-u5-l4",
+          "lessonNumber": 4,
+          "itemIds": [
+            "a1-u5-l4-i01",
+            "a1-u5-l4-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u5-l4-i01",
+            "a1-u5-l4-i02"
+          ],
+          "missionId": "a1-u5-l4-mission",
+          "candoIds": [
+            "a1-u5-c1",
+            "a1-u5-c2",
+            "a1-u5-c3"
+          ]
+        },
+        {
+          "id": "a1-u5-l5",
+          "lessonNumber": 5,
+          "itemIds": [
+            "a1-u5-l5-i01",
+            "a1-u5-l5-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u5-l5-i01",
+            "a1-u5-l5-i02"
+          ],
+          "missionId": "a1-u5-l5-mission",
+          "candoIds": [
+            "a1-u5-c1",
+            "a1-u5-c2",
+            "a1-u5-c3"
+          ]
+        },
+        {
+          "id": "a1-u5-l6",
+          "lessonNumber": 6,
+          "itemIds": [
+            "a1-u5-l6-i01",
+            "a1-u5-l6-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u5-l6-i01",
+            "a1-u5-l6-i02"
+          ],
+          "missionId": "a1-u5-l6-mission",
+          "candoIds": [
+            "a1-u5-c1",
+            "a1-u5-c2",
+            "a1-u5-c3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a1-unit-6",
+      "unitNumber": 6,
+      "level": "A1",
+      "titleJa": "住居",
+      "titlePl": "Mieszkanie",
+      "description": "A1教材を段階的に復習し、生活場面の入口を作ります。",
+      "lessons": [
+        {
+          "id": "a1-u6-l1",
+          "lessonNumber": 1,
+          "itemIds": [
+            "a1-u6-l1-i01",
+            "a1-u6-l1-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u6-l1-i01",
+            "a1-u6-l1-i02"
+          ],
+          "missionId": "a1-u6-l1-mission",
+          "candoIds": [
+            "a1-u6-c1",
+            "a1-u6-c2",
+            "a1-u6-c3"
+          ]
+        },
+        {
+          "id": "a1-u6-l2",
+          "lessonNumber": 2,
+          "itemIds": [
+            "a1-u6-l2-i01",
+            "a1-u6-l2-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u6-l2-i01",
+            "a1-u6-l2-i02"
+          ],
+          "missionId": "a1-u6-l2-mission",
+          "candoIds": [
+            "a1-u6-c1",
+            "a1-u6-c2",
+            "a1-u6-c3"
+          ]
+        },
+        {
+          "id": "a1-u6-l3",
+          "lessonNumber": 3,
+          "itemIds": [
+            "a1-u6-l3-i01",
+            "a1-u6-l3-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u6-l3-i01",
+            "a1-u6-l3-i02"
+          ],
+          "missionId": "a1-u6-l3-mission",
+          "candoIds": [
+            "a1-u6-c1",
+            "a1-u6-c2",
+            "a1-u6-c3"
+          ]
+        },
+        {
+          "id": "a1-u6-l4",
+          "lessonNumber": 4,
+          "itemIds": [
+            "a1-u6-l4-i01",
+            "a1-u6-l4-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u6-l4-i01",
+            "a1-u6-l4-i02"
+          ],
+          "missionId": "a1-u6-l4-mission",
+          "candoIds": [
+            "a1-u6-c1",
+            "a1-u6-c2",
+            "a1-u6-c3"
+          ]
+        },
+        {
+          "id": "a1-u6-l5",
+          "lessonNumber": 5,
+          "itemIds": [
+            "a1-u6-l5-i01",
+            "a1-u6-l5-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u6-l5-i01",
+            "a1-u6-l5-i02"
+          ],
+          "missionId": "a1-u6-l5-mission",
+          "candoIds": [
+            "a1-u6-c1",
+            "a1-u6-c2",
+            "a1-u6-c3"
+          ]
+        },
+        {
+          "id": "a1-u6-l6",
+          "lessonNumber": 6,
+          "itemIds": [
+            "a1-u6-l6-i01",
+            "a1-u6-l6-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u6-l6-i01",
+            "a1-u6-l6-i02"
+          ],
+          "missionId": "a1-u6-l6-mission",
+          "candoIds": [
+            "a1-u6-c1",
+            "a1-u6-c2",
+            "a1-u6-c3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a1-unit-7",
+      "unitNumber": 7,
+      "level": "A1",
+      "titleJa": "仕事と日常",
+      "titlePl": "Praca i codzienność",
+      "description": "A1教材を段階的に復習し、生活場面の入口を作ります。",
+      "lessons": [
+        {
+          "id": "a1-u7-l1",
+          "lessonNumber": 1,
+          "itemIds": [
+            "a1-u7-l1-i01",
+            "a1-u7-l1-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u7-l1-i01",
+            "a1-u7-l1-i02"
+          ],
+          "missionId": "a1-u7-l1-mission",
+          "candoIds": [
+            "a1-u7-c1",
+            "a1-u7-c2",
+            "a1-u7-c3"
+          ]
+        },
+        {
+          "id": "a1-u7-l2",
+          "lessonNumber": 2,
+          "itemIds": [
+            "a1-u7-l2-i01",
+            "a1-u7-l2-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u7-l2-i01",
+            "a1-u7-l2-i02"
+          ],
+          "missionId": "a1-u7-l2-mission",
+          "candoIds": [
+            "a1-u7-c1",
+            "a1-u7-c2",
+            "a1-u7-c3"
+          ]
+        },
+        {
+          "id": "a1-u7-l3",
+          "lessonNumber": 3,
+          "itemIds": [
+            "a1-u7-l3-i01",
+            "a1-u7-l3-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u7-l3-i01",
+            "a1-u7-l3-i02"
+          ],
+          "missionId": "a1-u7-l3-mission",
+          "candoIds": [
+            "a1-u7-c1",
+            "a1-u7-c2",
+            "a1-u7-c3"
+          ]
+        },
+        {
+          "id": "a1-u7-l4",
+          "lessonNumber": 4,
+          "itemIds": [
+            "a1-u7-l4-i01",
+            "a1-u7-l4-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u7-l4-i01",
+            "a1-u7-l4-i02"
+          ],
+          "missionId": "a1-u7-l4-mission",
+          "candoIds": [
+            "a1-u7-c1",
+            "a1-u7-c2",
+            "a1-u7-c3"
+          ]
+        },
+        {
+          "id": "a1-u7-l5",
+          "lessonNumber": 5,
+          "itemIds": [
+            "a1-u7-l5-i01",
+            "a1-u7-l5-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u7-l5-i01",
+            "a1-u7-l5-i02"
+          ],
+          "missionId": "a1-u7-l5-mission",
+          "candoIds": [
+            "a1-u7-c1",
+            "a1-u7-c2",
+            "a1-u7-c3"
+          ]
+        },
+        {
+          "id": "a1-u7-l6",
+          "lessonNumber": 6,
+          "itemIds": [
+            "a1-u7-l6-i01",
+            "a1-u7-l6-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u7-l6-i01",
+            "a1-u7-l6-i02"
+          ],
+          "missionId": "a1-u7-l6-mission",
+          "candoIds": [
+            "a1-u7-c1",
+            "a1-u7-c2",
+            "a1-u7-c3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a1-unit-8",
+      "unitNumber": 8,
+      "level": "A1",
+      "titleJa": "医療",
+      "titlePl": "Zdrowie",
+      "description": "A1教材を段階的に復習し、生活場面の入口を作ります。",
+      "lessons": [
+        {
+          "id": "a1-u8-l1",
+          "lessonNumber": 1,
+          "itemIds": [
+            "a1-u8-l1-i01",
+            "a1-u8-l1-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u8-l1-i01",
+            "a1-u8-l1-i02"
+          ],
+          "missionId": "a1-u8-l1-mission",
+          "candoIds": [
+            "a1-u8-c1",
+            "a1-u8-c2",
+            "a1-u8-c3"
+          ]
+        },
+        {
+          "id": "a1-u8-l2",
+          "lessonNumber": 2,
+          "itemIds": [
+            "a1-u8-l2-i01",
+            "a1-u8-l2-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u8-l2-i01",
+            "a1-u8-l2-i02"
+          ],
+          "missionId": "a1-u8-l2-mission",
+          "candoIds": [
+            "a1-u8-c1",
+            "a1-u8-c2",
+            "a1-u8-c3"
+          ]
+        },
+        {
+          "id": "a1-u8-l3",
+          "lessonNumber": 3,
+          "itemIds": [
+            "a1-u8-l3-i01",
+            "a1-u8-l3-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u8-l3-i01",
+            "a1-u8-l3-i02"
+          ],
+          "missionId": "a1-u8-l3-mission",
+          "candoIds": [
+            "a1-u8-c1",
+            "a1-u8-c2",
+            "a1-u8-c3"
+          ]
+        },
+        {
+          "id": "a1-u8-l4",
+          "lessonNumber": 4,
+          "itemIds": [
+            "a1-u8-l4-i01",
+            "a1-u8-l4-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u8-l4-i01",
+            "a1-u8-l4-i02"
+          ],
+          "missionId": "a1-u8-l4-mission",
+          "candoIds": [
+            "a1-u8-c1",
+            "a1-u8-c2",
+            "a1-u8-c3"
+          ]
+        },
+        {
+          "id": "a1-u8-l5",
+          "lessonNumber": 5,
+          "itemIds": [
+            "a1-u8-l5-i01",
+            "a1-u8-l5-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u8-l5-i01",
+            "a1-u8-l5-i02"
+          ],
+          "missionId": "a1-u8-l5-mission",
+          "candoIds": [
+            "a1-u8-c1",
+            "a1-u8-c2",
+            "a1-u8-c3"
+          ]
+        },
+        {
+          "id": "a1-u8-l6",
+          "lessonNumber": 6,
+          "itemIds": [
+            "a1-u8-l6-i01",
+            "a1-u8-l6-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u8-l6-i01",
+            "a1-u8-l6-i02"
+          ],
+          "missionId": "a1-u8-l6-mission",
+          "candoIds": [
+            "a1-u8-c1",
+            "a1-u8-c2",
+            "a1-u8-c3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a1-unit-9",
+      "unitNumber": 9,
+      "level": "A1",
+      "titleJa": "行政・サービス",
+      "titlePl": "Urzędy i usługi",
+      "description": "A1教材を段階的に復習し、生活場面の入口を作ります。",
+      "lessons": [
+        {
+          "id": "a1-u9-l1",
+          "lessonNumber": 1,
+          "itemIds": [
+            "a1-u9-l1-i01",
+            "a1-u9-l1-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u9-l1-i01",
+            "a1-u9-l1-i02"
+          ],
+          "missionId": "a1-u9-l1-mission",
+          "candoIds": [
+            "a1-u9-c1",
+            "a1-u9-c2",
+            "a1-u9-c3"
+          ]
+        },
+        {
+          "id": "a1-u9-l2",
+          "lessonNumber": 2,
+          "itemIds": [
+            "a1-u9-l2-i01",
+            "a1-u9-l2-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u9-l2-i01",
+            "a1-u9-l2-i02"
+          ],
+          "missionId": "a1-u9-l2-mission",
+          "candoIds": [
+            "a1-u9-c1",
+            "a1-u9-c2",
+            "a1-u9-c3"
+          ]
+        },
+        {
+          "id": "a1-u9-l3",
+          "lessonNumber": 3,
+          "itemIds": [
+            "a1-u9-l3-i01",
+            "a1-u9-l3-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u9-l3-i01",
+            "a1-u9-l3-i02"
+          ],
+          "missionId": "a1-u9-l3-mission",
+          "candoIds": [
+            "a1-u9-c1",
+            "a1-u9-c2",
+            "a1-u9-c3"
+          ]
+        },
+        {
+          "id": "a1-u9-l4",
+          "lessonNumber": 4,
+          "itemIds": [
+            "a1-u9-l4-i01",
+            "a1-u9-l4-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u9-l4-i01",
+            "a1-u9-l4-i02"
+          ],
+          "missionId": "a1-u9-l4-mission",
+          "candoIds": [
+            "a1-u9-c1",
+            "a1-u9-c2",
+            "a1-u9-c3"
+          ]
+        },
+        {
+          "id": "a1-u9-l5",
+          "lessonNumber": 5,
+          "itemIds": [
+            "a1-u9-l5-i01",
+            "a1-u9-l5-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u9-l5-i01",
+            "a1-u9-l5-i02"
+          ],
+          "missionId": "a1-u9-l5-mission",
+          "candoIds": [
+            "a1-u9-c1",
+            "a1-u9-c2",
+            "a1-u9-c3"
+          ]
+        },
+        {
+          "id": "a1-u9-l6",
+          "lessonNumber": 6,
+          "itemIds": [
+            "a1-u9-l6-i01",
+            "a1-u9-l6-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u9-l6-i01",
+            "a1-u9-l6-i02"
+          ],
+          "missionId": "a1-u9-l6-mission",
+          "candoIds": [
+            "a1-u9-c1",
+            "a1-u9-c2",
+            "a1-u9-c3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a1-unit-10",
+      "unitNumber": 10,
+      "level": "A1",
+      "titleJa": "A1統合",
+      "titlePl": "Powtórka A1",
+      "description": "A1教材を段階的に復習し、生活場面の入口を作ります。",
+      "lessons": [
+        {
+          "id": "a1-u10-l1",
+          "lessonNumber": 1,
+          "itemIds": [
+            "a1-u10-l1-i01",
+            "a1-u10-l1-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u10-l1-i01",
+            "a1-u10-l1-i02"
+          ],
+          "missionId": "a1-u10-l1-mission",
+          "candoIds": [
+            "a1-u10-c1",
+            "a1-u10-c2",
+            "a1-u10-c3"
+          ]
+        },
+        {
+          "id": "a1-u10-l2",
+          "lessonNumber": 2,
+          "itemIds": [
+            "a1-u10-l2-i01",
+            "a1-u10-l2-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u10-l2-i01",
+            "a1-u10-l2-i02"
+          ],
+          "missionId": "a1-u10-l2-mission",
+          "candoIds": [
+            "a1-u10-c1",
+            "a1-u10-c2",
+            "a1-u10-c3"
+          ]
+        },
+        {
+          "id": "a1-u10-l3",
+          "lessonNumber": 3,
+          "itemIds": [
+            "a1-u10-l3-i01",
+            "a1-u10-l3-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u10-l3-i01",
+            "a1-u10-l3-i02"
+          ],
+          "missionId": "a1-u10-l3-mission",
+          "candoIds": [
+            "a1-u10-c1",
+            "a1-u10-c2",
+            "a1-u10-c3"
+          ]
+        },
+        {
+          "id": "a1-u10-l4",
+          "lessonNumber": 4,
+          "itemIds": [
+            "a1-u10-l4-i01",
+            "a1-u10-l4-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u10-l4-i01",
+            "a1-u10-l4-i02"
+          ],
+          "missionId": "a1-u10-l4-mission",
+          "candoIds": [
+            "a1-u10-c1",
+            "a1-u10-c2",
+            "a1-u10-c3"
+          ]
+        },
+        {
+          "id": "a1-u10-l5",
+          "lessonNumber": 5,
+          "itemIds": [
+            "a1-u10-l5-i01",
+            "a1-u10-l5-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u10-l5-i01",
+            "a1-u10-l5-i02"
+          ],
+          "missionId": "a1-u10-l5-mission",
+          "candoIds": [
+            "a1-u10-c1",
+            "a1-u10-c2",
+            "a1-u10-c3"
+          ]
+        },
+        {
+          "id": "a1-u10-l6",
+          "lessonNumber": 6,
+          "itemIds": [
+            "a1-u10-l6-i01",
+            "a1-u10-l6-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input"
+          ],
+          "level": "A1",
+          "stepCount": 5,
+          "coreItemIds": [
+            "a1-u10-l6-i01",
+            "a1-u10-l6-i02"
+          ],
+          "missionId": "a1-u10-l6-mission",
+          "candoIds": [
+            "a1-u10-c1",
+            "a1-u10-c2",
+            "a1-u10-c3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a2-unit-1",
+      "unitNumber": 1,
+      "level": "A2",
+      "titleJa": "自分と人間関係",
+      "titlePl": "Ja i relacje",
+      "description": "自己紹介を広げ、家族・性格・誘い・気持ちを短いやり取りで伝えます。",
+      "lessons": [
+        {
+          "id": "a2-u1-l1",
+          "unitId": "a2-unit-1",
+          "unitNumber": 1,
+          "lessonNumber": 1,
+          "titleJa": "仕事まで含めて自己紹介",
+          "titlePl": "Przedstawiam się szerzej",
+          "description": "現在形、z + 生格、zajmować się + 造格を使って、出身・居住・仕事を一続きで話します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u1-l1-i01",
+            "a2-u1-l1-i02",
+            "a2-u1-l1-i03",
+            "a2-u1-l1-i04",
+            "a2-u1-l1-i05",
+            "a2-u1-l1-i06"
+          ],
+          "coreItemIds": [
+            "a2-u1-l1-i01",
+            "a2-u1-l1-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u1-l1-mission",
+          "candoIds": [
+            "a2-u1-c1",
+            "a2-u1-c2",
+            "a2-u1-c3"
+          ]
+        },
+        {
+          "id": "a2-u1-l2",
+          "unitId": "a2-unit-1",
+          "unitNumber": 1,
+          "lessonNumber": 2,
+          "titleJa": "家族について話す",
+          "titlePl": "Moja rodzina",
+          "description": "人数の表現、mieć、dzwonić do + 生格を使って、家族構成と連絡の頻度を話します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u1-l2-i01",
+            "a2-u1-l2-i02",
+            "a2-u1-l2-i03",
+            "a2-u1-l2-i04",
+            "a2-u1-l2-i05",
+            "a2-u1-l2-i06"
+          ],
+          "coreItemIds": [
+            "a2-u1-l2-i01",
+            "a2-u1-l2-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u1-l2-mission",
+          "candoIds": [
+            "a2-u1-c1",
+            "a2-u1-c2",
+            "a2-u1-c3"
+          ]
+        },
+        {
+          "id": "a2-u1-l3",
+          "unitId": "a2-unit-1",
+          "unitNumber": 1,
+          "lessonNumber": 3,
+          "titleJa": "人柄と外見を説明する",
+          "titlePl": "Jaki on jest?",
+          "description": "形容詞の性・数の一致と、bardziej ... niż ... の比較を使って人を説明します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u1-l3-i01",
+            "a2-u1-l3-i02",
+            "a2-u1-l3-i03",
+            "a2-u1-l3-i04",
+            "a2-u1-l3-i05",
+            "a2-u1-l3-i06"
+          ],
+          "coreItemIds": [
+            "a2-u1-l3-i01",
+            "a2-u1-l3-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u1-l3-mission",
+          "candoIds": [
+            "a2-u1-c1",
+            "a2-u1-c2",
+            "a2-u1-c3"
+          ]
+        },
+        {
+          "id": "a2-u1-l4",
+          "unitId": "a2-unit-1",
+          "unitNumber": 1,
+          "lessonNumber": 4,
+          "titleJa": "誘いと予定を調整する",
+          "titlePl": "Umawiamy się",
+          "description": "masz ochotę + 不定詞、może、条件の受け答えで、誘いを受けたり断ったりします。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u1-l4-i01",
+            "a2-u1-l4-i02",
+            "a2-u1-l4-i03",
+            "a2-u1-l4-i04",
+            "a2-u1-l4-i05",
+            "a2-u1-l4-i06"
+          ],
+          "coreItemIds": [
+            "a2-u1-l4-i01",
+            "a2-u1-l4-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u1-l4-mission",
+          "candoIds": [
+            "a2-u1-c1",
+            "a2-u1-c2",
+            "a2-u1-c3"
+          ]
+        },
+        {
+          "id": "a2-u1-l5",
+          "unitId": "a2-unit-1",
+          "unitNumber": 1,
+          "lessonNumber": 5,
+          "titleJa": "気持ちと困りごとを共有する",
+          "titlePl": "Jak się czuję",
+          "description": "martwić się、czuć się、potrzebowaćとbo/żebyを使って、状態と必要な時間を伝えます。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u1-l5-i01",
+            "a2-u1-l5-i02",
+            "a2-u1-l5-i03",
+            "a2-u1-l5-i04",
+            "a2-u1-l5-i05",
+            "a2-u1-l5-i06"
+          ],
+          "coreItemIds": [
+            "a2-u1-l5-i01",
+            "a2-u1-l5-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u1-l5-mission",
+          "candoIds": [
+            "a2-u1-c1",
+            "a2-u1-c2",
+            "a2-u1-c3"
+          ]
+        },
+        {
+          "id": "a2-u1-l6",
+          "unitId": "a2-unit-1",
+          "unitNumber": 1,
+          "lessonNumber": 6,
+          "titleJa": "一週間の出来事を雑談する",
+          "titlePl": "Krótka rozmowa o tygodniu",
+          "description": "男性話者の過去形 minął、miałem、odwiedziłem と、podobać się を使って感想を話します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u1-l6-i01",
+            "a2-u1-l6-i02",
+            "a2-u1-l6-i03",
+            "a2-u1-l6-i04",
+            "a2-u1-l6-i05",
+            "a2-u1-l6-i06"
+          ],
+          "coreItemIds": [
+            "a2-u1-l6-i01",
+            "a2-u1-l6-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u1-l6-mission",
+          "candoIds": [
+            "a2-u1-c1",
+            "a2-u1-c2",
+            "a2-u1-c3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a2-unit-2",
+      "unitNumber": 2,
+      "level": "A2",
+      "titleJa": "日課・時間・天気",
+      "titlePl": "Codzienność, czas i pogoda",
+      "description": "日課、予定、天気、日付と健康習慣を、質問と返答でつなぎます。",
+      "lessons": [
+        {
+          "id": "a2-u2-l1",
+          "unitId": "a2-unit-2",
+          "unitNumber": 2,
+          "lessonNumber": 1,
+          "titleJa": "朝のルーティン",
+          "titlePl": "Poranek",
+          "description": "zwykle、około、najpierw potem を使って、時刻と順序のある日課を説明します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u2-l1-i01",
+            "a2-u2-l1-i02",
+            "a2-u2-l1-i03",
+            "a2-u2-l1-i04",
+            "a2-u2-l1-i05",
+            "a2-u2-l1-i06"
+          ],
+          "coreItemIds": [
+            "a2-u2-l1-i01",
+            "a2-u2-l1-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u2-l1-mission",
+          "candoIds": [
+            "a2-u2-c1",
+            "a2-u2-c2",
+            "a2-u2-c3"
+          ]
+        },
+        {
+          "id": "a2-u2-l2",
+          "unitId": "a2-unit-2",
+          "unitNumber": 2,
+          "lessonNumber": 2,
+          "titleJa": "曜日ごとの予定",
+          "titlePl": "Plan tygodnia",
+          "description": "w poniedziałki、od ... do ...、przełożyć na を使って、曜日と予定変更を話します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u2-l2-i01",
+            "a2-u2-l2-i02",
+            "a2-u2-l2-i03",
+            "a2-u2-l2-i04",
+            "a2-u2-l2-i05",
+            "a2-u2-l2-i06"
+          ],
+          "coreItemIds": [
+            "a2-u2-l2-i01",
+            "a2-u2-l2-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u2-l2-mission",
+          "candoIds": [
+            "a2-u2-c1",
+            "a2-u2-c2",
+            "a2-u2-c3"
+          ]
+        },
+        {
+          "id": "a2-u2-l3",
+          "unitId": "a2-unit-2",
+          "unitNumber": 2,
+          "lessonNumber": 3,
+          "titleJa": "天気と持ち物",
+          "titlePl": "Jaka będzie pogoda?",
+          "description": "jest、padać、ma być、zrobić się を使い、予報を聞いて持ち物を判断します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u2-l3-i01",
+            "a2-u2-l3-i02",
+            "a2-u2-l3-i03",
+            "a2-u2-l3-i04",
+            "a2-u2-l3-i05",
+            "a2-u2-l3-i06"
+          ],
+          "coreItemIds": [
+            "a2-u2-l3-i01",
+            "a2-u2-l3-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u2-l3-mission",
+          "candoIds": [
+            "a2-u2-c1",
+            "a2-u2-c2",
+            "a2-u2-c3"
+          ]
+        },
+        {
+          "id": "a2-u2-l4",
+          "unitId": "a2-unit-2",
+          "unitNumber": 2,
+          "lessonNumber": 4,
+          "titleJa": "日付と時刻を合わせる",
+          "titlePl": "Data i godzina",
+          "description": "序数の生格・前置格と、o + 時刻を使って、日付と約束を確認します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u2-l4-i01",
+            "a2-u2-l4-i02",
+            "a2-u2-l4-i03",
+            "a2-u2-l4-i04",
+            "a2-u2-l4-i05",
+            "a2-u2-l4-i06"
+          ],
+          "coreItemIds": [
+            "a2-u2-l4-i01",
+            "a2-u2-l4-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u2-l4-mission",
+          "candoIds": [
+            "a2-u2-c1",
+            "a2-u2-c2",
+            "a2-u2-c3"
+          ]
+        },
+        {
+          "id": "a2-u2-l5",
+          "unitId": "a2-unit-2",
+          "unitNumber": 2,
+          "lessonNumber": 5,
+          "titleJa": "家事を分担する",
+          "titlePl": "Obowiązki domowe",
+          "description": "wynosić、odkurzać、zajmę się tym と、czy możesz を使って家事の依頼と承諾をします。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u2-l5-i01",
+            "a2-u2-l5-i02",
+            "a2-u2-l5-i03",
+            "a2-u2-l5-i04",
+            "a2-u2-l5-i05",
+            "a2-u2-l5-i06"
+          ],
+          "coreItemIds": [
+            "a2-u2-l5-i01",
+            "a2-u2-l5-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u2-l5-mission",
+          "candoIds": [
+            "a2-u2-c1",
+            "a2-u2-c2",
+            "a2-u2-c3"
+          ]
+        },
+        {
+          "id": "a2-u2-l6",
+          "unitId": "a2-unit-2",
+          "unitNumber": 2,
+          "lessonNumber": 6,
+          "titleJa": "健康的な習慣",
+          "titlePl": "Zdrowe nawyki",
+          "description": "starać się、dbać o、częstotliwo数詞を使って、健康習慣と頻度を説明します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u2-l6-i01",
+            "a2-u2-l6-i02",
+            "a2-u2-l6-i03",
+            "a2-u2-l6-i04",
+            "a2-u2-l6-i05",
+            "a2-u2-l6-i06"
+          ],
+          "coreItemIds": [
+            "a2-u2-l6-i01",
+            "a2-u2-l6-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u2-l6-mission",
+          "candoIds": [
+            "a2-u2-c1",
+            "a2-u2-c2",
+            "a2-u2-c3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a2-unit-3",
+      "unitNumber": 3,
+      "level": "A2",
+      "titleJa": "予定・過去・未来",
+      "titlePl": "Plany, przeszłość i przyszłość",
+      "description": "昨日の出来事、週末、希望、理由を過去・未来の文で説明します。",
+      "lessons": [
+        {
+          "id": "a2-u3-l1",
+          "unitId": "a2-unit-3",
+          "unitNumber": 3,
+          "lessonNumber": 1,
+          "titleJa": "昨日の出来事",
+          "titlePl": "Wczoraj",
+          "description": "男性話者の過去形 wróciłem、ugotowałem、obejrzałem と、最初に/そのあとを使います。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u3-l1-i01",
+            "a2-u3-l1-i02",
+            "a2-u3-l1-i03",
+            "a2-u3-l1-i04",
+            "a2-u3-l1-i05",
+            "a2-u3-l1-i06"
+          ],
+          "coreItemIds": [
+            "a2-u3-l1-i01",
+            "a2-u3-l1-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u3-l1-mission",
+          "candoIds": [
+            "a2-u3-c1",
+            "a2-u3-c2",
+            "a2-u3-c3"
+          ]
+        },
+        {
+          "id": "a2-u3-l2",
+          "unitId": "a2-unit-3",
+          "unitNumber": 3,
+          "lessonNumber": 2,
+          "titleJa": "週末の外出",
+          "titlePl": "Miniony weekend",
+          "description": "pojechałem、spędziliśmy、robiliśmyを使い、過去の移動と共同活動を順序立てて話します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u3-l2-i01",
+            "a2-u3-l2-i02",
+            "a2-u3-l2-i03",
+            "a2-u3-l2-i04",
+            "a2-u3-l2-i05",
+            "a2-u3-l2-i06"
+          ],
+          "coreItemIds": [
+            "a2-u3-l2-i01",
+            "a2-u3-l2-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u3-l2-mission",
+          "candoIds": [
+            "a2-u3-c1",
+            "a2-u3-c2",
+            "a2-u3-c3"
+          ]
+        },
+        {
+          "id": "a2-u3-l3",
+          "unitId": "a2-unit-3",
+          "unitNumber": 3,
+          "lessonNumber": 3,
+          "titleJa": "土曜日の計画",
+          "titlePl": "Plan na sobotę",
+          "description": "zamierzać、chciałbym、jeśli を使い、予定と条件付きの代案を話します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u3-l3-i01",
+            "a2-u3-l3-i02",
+            "a2-u3-l3-i03",
+            "a2-u3-l3-i04",
+            "a2-u3-l3-i05",
+            "a2-u3-l3-i06"
+          ],
+          "coreItemIds": [
+            "a2-u3-l3-i01",
+            "a2-u3-l3-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u3-l3-mission",
+          "candoIds": [
+            "a2-u3-c1",
+            "a2-u3-c2",
+            "a2-u3-c3"
+          ]
+        },
+        {
+          "id": "a2-u3-l4",
+          "unitId": "a2-unit-3",
+          "unitNumber": 3,
+          "lessonNumber": 4,
+          "titleJa": "未来の希望と目標",
+          "titlePl": "Moje cele",
+          "description": "chciałbym、będę ćwiczył、żebyを使い、希望・具体的な行動・目的を結びつけます。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u3-l4-i01",
+            "a2-u3-l4-i02",
+            "a2-u3-l4-i03",
+            "a2-u3-l4-i04",
+            "a2-u3-l4-i05",
+            "a2-u3-l4-i06"
+          ],
+          "coreItemIds": [
+            "a2-u3-l4-i01",
+            "a2-u3-l4-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u3-l4-mission",
+          "candoIds": [
+            "a2-u3-c1",
+            "a2-u3-c2",
+            "a2-u3-c3"
+          ]
+        },
+        {
+          "id": "a2-u3-l5",
+          "unitId": "a2-unit-3",
+          "unitNumber": 3,
+          "lessonNumber": 5,
+          "titleJa": "理由を説明する",
+          "titlePl": "Dlaczego zostałem w domu",
+          "description": "ponieważ、bo、musieć、po odpoczynkuを使って、理由と状態の変化を説明します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u3-l5-i01",
+            "a2-u3-l5-i02",
+            "a2-u3-l5-i03",
+            "a2-u3-l5-i04",
+            "a2-u3-l5-i05",
+            "a2-u3-l5-i06"
+          ],
+          "coreItemIds": [
+            "a2-u3-l5-i01",
+            "a2-u3-l5-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u3-l5-mission",
+          "candoIds": [
+            "a2-u3-c1",
+            "a2-u3-c2",
+            "a2-u3-c3"
+          ]
+        },
+        {
+          "id": "a2-u3-l6",
+          "unitId": "a2-unit-3",
+          "unitNumber": 3,
+          "lessonNumber": 6,
+          "titleJa": "用事を順番に報告する",
+          "titlePl": "Co załatwiłem",
+          "description": "najpierw potem、wpłacić、zapytać、udać sięを使い、複数の用事の完了を報告します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u3-l6-i01",
+            "a2-u3-l6-i02",
+            "a2-u3-l6-i03",
+            "a2-u3-l6-i04",
+            "a2-u3-l6-i05",
+            "a2-u3-l6-i06"
+          ],
+          "coreItemIds": [
+            "a2-u3-l6-i01",
+            "a2-u3-l6-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u3-l6-mission",
+          "candoIds": [
+            "a2-u3-c1",
+            "a2-u3-c2",
+            "a2-u3-c3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a2-unit-4",
+      "unitNumber": 4,
+      "level": "A2",
+      "titleJa": "好み・比較・余暇",
+      "titlePl": "Zainteresowania i czas wolny",
+      "description": "趣味、比較、文化、スポーツ、祝日、ポーランド語メディアについて意見を交換します。",
+      "lessons": [
+        {
+          "id": "a2-u4-l1",
+          "unitId": "a2-unit-4",
+          "unitNumber": 4,
+          "lessonNumber": 1,
+          "titleJa": "趣味を詳しく話す",
+          "titlePl": "Moje zainteresowania",
+          "description": "interesować się + 造格、lubić + 対格を使い、趣味と好きな対象を説明します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u4-l1-i01",
+            "a2-u4-l1-i02",
+            "a2-u4-l1-i03",
+            "a2-u4-l1-i04",
+            "a2-u4-l1-i05",
+            "a2-u4-l1-i06"
+          ],
+          "coreItemIds": [
+            "a2-u4-l1-i01",
+            "a2-u4-l1-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u4-l1-mission",
+          "candoIds": [
+            "a2-u4-c1",
+            "a2-u4-c2",
+            "a2-u4-c3"
+          ]
+        },
+        {
+          "id": "a2-u4-l2",
+          "unitId": "a2-unit-4",
+          "unitNumber": 4,
+          "lessonNumber": 2,
+          "titleJa": "値段と品質を比較する",
+          "titlePl": "Co jest lepsze?",
+          "description": "tańszy、lepszy、droższy niż と wartoを使い、価格と品質を比較して選びます。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u4-l2-i01",
+            "a2-u4-l2-i02",
+            "a2-u4-l2-i03",
+            "a2-u4-l2-i04",
+            "a2-u4-l2-i05",
+            "a2-u4-l2-i06"
+          ],
+          "coreItemIds": [
+            "a2-u4-l2-i01",
+            "a2-u4-l2-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u4-l2-mission",
+          "candoIds": [
+            "a2-u4-c1",
+            "a2-u4-c2",
+            "a2-u4-c3"
+          ]
+        },
+        {
+          "id": "a2-u4-l3",
+          "unitId": "a2-unit-4",
+          "unitNumber": 4,
+          "lessonNumber": 3,
+          "titleJa": "映画と劇場に誘う",
+          "titlePl": "Kino czy teatr?",
+          "description": "iść do kina/teatru、na film、zarezerwowaćを使い、文化イベントの好みと予約を話します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u4-l3-i01",
+            "a2-u4-l3-i02",
+            "a2-u4-l3-i03",
+            "a2-u4-l3-i04",
+            "a2-u4-l3-i05",
+            "a2-u4-l3-i06"
+          ],
+          "coreItemIds": [
+            "a2-u4-l3-i01",
+            "a2-u4-l3-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u4-l3-mission",
+          "candoIds": [
+            "a2-u4-c1",
+            "a2-u4-c2",
+            "a2-u4-c3"
+          ]
+        },
+        {
+          "id": "a2-u4-l4",
+          "unitId": "a2-unit-4",
+          "unitNumber": 4,
+          "lessonNumber": 4,
+          "titleJa": "スポーツの頻度と好み",
+          "titlePl": "Sport razem",
+          "description": "uprawiać sport、raz w tygodniu、w grupieを使い、運動の頻度と一人/集団の好みを話します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u4-l4-i01",
+            "a2-u4-l4-i02",
+            "a2-u4-l4-i03",
+            "a2-u4-l4-i04",
+            "a2-u4-l4-i05",
+            "a2-u4-l4-i06"
+          ],
+          "coreItemIds": [
+            "a2-u4-l4-i01",
+            "a2-u4-l4-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u4-l4-mission",
+          "candoIds": [
+            "a2-u4-c1",
+            "a2-u4-c2",
+            "a2-u4-c3"
+          ]
+        },
+        {
+          "id": "a2-u4-l5",
+          "unitId": "a2-unit-4",
+          "unitNumber": 4,
+          "lessonNumber": 5,
+          "titleJa": "祝日と文化の違い",
+          "titlePl": "Święta i zwyczaje",
+          "description": "w moim kraju、spędzać święta、zwyczajを使い、自国とポーランドの習慣を比較します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u4-l5-i01",
+            "a2-u4-l5-i02",
+            "a2-u4-l5-i03",
+            "a2-u4-l5-i04",
+            "a2-u4-l5-i05",
+            "a2-u4-l5-i06"
+          ],
+          "coreItemIds": [
+            "a2-u4-l5-i01",
+            "a2-u4-l5-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u4-l5-mission",
+          "candoIds": [
+            "a2-u4-c1",
+            "a2-u4-c2",
+            "a2-u4-c3"
+          ]
+        },
+        {
+          "id": "a2-u4-l6",
+          "unitId": "a2-unit-4",
+          "unitNumber": 4,
+          "lessonNumber": 6,
+          "titleJa": "ポーランド語メディアを使う",
+          "titlePl": "Uczę się z mediów",
+          "description": "słuchać podcastu、rozumieć temat、potrzebować powtórkiを使い、聞き取りと学習戦略を話します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u4-l6-i01",
+            "a2-u4-l6-i02",
+            "a2-u4-l6-i03",
+            "a2-u4-l6-i04",
+            "a2-u4-l6-i05",
+            "a2-u4-l6-i06"
+          ],
+          "coreItemIds": [
+            "a2-u4-l6-i01",
+            "a2-u4-l6-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u4-l6-mission",
+          "candoIds": [
+            "a2-u4-c1",
+            "a2-u4-c2",
+            "a2-u4-c3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a2-unit-5",
+      "unitNumber": 5,
+      "level": "A2",
+      "titleJa": "市内・交通・旅行",
+      "titlePl": "Miasto, transport i podróże",
+      "description": "道案内、切符、遅延、ホテル、観光、荷物のトラブルを実用会話で処理します。",
+      "lessons": [
+        {
+          "id": "a2-u5-l1",
+          "unitId": "a2-unit-5",
+          "unitNumber": 5,
+          "lessonNumber": 1,
+          "titleJa": "道を尋ねる",
+          "titlePl": "Jak dojść do poczty?",
+          "description": "dojść do + 生格、idź、skręć、przyを使い、道を尋ねて案内を理解します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u5-l1-i01",
+            "a2-u5-l1-i02",
+            "a2-u5-l1-i03",
+            "a2-u5-l1-i04",
+            "a2-u5-l1-i05",
+            "a2-u5-l1-i06"
+          ],
+          "coreItemIds": [
+            "a2-u5-l1-i01",
+            "a2-u5-l1-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u5-l1-mission",
+          "candoIds": [
+            "a2-u5-c1",
+            "a2-u5-c2",
+            "a2-u5-c3"
+          ]
+        },
+        {
+          "id": "a2-u5-l2",
+          "unitId": "a2-unit-5",
+          "unitNumber": 5,
+          "lessonNumber": 2,
+          "titleJa": "切符を買う",
+          "titlePl": "Bilet do Poznania",
+          "description": "bilet w jedną stronę、na kiedy、z peronuを使い、行き先・時刻・ホームを確認します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u5-l2-i01",
+            "a2-u5-l2-i02",
+            "a2-u5-l2-i03",
+            "a2-u5-l2-i04",
+            "a2-u5-l2-i05",
+            "a2-u5-l2-i06"
+          ],
+          "coreItemIds": [
+            "a2-u5-l2-i01",
+            "a2-u5-l2-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u5-l2-mission",
+          "candoIds": [
+            "a2-u5-c1",
+            "a2-u5-c2",
+            "a2-u5-c3"
+          ]
+        },
+        {
+          "id": "a2-u5-l3",
+          "unitId": "a2-unit-5",
+          "unitNumber": 5,
+          "lessonNumber": 3,
+          "titleJa": "遅延と乗り換え",
+          "titlePl": "Opóźniony pociąg",
+          "description": "mieć opóźnienie、powinien、zdążyć na、jeśli を使い、遅延と代案を確認します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u5-l3-i01",
+            "a2-u5-l3-i02",
+            "a2-u5-l3-i03",
+            "a2-u5-l3-i04",
+            "a2-u5-l3-i05",
+            "a2-u5-l3-i06"
+          ],
+          "coreItemIds": [
+            "a2-u5-l3-i01",
+            "a2-u5-l3-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u5-l3-mission",
+          "candoIds": [
+            "a2-u5-c1",
+            "a2-u5-c2",
+            "a2-u5-c3"
+          ]
+        },
+        {
+          "id": "a2-u5-l4",
+          "unitId": "a2-unit-5",
+          "unitNumber": 5,
+          "lessonNumber": 4,
+          "titleJa": "ホテルに泊まる",
+          "titlePl": "W hotelu",
+          "description": "rezerwacja、na ile nocy、w cenie、przechowaćを使い、ホテルの予約と荷物預けを行います。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u5-l4-i01",
+            "a2-u5-l4-i02",
+            "a2-u5-l4-i03",
+            "a2-u5-l4-i04",
+            "a2-u5-l4-i05",
+            "a2-u5-l4-i06"
+          ],
+          "coreItemIds": [
+            "a2-u5-l4-i01",
+            "a2-u5-l4-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u5-l4-mission",
+          "candoIds": [
+            "a2-u5-c1",
+            "a2-u5-c2",
+            "a2-u5-c3"
+          ]
+        },
+        {
+          "id": "a2-u5-l5",
+          "unitId": "a2-unit-5",
+          "unitNumber": 5,
+          "lessonNumber": 5,
+          "titleJa": "観光の計画",
+          "titlePl": "Zwiedzam Kraków",
+          "description": "chciałbym、najpierw potem、chętnie posłuchamを使い、観光順序と助言を交換します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u5-l5-i01",
+            "a2-u5-l5-i02",
+            "a2-u5-l5-i03",
+            "a2-u5-l5-i04",
+            "a2-u5-l5-i05",
+            "a2-u5-l5-i06"
+          ],
+          "coreItemIds": [
+            "a2-u5-l5-i01",
+            "a2-u5-l5-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u5-l5-mission",
+          "candoIds": [
+            "a2-u5-c1",
+            "a2-u5-c2",
+            "a2-u5-c3"
+          ]
+        },
+        {
+          "id": "a2-u5-l6",
+          "unitId": "a2-unit-5",
+          "unitNumber": 5,
+          "lessonNumber": 6,
+          "titleJa": "荷物が届かない",
+          "titlePl": "Zaginiony bagaż",
+          "description": "nie przyjechał、jak wygląda、z + 造格、numer zgłoszeniaを使い、荷物の特徴と申告番号を伝えます。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u5-l6-i01",
+            "a2-u5-l6-i02",
+            "a2-u5-l6-i03",
+            "a2-u5-l6-i04",
+            "a2-u5-l6-i05",
+            "a2-u5-l6-i06"
+          ],
+          "coreItemIds": [
+            "a2-u5-l6-i01",
+            "a2-u5-l6-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u5-l6-mission",
+          "candoIds": [
+            "a2-u5-c1",
+            "a2-u5-c2",
+            "a2-u5-c3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a2-unit-6",
+      "unitNumber": 6,
+      "level": "A2",
+      "titleJa": "住居・近隣・トラブル",
+      "titlePl": "Mieszkanie i okolica",
+      "description": "住まい探し、設備故障、近所、契約、引っ越し、鍵のトラブルを説明します。",
+      "lessons": [
+        {
+          "id": "a2-u6-l1",
+          "unitId": "a2-unit-6",
+          "unitNumber": 6,
+          "lessonNumber": 1,
+          "titleJa": "住まいの条件を伝える",
+          "titlePl": "Szukam mieszkania",
+          "description": "szukać + 生格、dla + 生格、z balkonemを使い、希望する住居条件を伝えます。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u6-l1-i01",
+            "a2-u6-l1-i02",
+            "a2-u6-l1-i03",
+            "a2-u6-l1-i04",
+            "a2-u6-l1-i05",
+            "a2-u6-l1-i06"
+          ],
+          "coreItemIds": [
+            "a2-u6-l1-i01",
+            "a2-u6-l1-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u6-l1-mission",
+          "candoIds": [
+            "a2-u6-c1",
+            "a2-u6-c2",
+            "a2-u6-c3"
+          ]
+        },
+        {
+          "id": "a2-u6-l2",
+          "unitId": "a2-unit-6",
+          "unitNumber": 6,
+          "lessonNumber": 2,
+          "titleJa": "設備の故障を報告する",
+          "titlePl": "Awaria w kuchni",
+          "description": "nie działa、od kiedy、nadal występujeを使い、故障の開始時点と継続を説明します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u6-l2-i01",
+            "a2-u6-l2-i02",
+            "a2-u6-l2-i03",
+            "a2-u6-l2-i04",
+            "a2-u6-l2-i05",
+            "a2-u6-l2-i06"
+          ],
+          "coreItemIds": [
+            "a2-u6-l2-i01",
+            "a2-u6-l2-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u6-l2-mission",
+          "candoIds": [
+            "a2-u6-c1",
+            "a2-u6-c2",
+            "a2-u6-c3"
+          ]
+        },
+        {
+          "id": "a2-u6-l3",
+          "unitId": "a2-unit-6",
+          "unitNumber": 6,
+          "lessonNumber": 3,
+          "titleJa": "近所について尋ねる",
+          "titlePl": "W okolicy",
+          "description": "w tej okolicy、obok、na rogu、bywaを使い、近所の施設と環境を説明します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u6-l3-i01",
+            "a2-u6-l3-i02",
+            "a2-u6-l3-i03",
+            "a2-u6-l3-i04",
+            "a2-u6-l3-i05",
+            "a2-u6-l3-i06"
+          ],
+          "coreItemIds": [
+            "a2-u6-l3-i01",
+            "a2-u6-l3-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u6-l3-mission",
+          "candoIds": [
+            "a2-u6-c1",
+            "a2-u6-c2",
+            "a2-u6-c3"
+          ]
+        },
+        {
+          "id": "a2-u6-l4",
+          "unitId": "a2-unit-6",
+          "unitNumber": 6,
+          "lessonNumber": 4,
+          "titleJa": "家賃と契約を確認する",
+          "titlePl": "Czynsz i umowa",
+          "description": "wynosić、media、osobno、przed podpisaniemを使い、家賃と契約条件を確認します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u6-l4-i01",
+            "a2-u6-l4-i02",
+            "a2-u6-l4-i03",
+            "a2-u6-l4-i04",
+            "a2-u6-l4-i05",
+            "a2-u6-l4-i06"
+          ],
+          "coreItemIds": [
+            "a2-u6-l4-i01",
+            "a2-u6-l4-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u6-l4-mission",
+          "candoIds": [
+            "a2-u6-c1",
+            "a2-u6-c2",
+            "a2-u6-c3"
+          ]
+        },
+        {
+          "id": "a2-u6-l5",
+          "unitId": "a2-unit-6",
+          "unitNumber": 6,
+          "lessonNumber": 5,
+          "titleJa": "引っ越しを調整する",
+          "titlePl": "Przeprowadzka",
+          "description": "wprowadzać się、przydać się、firma przyjedzieを使い、引っ越しの希望と必要な助けを調整します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u6-l5-i01",
+            "a2-u6-l5-i02",
+            "a2-u6-l5-i03",
+            "a2-u6-l5-i04",
+            "a2-u6-l5-i05",
+            "a2-u6-l5-i06"
+          ],
+          "coreItemIds": [
+            "a2-u6-l5-i01",
+            "a2-u6-l5-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u6-l5-mission",
+          "candoIds": [
+            "a2-u6-c1",
+            "a2-u6-c2",
+            "a2-u6-c3"
+          ]
+        },
+        {
+          "id": "a2-u6-l6",
+          "unitId": "a2-unit-6",
+          "unitNumber": 6,
+          "lessonNumber": 6,
+          "titleJa": "鍵をなくしたとき",
+          "titlePl": "Zgubione klucze",
+          "description": "zgubić、u właściciela、proszę zadzwonić、jeśli trzebaを使い、鍵の紛失と解決策を伝えます。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u6-l6-i01",
+            "a2-u6-l6-i02",
+            "a2-u6-l6-i03",
+            "a2-u6-l6-i04",
+            "a2-u6-l6-i05",
+            "a2-u6-l6-i06"
+          ],
+          "coreItemIds": [
+            "a2-u6-l6-i01",
+            "a2-u6-l6-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u6-l6-mission",
+          "candoIds": [
+            "a2-u6-c1",
+            "a2-u6-c2",
+            "a2-u6-c3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a2-unit-7",
+      "unitNumber": 7,
+      "level": "A2",
+      "titleJa": "仕事・電話・予約",
+      "titlePl": "Praca, telefon i rezerwacje",
+      "description": "仕事の説明、期限調整、電話、綴り、メール、医療予約を扱います。",
+      "lessons": [
+        {
+          "id": "a2-u7-l1",
+          "unitId": "a2-unit-7",
+          "unitNumber": 7,
+          "lessonNumber": 1,
+          "titleJa": "仕事を説明する",
+          "titlePl": "Moja praca",
+          "description": "pracować jako、zajmować się、kontaktować się zを使い、職種と業務を説明します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u7-l1-i01",
+            "a2-u7-l1-i02",
+            "a2-u7-l1-i03",
+            "a2-u7-l1-i04",
+            "a2-u7-l1-i05",
+            "a2-u7-l1-i06"
+          ],
+          "coreItemIds": [
+            "a2-u7-l1-i01",
+            "a2-u7-l1-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u7-l1-mission",
+          "candoIds": [
+            "a2-u7-c1",
+            "a2-u7-c2",
+            "a2-u7-c3"
+          ]
+        },
+        {
+          "id": "a2-u7-l2",
+          "unitId": "a2-unit-7",
+          "unitNumber": 7,
+          "lessonNumber": 2,
+          "titleJa": "仕事の期限を調整する",
+          "titlePl": "Termin raportu",
+          "description": "musieć、przesunąć termin、dodatkowego czasuを使い、仕事の依頼と期限変更を行います。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u7-l2-i01",
+            "a2-u7-l2-i02",
+            "a2-u7-l2-i03",
+            "a2-u7-l2-i04",
+            "a2-u7-l2-i05",
+            "a2-u7-l2-i06"
+          ],
+          "coreItemIds": [
+            "a2-u7-l2-i01",
+            "a2-u7-l2-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u7-l2-mission",
+          "candoIds": [
+            "a2-u7-c1",
+            "a2-u7-c2",
+            "a2-u7-c3"
+          ]
+        },
+        {
+          "id": "a2-u7-l3",
+          "unitId": "a2-unit-7",
+          "unitNumber": 7,
+          "lessonNumber": 3,
+          "titleJa": "電話で予約を変更する",
+          "titlePl": "Zmiana wizyty",
+          "description": "dzwonić w sprawie、przełożyć na、pasowaćを使い、電話で予約の変更を丁寧に行います。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u7-l3-i01",
+            "a2-u7-l3-i02",
+            "a2-u7-l3-i03",
+            "a2-u7-l3-i04",
+            "a2-u7-l3-i05",
+            "a2-u7-l3-i06"
+          ],
+          "coreItemIds": [
+            "a2-u7-l3-i01",
+            "a2-u7-l3-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u7-l3-mission",
+          "candoIds": [
+            "a2-u7-c1",
+            "a2-u7-c2",
+            "a2-u7-c3"
+          ]
+        },
+        {
+          "id": "a2-u7-l4",
+          "unitId": "a2-unit-7",
+          "unitNumber": 7,
+          "lessonNumber": 4,
+          "titleJa": "聞き返しと綴り",
+          "titlePl": "Rozmowa telefoniczna",
+          "description": "nie słyszę、powtórzyć、przeliterowaćを使い、電話で聞き返し、名前を綴ります。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u7-l4-i01",
+            "a2-u7-l4-i02",
+            "a2-u7-l4-i03",
+            "a2-u7-l4-i04",
+            "a2-u7-l4-i05",
+            "a2-u7-l4-i06"
+          ],
+          "coreItemIds": [
+            "a2-u7-l4-i01",
+            "a2-u7-l4-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u7-l4-mission",
+          "candoIds": [
+            "a2-u7-c1",
+            "a2-u7-c2",
+            "a2-u7-c3"
+          ]
+        },
+        {
+          "id": "a2-u7-l5",
+          "unitId": "a2-unit-7",
+          "unitNumber": 7,
+          "lessonNumber": 5,
+          "titleJa": "仕事の予定をメールで確認する",
+          "titlePl": "Potwierdzenie spotkania",
+          "description": "żeby potwierdzić、moglibyśmy、dogodna godzinaを使い、丁寧に会議の詳細を確認します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u7-l5-i01",
+            "a2-u7-l5-i02",
+            "a2-u7-l5-i03",
+            "a2-u7-l5-i04",
+            "a2-u7-l5-i05",
+            "a2-u7-l5-i06"
+          ],
+          "coreItemIds": [
+            "a2-u7-l5-i01",
+            "a2-u7-l5-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u7-l5-mission",
+          "candoIds": [
+            "a2-u7-c1",
+            "a2-u7-c2",
+            "a2-u7-c3"
+          ]
+        },
+        {
+          "id": "a2-u7-l6",
+          "unitId": "a2-unit-7",
+          "unitNumber": 7,
+          "lessonNumber": 6,
+          "titleJa": "歯科の予約を取る",
+          "titlePl": "Wizyta u dentysty",
+          "description": "umówić wizytę、boleć、po lewej stronieを使い、症状と予約可能な時間を伝えます。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u7-l6-i01",
+            "a2-u7-l6-i02",
+            "a2-u7-l6-i03",
+            "a2-u7-l6-i04",
+            "a2-u7-l6-i05",
+            "a2-u7-l6-i06"
+          ],
+          "coreItemIds": [
+            "a2-u7-l6-i01",
+            "a2-u7-l6-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u7-l6-mission",
+          "candoIds": [
+            "a2-u7-c1",
+            "a2-u7-c2",
+            "a2-u7-c3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a2-unit-8",
+      "unitNumber": 8,
+      "level": "A2",
+      "titleJa": "買い物・飲食・銀行",
+      "titlePl": "Zakupy, jedzenie i pieniądze",
+      "description": "市場、服の交換、返品、アレルギー、銀行、郵便の生活サービスを処理します。",
+      "lessons": [
+        {
+          "id": "a2-u8-l1",
+          "unitId": "a2-unit-8",
+          "unitNumber": 8,
+          "lessonNumber": 1,
+          "titleJa": "市場で量を買う",
+          "titlePl": "Na targu",
+          "description": "半量・単位名詞、対格、życzyć sobieを使い、量と追加注文を伝えます。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u8-l1-i01",
+            "a2-u8-l1-i02",
+            "a2-u8-l1-i03",
+            "a2-u8-l1-i04",
+            "a2-u8-l1-i05",
+            "a2-u8-l1-i06"
+          ],
+          "coreItemIds": [
+            "a2-u8-l1-i01",
+            "a2-u8-l1-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u8-l1-mission",
+          "candoIds": [
+            "a2-u8-c1",
+            "a2-u8-c2",
+            "a2-u8-c3"
+          ]
+        },
+        {
+          "id": "a2-u8-l2",
+          "unitId": "a2-unit-8",
+          "unitNumber": 8,
+          "lessonNumber": 2,
+          "titleJa": "服のサイズと交換",
+          "titlePl": "Kurtka w innym rozmiarze",
+          "description": "rozmiar、dostępny、za krótki、zamówićを使い、試着とサイズ変更を依頼します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u8-l2-i01",
+            "a2-u8-l2-i02",
+            "a2-u8-l2-i03",
+            "a2-u8-l2-i04",
+            "a2-u8-l2-i05",
+            "a2-u8-l2-i06"
+          ],
+          "coreItemIds": [
+            "a2-u8-l2-i01",
+            "a2-u8-l2-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u8-l2-mission",
+          "candoIds": [
+            "a2-u8-c1",
+            "a2-u8-c2",
+            "a2-u8-c3"
+          ]
+        },
+        {
+          "id": "a2-u8-l3",
+          "unitId": "a2-unit-8",
+          "unitNumber": 8,
+          "lessonNumber": 3,
+          "titleJa": "故障品を返品する",
+          "titlePl": "Reklamacja czajnika",
+          "description": "zwrócić、mimo że、paragon、wymienić albo zwrócićを使い、故障と希望する対応を説明します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u8-l3-i01",
+            "a2-u8-l3-i02",
+            "a2-u8-l3-i03",
+            "a2-u8-l3-i04",
+            "a2-u8-l3-i05",
+            "a2-u8-l3-i06"
+          ],
+          "coreItemIds": [
+            "a2-u8-l3-i01",
+            "a2-u8-l3-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u8-l3-mission",
+          "candoIds": [
+            "a2-u8-c1",
+            "a2-u8-c2",
+            "a2-u8-c3"
+          ]
+        },
+        {
+          "id": "a2-u8-l4",
+          "unitId": "a2-unit-8",
+          "unitNumber": 8,
+          "lessonNumber": 4,
+          "titleJa": "アレルギーを伝えて注文する",
+          "titlePl": "Bez orzechów",
+          "description": "zawierać、bez + 生格、polecaćを使い、アレルギーと代替料理を確認します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u8-l4-i01",
+            "a2-u8-l4-i02",
+            "a2-u8-l4-i03",
+            "a2-u8-l4-i04",
+            "a2-u8-l4-i05",
+            "a2-u8-l4-i06"
+          ],
+          "coreItemIds": [
+            "a2-u8-l4-i01",
+            "a2-u8-l4-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u8-l4-mission",
+          "candoIds": [
+            "a2-u8-c1",
+            "a2-u8-c2",
+            "a2-u8-c3"
+          ]
+        },
+        {
+          "id": "a2-u8-l5",
+          "unitId": "a2-unit-8",
+          "unitNumber": 8,
+          "lessonNumber": 5,
+          "titleJa": "銀行で現金を扱う",
+          "titlePl": "W banku",
+          "description": "wypłacić z konta、dokument tożsamości、zapomnieć kodu、resetowaćを使います。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u8-l5-i01",
+            "a2-u8-l5-i02",
+            "a2-u8-l5-i03",
+            "a2-u8-l5-i04",
+            "a2-u8-l5-i05",
+            "a2-u8-l5-i06"
+          ],
+          "coreItemIds": [
+            "a2-u8-l5-i01",
+            "a2-u8-l5-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u8-l5-mission",
+          "candoIds": [
+            "a2-u8-c1",
+            "a2-u8-c2",
+            "a2-u8-c3"
+          ]
+        },
+        {
+          "id": "a2-u8-l6",
+          "unitId": "a2-unit-8",
+          "unitNumber": 8,
+          "lessonNumber": 6,
+          "titleJa": "郵便で荷物を送る",
+          "titlePl": "Paczka do Niemiec",
+          "description": "wysłać do、adres odbiorcy、zabezpieczyć、kosztowaćを使い、宛先・梱包・料金を確認します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u8-l6-i01",
+            "a2-u8-l6-i02",
+            "a2-u8-l6-i03",
+            "a2-u8-l6-i04",
+            "a2-u8-l6-i05",
+            "a2-u8-l6-i06"
+          ],
+          "coreItemIds": [
+            "a2-u8-l6-i01",
+            "a2-u8-l6-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u8-l6-mission",
+          "candoIds": [
+            "a2-u8-c1",
+            "a2-u8-c2",
+            "a2-u8-c3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a2-unit-9",
+      "unitNumber": 9,
+      "level": "A2",
+      "titleJa": "健康・薬局・緊急",
+      "titlePl": "Zdrowie i bezpieczeństwo",
+      "description": "症状、診察、薬局、服薬指示、緊急時、心身の状態を安全に伝えます。",
+      "lessons": [
+        {
+          "id": "a2-u9-l1",
+          "unitId": "a2-unit-9",
+          "unitNumber": 9,
+          "lessonNumber": 1,
+          "titleJa": "症状を伝える",
+          "titlePl": "Objawy",
+          "description": "boleć mnie、mieć gorączkę、lekki kaszel、uczulony naを使い、症状と服薬情報を伝えます。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u9-l1-i01",
+            "a2-u9-l1-i02",
+            "a2-u9-l1-i03",
+            "a2-u9-l1-i04",
+            "a2-u9-l1-i05",
+            "a2-u9-l1-i06"
+          ],
+          "coreItemIds": [
+            "a2-u9-l1-i01",
+            "a2-u9-l1-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u9-l1-mission",
+          "candoIds": [
+            "a2-u9-c1",
+            "a2-u9-c2",
+            "a2-u9-c3"
+          ]
+        },
+        {
+          "id": "a2-u9-l2",
+          "unitId": "a2-unit-9",
+          "unitNumber": 9,
+          "lessonNumber": 2,
+          "titleJa": "診察の予約をする",
+          "titlePl": "W przychodni",
+          "description": "umówić wizytę、źle się czuć、najlepiej po、co dolegaを使い、予約から症状説明へ進みます。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u9-l2-i01",
+            "a2-u9-l2-i02",
+            "a2-u9-l2-i03",
+            "a2-u9-l2-i04",
+            "a2-u9-l2-i05",
+            "a2-u9-l2-i06"
+          ],
+          "coreItemIds": [
+            "a2-u9-l2-i01",
+            "a2-u9-l2-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u9-l2-mission",
+          "candoIds": [
+            "a2-u9-c1",
+            "a2-u9-c2",
+            "a2-u9-c3"
+          ]
+        },
+        {
+          "id": "a2-u9-l3",
+          "unitId": "a2-unit-9",
+          "unitNumber": 9,
+          "lessonNumber": 3,
+          "titleJa": "薬局で薬を買う",
+          "titlePl": "W aptece",
+          "description": "na ból、bez recepty、należy przyjmować、łączyć zを使い、薬の種類と用法を確認します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u9-l3-i01",
+            "a2-u9-l3-i02",
+            "a2-u9-l3-i03",
+            "a2-u9-l3-i04",
+            "a2-u9-l3-i05",
+            "a2-u9-l3-i06"
+          ],
+          "coreItemIds": [
+            "a2-u9-l3-i01",
+            "a2-u9-l3-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u9-l3-mission",
+          "candoIds": [
+            "a2-u9-c1",
+            "a2-u9-c2",
+            "a2-u9-c3"
+          ]
+        },
+        {
+          "id": "a2-u9-l4",
+          "unitId": "a2-unit-9",
+          "unitNumber": 9,
+          "lessonNumber": 4,
+          "titleJa": "医師の指示を理解する",
+          "titlePl": "Zalecenia lekarza",
+          "description": "powinienem、proszę unikać、jeśli nadalを使い、指示・条件・経過観察を確認します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u9-l4-i01",
+            "a2-u9-l4-i02",
+            "a2-u9-l4-i03",
+            "a2-u9-l4-i04",
+            "a2-u9-l4-i05",
+            "a2-u9-l4-i06"
+          ],
+          "coreItemIds": [
+            "a2-u9-l4-i01",
+            "a2-u9-l4-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u9-l4-mission",
+          "candoIds": [
+            "a2-u9-c1",
+            "a2-u9-c2",
+            "a2-u9-c3"
+          ]
+        },
+        {
+          "id": "a2-u9-l5",
+          "unitId": "a2-unit-9",
+          "unitNumber": 9,
+          "lessonNumber": 5,
+          "titleJa": "緊急時に助けを求める",
+          "titlePl": "Nagła sytuacja",
+          "description": "wezwać、stracić przytomność、oddychać、nie ruszaćを使い、緊急状況を短く正確に伝えます。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u9-l5-i01",
+            "a2-u9-l5-i02",
+            "a2-u9-l5-i03",
+            "a2-u9-l5-i04",
+            "a2-u9-l5-i05",
+            "a2-u9-l5-i06"
+          ],
+          "coreItemIds": [
+            "a2-u9-l5-i01",
+            "a2-u9-l5-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u9-l5-mission",
+          "candoIds": [
+            "a2-u9-c1",
+            "a2-u9-c2",
+            "a2-u9-c3"
+          ]
+        },
+        {
+          "id": "a2-u9-l6",
+          "unitId": "a2-unit-9",
+          "unitNumber": 9,
+          "lessonNumber": 6,
+          "titleJa": "心身の状態を相談する",
+          "titlePl": "Gorszy sen",
+          "description": "trudno mi、od kilku tygodni、ograniczać、porozmawiaćを使い、長く続く不調と対策を話します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u9-l6-i01",
+            "a2-u9-l6-i02",
+            "a2-u9-l6-i03",
+            "a2-u9-l6-i04",
+            "a2-u9-l6-i05",
+            "a2-u9-l6-i06"
+          ],
+          "coreItemIds": [
+            "a2-u9-l6-i01",
+            "a2-u9-l6-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u9-l6-mission",
+          "candoIds": [
+            "a2-u9-c1",
+            "a2-u9-c2",
+            "a2-u9-c3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a2-unit-10",
+      "unitNumber": 10,
+      "level": "A2",
+      "titleJa": "役所・生活統合",
+      "titlePl": "Sprawy urzędowe i życie w Polsce",
+      "description": "滞在、銀行、住所変更、修理、近所の行事、A2生活会話の統合を行います。",
+      "lessons": [
+        {
+          "id": "a2-u10-l1",
+          "unitId": "a2-unit-10",
+          "unitNumber": 10,
+          "lessonNumber": 1,
+          "titleJa": "滞在カードの申請",
+          "titlePl": "Wniosek o kartę pobytu",
+          "description": "złożyć wniosek o、wymagany、brakuje、naprzeciwkoを使い、役所で書類を確認します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u10-l1-i01",
+            "a2-u10-l1-i02",
+            "a2-u10-l1-i03",
+            "a2-u10-l1-i04",
+            "a2-u10-l1-i05",
+            "a2-u10-l1-i06"
+          ],
+          "coreItemIds": [
+            "a2-u10-l1-i01",
+            "a2-u10-l1-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u10-l1-mission",
+          "candoIds": [
+            "a2-u10-c1",
+            "a2-u10-c2",
+            "a2-u10-c3"
+          ]
+        },
+        {
+          "id": "a2-u10-l2",
+          "unitId": "a2-unit-10",
+          "unitNumber": 10,
+          "lessonNumber": 2,
+          "titleJa": "銀行口座を開く",
+          "titlePl": "Otwieram konto",
+          "description": "otworzyć konto、formularz、rubryka、wyciąg elektronicznyを使い、銀行のフォームを確認します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u10-l2-i01",
+            "a2-u10-l2-i02",
+            "a2-u10-l2-i03",
+            "a2-u10-l2-i04",
+            "a2-u10-l2-i05",
+            "a2-u10-l2-i06"
+          ],
+          "coreItemIds": [
+            "a2-u10-l2-i01",
+            "a2-u10-l2-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u10-l2-mission",
+          "candoIds": [
+            "a2-u10-c1",
+            "a2-u10-c2",
+            "a2-u10-c3"
+          ]
+        },
+        {
+          "id": "a2-u10-l3",
+          "unitId": "a2-unit-10",
+          "unitNumber": 10,
+          "lessonNumber": 3,
+          "titleJa": "住所変更を届け出る",
+          "titlePl": "Zmiana adresu",
+          "description": "zgłosić zmianę、od kiedy、adres korespondencyjny、wysyłaćを使い、住所と郵便の変更を届け出ます。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u10-l3-i01",
+            "a2-u10-l3-i02",
+            "a2-u10-l3-i03",
+            "a2-u10-l3-i04",
+            "a2-u10-l3-i05",
+            "a2-u10-l3-i06"
+          ],
+          "coreItemIds": [
+            "a2-u10-l3-i01",
+            "a2-u10-l3-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u10-l3-mission",
+          "candoIds": [
+            "a2-u10-c1",
+            "a2-u10-c2",
+            "a2-u10-c3"
+          ]
+        },
+        {
+          "id": "a2-u10-l4",
+          "unitId": "a2-unit-10",
+          "unitNumber": 10,
+          "lessonNumber": 4,
+          "titleJa": "家電の修理を依頼する",
+          "titlePl": "Naprawa pralki",
+          "description": "zgłosić problem、gwarancja、usterka、umówić technikaを使い、故障の内容と保証を説明します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u10-l4-i01",
+            "a2-u10-l4-i02",
+            "a2-u10-l4-i03",
+            "a2-u10-l4-i04",
+            "a2-u10-l4-i05",
+            "a2-u10-l4-i06"
+          ],
+          "coreItemIds": [
+            "a2-u10-l4-i01",
+            "a2-u10-l4-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u10-l4-mission",
+          "candoIds": [
+            "a2-u10-c1",
+            "a2-u10-c2",
+            "a2-u10-c3"
+          ]
+        },
+        {
+          "id": "a2-u10-l5",
+          "unitId": "a2-unit-10",
+          "unitNumber": 10,
+          "lessonNumber": 5,
+          "titleJa": "近所の集まりを準備する",
+          "titlePl": "Spotkanie sąsiadów",
+          "description": "organizować、przydałoby się、żeby、przygotowaćを使い、近所の役割分担を相談します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u10-l5-i01",
+            "a2-u10-l5-i02",
+            "a2-u10-l5-i03",
+            "a2-u10-l5-i04",
+            "a2-u10-l5-i05",
+            "a2-u10-l5-i06"
+          ],
+          "coreItemIds": [
+            "a2-u10-l5-i01",
+            "a2-u10-l5-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u10-l5-mission",
+          "candoIds": [
+            "a2-u10-c1",
+            "a2-u10-c2",
+            "a2-u10-c3"
+          ]
+        },
+        {
+          "id": "a2-u10-l6",
+          "unitId": "a2-unit-10",
+          "unitNumber": 10,
+          "lessonNumber": 6,
+          "titleJa": "A2の会話を振り返る",
+          "titlePl": "Potrafię rozmawiać",
+          "description": "potrafić、najtrudniejsze było、powtórzyć i powiedzieć prościejを使い、会話方略と自己評価を言語化します。 代表的な相手の返答も含めて、短い往復を練習します。",
+          "estimatedMinutes": 9,
+          "itemIds": [
+            "a2-u10-l6-i01",
+            "a2-u10-l6-i02",
+            "a2-u10-l6-i03",
+            "a2-u10-l6-i04",
+            "a2-u10-l6-i05",
+            "a2-u10-l6-i06"
+          ],
+          "coreItemIds": [
+            "a2-u10-l6-i01",
+            "a2-u10-l6-i02"
+          ],
+          "questionTypes": [
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "multiple_choice",
+            "multiple_choice",
+            "cloze",
+            "unscramble",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input",
+            "free_input"
+          ],
+          "missionId": "a2-u10-l6-mission",
+          "candoIds": [
+            "a2-u10-c1",
+            "a2-u10-c2",
+            "a2-u10-c3"
+          ]
+        }
+      ]
+    }
+  ],
+  "exerciseTypes": [
+    "multiple_choice",
+    "cloze",
+    "unscramble",
+    "free_input"
+  ]
+}

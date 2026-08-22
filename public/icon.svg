@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#123c43"/>
+  <circle cx="256" cy="235" r="138" fill="#f6c760"/>
+  <path d="M168 255c21-24 49-36 88-36s67 12 88 36v78H168z" fill="#fff9ef"/>
+  <path d="M205 223c6-38 26-62 51-62s45 24 51 62" fill="none" stroke="#d85d4f" stroke-width="28" stroke-linecap="round"/>
+  <circle cx="215" cy="243" r="13" fill="#123c43"/>
+  <circle cx="297" cy="243" r="13" fill="#123c43"/>
+  <path d="M226 292c22 16 38 16 60 0" fill="none" stroke="#123c43" stroke-width="11" stroke-linecap="round"/>
+  <text x="256" y="392" text-anchor="middle" font-family="system-ui,sans-serif" font-size="58" font-weight="800" fill="#fff9ef">PL</text>
+</svg>

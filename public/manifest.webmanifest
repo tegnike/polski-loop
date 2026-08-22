@@ -1,0 +1,13 @@
+{
+  "name": "Polski Loop",
+  "short_name": "Polski Loop",
+  "description": "個人用ポーランド語A1学習PWA",
+  "lang": "ja",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4efe7",
+  "theme_color": "#f4efe7",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
