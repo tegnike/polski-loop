@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-export type AppView = "today" | "review" | "library" | "curriculum" | "progress";
+export type AppView = "today" | "review" | "library" | "curriculum" | "progress" | "history";
 
 interface BottomNavProps {
   current: AppView;

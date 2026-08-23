@@ -20,6 +20,8 @@ A2のlearner itemは男性話者想定、partner itemは典型的な質問・返
 - `pl_cando_progress` — profileごとのCan-do状態、自己評価、証拠メモ。
 - `pl_chatgpt_prompts` — ChatGPT Voice用promptファイルの保存履歴と任意のmission参照。
 
+全履歴画面では新しい保存用tableを増やさず、`pl_attempts`、`pl_study_sessions`、`pl_voice_attempts`をprofileで絞り、日時とIDをcursorにして読み取り専用の統合タイムラインへ変換する。元データの修正・削除は行わない。
+
 ## Migration境界
 
 `0001`〜`0004`は既存A1の正本であり編集・削除しない。`0005_a2_missions_content.sql`がA2教材とmission/Can-do/Voice結果のschema・seedを追加し、`0006_fix_a2_item_situation.sql`がA2の`scene`値だけを補正する。どのmigrationも既存ID、session、attempt、reviewを削除しない。

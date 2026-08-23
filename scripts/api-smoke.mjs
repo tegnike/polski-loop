@@ -82,6 +82,17 @@ assert(candoUpdated.id === cando.items[0].id && candoUpdated.status === "practic
 
 const historyAfter = await request("/history?limit=100");
 assert(historyAfter.length >= historyBefore.length, "history must remain readable after an attempt");
+const timeline = await request("/timeline?limit=25");
+assert(Array.isArray(timeline.items) && timeline.items.some((entry) => entry.type === "attempt"), "timeline must include attempts");
+assert(timeline.items.some((entry) => entry.type === "session") && timeline.items.some((entry) => entry.type === "voice"), "timeline must combine sessions and Voice results");
+assert(timeline.items.every((entry, index) => index === 0 || timeline.items[index - 1].occurredAt >= entry.occurredAt), "timeline must be newest first");
+const attemptTimeline = await request("/timeline?type=attempt&limit=1");
+assert(attemptTimeline.items.length === 1 && attemptTimeline.items[0].type === "attempt", "timeline type filter must only return the requested event");
+if (attemptTimeline.nextCursor) {
+  const nextAttemptPage = await request(`/timeline?type=attempt&limit=1&cursor=${encodeURIComponent(attemptTimeline.nextCursor)}`);
+  assert(nextAttemptPage.items.every((entry) => entry.type === "attempt"), "cursor page must preserve the filter");
+  assert(nextAttemptPage.items.every((entry) => entry.id !== attemptTimeline.items[0].id), "cursor page must not duplicate the boundary event");
+}
 const exported = await request("/export?format=json");
 assert(exported.data?.pl_attempts, "JSON export must include attempts");
 assert(exported.data?.pl_voice_attempts && exported.data?.pl_cando_progress, "JSON export must include Voice results and Can-do progress");

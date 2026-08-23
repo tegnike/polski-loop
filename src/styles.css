@@ -252,6 +252,39 @@ h1, h2, strong { letter-spacing: -.025em; }
 .history-verdict { display: grid; width: 26px; height: 26px; flex: 0 0 26px; place-items: center; border-radius: 50%; font-size: 12px; font-weight: 850; }
 .history-verdict.good { color: #28715d; background: #dcebe6; }
 .history-verdict.bad { color: #a5443c; background: #ffe2dc; }
+.history-entry-card { display: flex; width: 100%; min-height: 76px; align-items: center; justify-content: space-between; gap: 14px; padding: 15px 16px; color: var(--teal); text-align: left; }
+.history-entry-card > span { display: grid; min-width: 0; gap: 3px; }
+.history-entry-card strong { font-size: 15px; }
+.history-entry-card small { color: var(--muted); font-size: 10px; line-height: 1.5; }
+.history-entry-card b { flex: 0 0 auto; color: var(--coral); font-size: 20px; }
+.history-page-intro { position: relative; padding-top: 42px; }
+.history-back { position: absolute; top: 0; left: 0; min-height: 36px; color: var(--teal); font-weight: 750; }
+.history-filters { position: sticky; z-index: 3; top: 68px; margin: -2px -4px 0; padding: 8px 4px; background: rgba(255, 253, 248, .94); backdrop-filter: blur(10px); }
+.history-filters .filter { flex: 1 0 auto; }
+.timeline-list { display: grid; gap: 8px; }
+.timeline-date { margin: 13px 2px 7px; color: var(--muted); font-size: 11px; font-weight: 800; }
+.timeline-card { overflow: hidden; }
+.timeline-card summary { display: flex; min-height: 78px; align-items: center; gap: 10px; padding: 12px; cursor: pointer; list-style: none; }
+.timeline-card summary::-webkit-details-marker { display: none; }
+.timeline-icon { display: grid; width: 34px; height: 34px; flex: 0 0 34px; place-items: center; border-radius: 11px; font-size: 13px; font-weight: 900; }
+.attempt-good { color: #28715d; background: #dcebe6; }
+.attempt-bad { color: #a5443c; background: #ffe2dc; }
+.session-icon { color: #725717; background: #fff0c5; }
+.voice-icon { color: #375e92; background: #e1ebf8; }
+.timeline-summary { display: grid; flex: 1; min-width: 0; gap: 2px; }
+.timeline-summary small, .timeline-summary span, .timeline-card time { overflow: hidden; color: var(--muted); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.timeline-summary strong { overflow: hidden; color: var(--teal); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.timeline-card time { flex: 0 0 auto; align-self: flex-start; padding-top: 2px; }
+.timeline-detail { padding: 0 12px 13px 56px; border-top: 1px solid var(--line); }
+.timeline-detail dl { display: grid; gap: 7px; margin-top: 11px; }
+.timeline-detail dl > div { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 8px; font-size: 10px; }
+.timeline-detail dt { color: var(--muted); }
+.timeline-detail dd { margin: 0; color: var(--ink); overflow-wrap: anywhere; }
+.voice-timeline-detail p { display: grid; gap: 3px; margin-top: 10px; color: var(--ink); font-size: 10px; line-height: 1.55; }
+.voice-timeline-detail p strong { color: var(--teal); font-size: 9px; }
+.history-load-error { padding: 11px 12px; border-radius: 10px; color: #a5443c; background: #ffe2dc; font-size: 11px; }
+.history-more { width: 100%; }
+.history-end { color: var(--muted); font-size: 10px; text-align: center; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
@@ -270,6 +303,7 @@ h1, h2, strong { letter-spacing: -.025em; }
   .study-shell { padding-right: 14px; padding-left: 14px; }
   .priority-title h2 { font-size: 18px; }
   .rating-grid button small { display: none; }
+  .timeline-detail { padding-left: 12px; }
 }
 
 /* A1/A2 curriculum, Can-do, and ChatGPT Voice result UI */

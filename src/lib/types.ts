@@ -302,6 +302,64 @@ export interface HistoryEntry {
   difficultyAfter: DifficultyLevel | null;
 }
 
+export type TimelineEventType = "attempt" | "session" | "voice";
+export type TimelineFilter = "all" | TimelineEventType;
+
+interface TimelineEventBase {
+  id: string;
+  type: TimelineEventType;
+  occurredAt: string;
+  trackCode: TrackCode | null;
+  unitNumber: number | null;
+  unitTitle: string | null;
+  lessonId: string | null;
+  lessonTitle: string | null;
+}
+
+export interface AttemptTimelineEvent extends TimelineEventBase {
+  type: "attempt";
+  itemId: string;
+  polish: string;
+  meaningJa: string;
+  answer: string;
+  expectedAnswer: string;
+  isCorrect: boolean;
+  verdict: AttemptVerdict;
+  rating: ReviewRating | null;
+  elapsedMs: number;
+  questionType: QuestionType;
+  direction: PromptDirection;
+  difficultyBefore: DifficultyLevel | null;
+  difficultyAfter: DifficultyLevel | null;
+}
+
+export interface SessionTimelineEvent extends TimelineEventBase {
+  type: "session";
+  mode: "lesson" | "review";
+  startedAt: string;
+  completedAt: string | null;
+  durationMs: number;
+}
+
+export interface VoiceTimelineEvent extends TimelineEventBase {
+  type: "voice";
+  missionId: string;
+  missionTitle: string;
+  sourceKind: "self_report" | "chatgpt_file";
+  overallScore: number | null;
+  confidence: number;
+  notes: string;
+  scores: VoiceScores | null;
+  feedback: VoiceImportedFeedback | null;
+}
+
+export type TimelineEvent = AttemptTimelineEvent | SessionTimelineEvent | VoiceTimelineEvent;
+
+export interface TimelinePage {
+  items: TimelineEvent[];
+  nextCursor: string | null;
+}
+
 export interface ApiError {
   error: string;
   message: string;

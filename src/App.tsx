@@ -13,6 +13,8 @@ import type {
   QuestionType,
   ReviewState,
   StatusResponse,
+  TimelineEvent,
+  TimelineFilter,
   TrackCode,
   VoiceResult,
   VoiceResultImport,
@@ -221,7 +223,8 @@ function App() {
             onStatusChanged={() => void refreshStatus()}
           />
         )}
-        {view === "progress" && <ProgressView status={status} />}
+        {view === "progress" && <ProgressView status={status} onOpenHistory={() => setView("history")} />}
+        {view === "history" && <HistoryView onBack={() => setView("progress")} />}
       </main>
       <BottomNav current={view} onChange={setView} />
     </div>
@@ -1008,7 +1011,7 @@ function LibraryItem({
   );
 }
 
-function ProgressView({ status }: { status: StatusResponse }) {
+function ProgressView({ status, onOpenHistory }: { status: StatusResponse; onOpenHistory: () => void }) {
   const [mistakes, setMistakes] = useState<MistakeSummary[]>([]);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [voiceResults, setVoiceResults] = useState<VoiceResult[]>([]);
@@ -1126,6 +1129,14 @@ function ProgressView({ status }: { status: StatusResponse }) {
           </div>
         )}
       </section>
+      <button className="history-entry-card card" type="button" onClick={onOpenHistory}>
+        <span>
+          <span className="eyebrow">All learning activity</span>
+          <strong>すべての学習履歴を見る</strong>
+          <small>回答・セッション・Voice採点を時系列で遡れます</small>
+        </span>
+        <b aria-hidden="true">→</b>
+      </button>
       <section className="history-section">
         <div className="section-heading">
           <div>
@@ -1213,6 +1224,150 @@ function ProgressView({ status }: { status: StatusResponse }) {
         )}
       </section>
     </div>
+  );
+}
+
+const timelineFilters: Array<{ id: TimelineFilter; label: string }> = [
+  { id: "all", label: "すべて" },
+  { id: "attempt", label: "回答" },
+  { id: "session", label: "セッション" },
+  { id: "voice", label: "Voice" },
+];
+
+function dateKey(value: string): string {
+  return new Intl.DateTimeFormat("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(value));
+}
+function displayDate(value: string): string {
+  return new Intl.DateTimeFormat("ja-JP", { month: "long", day: "numeric", weekday: "short" }).format(new Date(value));
+}
+function displayTime(value: string): string {
+  return new Intl.DateTimeFormat("ja-JP", { hour: "2-digit", minute: "2-digit" }).format(new Date(value));
+}
+function lessonContext(event: TimelineEvent): string {
+  const parts = [event.trackCode, event.unitNumber ? `Unit ${event.unitNumber}` : null, event.lessonTitle].filter(Boolean);
+  return parts.join(" · ") || "学習記録";
+}
+
+function HistoryView({ onBack }: { onBack: () => void }) {
+  const [filter, setFilter] = useState<TimelineFilter>("all");
+  const [items, setItems] = useState<TimelineEvent[]>([]);
+  const [cursor, setCursor] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  const loadFirstPage = useCallback(async (nextFilter: TimelineFilter) => {
+    setLoading(true);
+    setLoadError(null);
+    try {
+      const page = await api.timeline({ type: nextFilter, limit: 25 });
+      setItems(page.items);
+      setCursor(page.nextCursor);
+    } catch (nextError) {
+      setItems([]);
+      setCursor(null);
+      setLoadError(nextError instanceof Error ? nextError.message : "履歴を読み込めませんでした。");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+  useEffect(() => { void loadFirstPage(filter); }, [filter, loadFirstPage]);
+
+  async function loadMore() {
+    if (!cursor || loadingMore) return;
+    setLoadingMore(true);
+    setLoadError(null);
+    try {
+      const page = await api.timeline({ type: filter, cursor, limit: 25 });
+      setItems((current) => [...current, ...page.items]);
+      setCursor(page.nextCursor);
+    } catch (nextError) {
+      setLoadError(nextError instanceof Error ? nextError.message : "続きの履歴を読み込めませんでした。");
+    } finally {
+      setLoadingMore(false);
+    }
+  }
+
+  let previousDate = "";
+  return (
+    <div className="page-stack history-page">
+      <section className="page-intro history-page-intro">
+        <button className="plain-button history-back" type="button" onClick={onBack}>← 進捗へ戻る</button>
+        <span className="eyebrow">Learning history</span>
+        <h1>学習履歴</h1>
+        <p>回答、学習セッション、ChatGPT Voice採点を新しい順に表示します。</p>
+      </section>
+      <div className="filter-row history-filters" role="tablist" aria-label="履歴の種類">
+        {timelineFilters.map((entry) => (
+          <button className={filter === entry.id ? "filter active" : "filter"} type="button" role="tab"
+            aria-selected={filter === entry.id} key={entry.id} onClick={() => setFilter(entry.id)}>{entry.label}</button>
+        ))}
+      </div>
+      {loading ? (
+        <div className="inline-loading"><span className="loader" />履歴を読み込み中…</div>
+      ) : items.length === 0 && !loadError ? (
+        <div className="empty-card"><strong>この種類の履歴はまだありません</strong><p>学習すると、ここから過去の記録を遡れます。</p></div>
+      ) : (
+        <div className="timeline-list">
+          {items.map((event) => {
+            const currentDate = dateKey(event.occurredAt);
+            const showDate = currentDate !== previousDate;
+            previousDate = currentDate;
+            return <div key={`${event.type}-${event.id}`}>
+              {showDate && <h2 className="timeline-date">{displayDate(event.occurredAt)}</h2>}
+              <TimelineCard event={event} />
+            </div>;
+          })}
+        </div>
+      )}
+      {loadError && <div className="history-load-error" role="alert">{loadError}</div>}
+      {cursor && !loading && (
+        <button className="button secondary history-more" type="button" disabled={loadingMore} onClick={() => void loadMore()}>
+          {loadingMore ? "読み込み中…" : "さらに過去を読み込む"}
+        </button>
+      )}
+      {!cursor && items.length > 0 && <p className="history-end">すべての履歴を表示しました</p>}
+    </div>
+  );
+}
+
+function TimelineCard({ event }: { event: TimelineEvent }) {
+  if (event.type === "attempt") return (
+    <details className="timeline-card card">
+      <summary>
+        <span className={"timeline-icon " + (event.isCorrect ? "attempt-good" : "attempt-bad")}>{event.isCorrect ? "✓" : "!"}</span>
+        <span className="timeline-summary"><small>回答 · {lessonContext(event)}</small><strong>{event.polish}</strong><span>{questionLabels[event.questionType]} · {formatDuration(event.elapsedMs)}</span></span>
+        <time dateTime={event.occurredAt}>{displayTime(event.occurredAt)}</time>
+      </summary>
+      <div className="timeline-detail">
+        <dl><div><dt>回答</dt><dd>{event.answer || "（空欄）"}</dd></div><div><dt>正答</dt><dd>{event.expectedAnswer}</dd></div><div><dt>意味</dt><dd>{event.meaningJa}</dd></div><div><dt>評価</dt><dd>{event.rating ?? "未評価"}</dd></div></dl>
+      </div>
+    </details>
+  );
+  if (event.type === "session") return (
+    <details className="timeline-card card">
+      <summary>
+        <span className="timeline-icon session-icon">◷</span>
+        <span className="timeline-summary"><small>セッション · {lessonContext(event)}</small><strong>{event.mode === "review" ? "復習" : event.lessonTitle ?? "レッスン"}</strong><span>{event.completedAt ? formatDuration(event.durationMs) : "未完了"}</span></span>
+        <time dateTime={event.occurredAt}>{displayTime(event.occurredAt)}</time>
+      </summary>
+      <div className="timeline-detail"><dl><div><dt>種類</dt><dd>{event.mode === "review" ? "復習" : "レッスン"}</dd></div><div><dt>開始</dt><dd>{new Date(event.startedAt).toLocaleString("ja-JP")}</dd></div><div><dt>状態</dt><dd>{event.completedAt ? "完了" : "未完了"}</dd></div></dl></div>
+    </details>
+  );
+  return (
+    <details className="timeline-card card">
+      <summary>
+        <span className="timeline-icon voice-icon">V</span>
+        <span className="timeline-summary"><small>Voice · {lessonContext(event)}</small><strong>{event.missionTitle}</strong><span>{event.sourceKind === "chatgpt_file" ? `ChatGPT採点 ${event.overallScore?.toFixed(1) ?? "-"}/5` : `旧自己評価 ${event.confidence}/5`}</span></span>
+        <time dateTime={event.occurredAt}>{displayTime(event.occurredAt)}</time>
+      </summary>
+      <div className="timeline-detail voice-timeline-detail">
+        {event.scores && <dl><div><dt>課題達成</dt><dd>{event.scores.taskCompletion}/5</dd></div><div><dt>理解</dt><dd>{event.scores.comprehension}/5</dd></div><div><dt>返答正確性</dt><dd>{event.scores.responseAccuracy}/5</dd></div><div><dt>目標表現</dt><dd>{event.scores.targetExpressionUse}/5</dd></div><div><dt>流暢性</dt><dd>{event.scores.interactionFluency}/5</dd></div></dl>}
+        {event.feedback?.summary && <p><strong>総評</strong>{event.feedback.summary}</p>}
+        {event.feedback?.nextStep && <p><strong>次の練習</strong>{event.feedback.nextStep}</p>}
+        {event.notes && <p><strong>メモ</strong>{event.notes}</p>}
+      </div>
+    </details>
   );
 }
 function Metric({

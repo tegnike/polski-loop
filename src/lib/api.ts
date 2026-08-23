@@ -7,6 +7,8 @@ import type {
   MistakeSummary,
   ReviewRating,
   StatusResponse,
+  TimelineFilter,
+  TimelinePage,
   CanDoItem,
   CanDoUnit,
   TrackCode,
@@ -57,6 +59,13 @@ export const api = {
   },
   mistakes: () => request<MistakeSummary[]>("/mistakes"),
   history: (limit = 30) => request<HistoryEntry[]>(`/history?limit=${limit}`),
+  timeline: (params: { type?: TimelineFilter; cursor?: string; limit?: number } = {}) => {
+    const query = new URLSearchParams();
+    if (params.type && params.type !== "all") query.set("type", params.type);
+    if (params.cursor) query.set("cursor", params.cursor);
+    query.set("limit", String(params.limit ?? 25));
+    return request<TimelinePage>(`/timeline?${query.toString()}`);
+  },
   startSession: (mode: "lesson" | "review", lessonId: string | undefined, idempotencyKey: string) => request<{ id: string; startedAt: string }>("/sessions", {
     method: "POST",
     body: JSON.stringify({ mode, lessonId, idempotencyKey }),

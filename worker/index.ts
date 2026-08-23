@@ -14,7 +14,7 @@ import type {
   AttemptResult, CanDoItem, CanDoStatus, CanDoUnit, ChoiceOption, CurriculumSummary, DifficultyLevel,
   DueItem, ExerciseShape, ItemType, LearningItem, Lesson, LessonStep, LessonSummary, MistakeSummary,
   ItemRegister, ItemSkill, PromptDirection, QuestionType, Recommendation, ReviewRating, ReviewState, StatusResponse, TrackCode,
-  TrackSummary, UnitProgress, VoiceImportedFeedback, VoiceMission, VoiceResult, VoiceResultImport, VoiceScores,
+  TimelineEvent, TimelineEventType, TimelineFilter, TimelinePage, TrackSummary, UnitProgress, VoiceImportedFeedback, VoiceMission, VoiceResult, VoiceResultImport, VoiceScores,
 } from "../src/lib/types";
 
 interface Env {
@@ -71,6 +71,22 @@ interface VoiceAttemptRow {
   source_kind: "self_report" | "chatgpt_file"; external_result_id: string | null; schema_version: string | null;
   evaluated_at: string | null; overall_score: number | null; scores_json: string | null; feedback_json: string | null;
 }
+interface TimelineBaseRow {
+  id: string; occurred_at: string; track_code: TrackCode | null; unit_number: number | null;
+  unit_title: string | null; lesson_id: string | null; lesson_title: string | null;
+}
+interface AttemptTimelineRow extends TimelineBaseRow {
+  item_id: string; polish: string; meaning_ja: string; answer: string; expected_answer: string;
+  is_correct: number; verdict: AttemptResult["verdict"]; rating: ReviewRating | null; elapsed_ms: number;
+  question_type: QuestionType; direction: PromptDirection; difficulty_before: number | null; difficulty_after: number | null;
+}
+interface SessionTimelineRow extends TimelineBaseRow {
+  mode: "lesson" | "review"; started_at: string; completed_at: string | null; duration_ms: number;
+}
+interface VoiceTimelineRow extends TimelineBaseRow {
+  mission_id: string; mission_title: string; source_kind: "self_report" | "chatgpt_file";
+  overall_score: number | null; confidence: number; notes: string; scores_json: string | null; feedback_json: string | null;
+}
 interface CanDoRow {
   id: string; unit_id: string; code: string; cefr_level: TrackCode; skill: CanDoItem["skill"];
   statement_ja: string; statement_pl: string; evidence_rule: string; status: CanDoStatus | null;
@@ -83,6 +99,23 @@ const QUESTION_TYPES: QuestionType[] = ["multiple_choice", "cloze", "unscramble"
 const DIRECTIONS: PromptDirection[] = ["meaning_to_polish", "polish_to_meaning"];
 const RATINGS: ReviewRating[] = ["again", "hard", "good", "easy"];
 const VOICE_RESULT_COLUMNS = "id, mission_id, session_id, heard, replied, asked_back, rephrased, confidence, notes, created_at, updated_at, source_kind, external_result_id, schema_version, evaluated_at, overall_score, scores_json, feedback_json";
+const TIMELINE_TYPES: TimelineEventType[] = ["attempt", "session", "voice"];
+
+interface TimelineCursor { occurredAt: string; type: TimelineEventType; id: string; }
+
+function timelineKey(event: Pick<TimelineEvent, "type" | "id">): string { return `${event.type}:${event.id}`; }
+function encodeTimelineCursor(event: TimelineEvent): string { return `${event.occurredAt}~${event.type}~${event.id}`; }
+function decodeTimelineCursor(value: string | null): TimelineCursor | null {
+  if (!value) return null;
+  const [occurredAt, type, ...idParts] = value.split("~");
+  const id = idParts.join("~");
+  if (!occurredAt || !id || !TIMELINE_TYPES.includes(type as TimelineEventType) || Number.isNaN(Date.parse(occurredAt))) throw new Error("cursorが不正です。");
+  return { occurredAt, type: type as TimelineEventType, id };
+}
+function timelineSort(left: TimelineEvent, right: TimelineEvent): number {
+  const dateOrder = right.occurredAt.localeCompare(left.occurredAt);
+  return dateOrder || timelineKey(right).localeCompare(timelineKey(left));
+}
 
 function profileId(env: Env): string { return env.PROFILE_ID || PROFILE_FALLBACK; }
 function jsonResponse(data: unknown, init: ResponseInit = {}): Response {
@@ -533,6 +566,75 @@ async function historyResponse(db: D1Database, currentProfileId: string, limit: 
   const result = await db.prepare("SELECT a.id, a.item_id AS itemId, i.polish, i.meaning_ja AS meaningJa, a.question_type AS questionType, a.direction, a.verdict, a.rating, a.is_correct AS isCorrect, a.elapsed_ms AS elapsedMs, a.created_at AS createdAt, a.difficulty_before AS difficultyBefore, a.difficulty_after AS difficultyAfter FROM pl_attempts a JOIN pl_learning_items i ON i.id = a.item_id WHERE a.profile_id = ? ORDER BY a.created_at DESC LIMIT ?").bind(currentProfileId, Math.max(1, Math.min(100, limit))).all();
   return result.results ?? [];
 }
+function timelineBase(row: TimelineBaseRow) {
+  return { id: row.id, occurredAt: row.occurred_at, trackCode: row.track_code, unitNumber: row.unit_number,
+    unitTitle: row.unit_title, lessonId: row.lesson_id, lessonTitle: row.lesson_title };
+}
+async function timelineResponse(db: D1Database, currentProfileId: string, url: URL): Promise<TimelinePage> {
+  const requestedType = url.searchParams.get("type") ?? "all";
+  if (requestedType !== "all" && !TIMELINE_TYPES.includes(requestedType as TimelineEventType)) throw new Error("typeはattempt、session、voiceのいずれかです。");
+  const filter = requestedType as TimelineFilter;
+  const cursor = decodeTimelineCursor(url.searchParams.get("cursor"));
+  const requestedLimit = Number(url.searchParams.get("limit") ?? "25");
+  const limit = Math.max(1, Math.min(50, Number.isFinite(requestedLimit) ? requestedLimit : 25));
+  const queryLimit = limit + 1;
+  const cursorKey = cursor ? `${cursor.type}:${cursor.id}` : null;
+  const events: TimelineEvent[] = [];
+  const cursorClause = cursor ? " AND (EVENT_TIME < ? OR (EVENT_TIME = ? AND EVENT_KEY < ?))" : "";
+
+  if (filter === "all" || filter === "attempt") {
+    const sql = ("SELECT a.id, a.created_at AS occurred_at, t.code AS track_code, u.unit_number, u.title_ja AS unit_title, " +
+      "a.lesson_id, l.title_ja AS lesson_title, a.item_id, i.polish, i.meaning_ja, a.answer, a.expected_answer, a.is_correct, " +
+      "a.verdict, a.rating, a.elapsed_ms, a.question_type, a.direction, a.difficulty_before, a.difficulty_after " +
+      "FROM pl_attempts a JOIN pl_learning_items i ON i.id = a.item_id LEFT JOIN pl_lessons l ON l.id = a.lesson_id " +
+      "LEFT JOIN pl_units u ON u.id = l.unit_id LEFT JOIN pl_tracks t ON t.id = u.track_id WHERE a.profile_id = ?" + cursorClause
+        .replaceAll("EVENT_TIME", "a.created_at").replaceAll("EVENT_KEY", "('attempt:' || a.id)") +
+      " ORDER BY a.created_at DESC, a.id DESC LIMIT ?");
+    const statement = db.prepare(sql);
+    const result = cursor
+      ? await statement.bind(currentProfileId, cursor.occurredAt, cursor.occurredAt, cursorKey, queryLimit).all<AttemptTimelineRow>()
+      : await statement.bind(currentProfileId, queryLimit).all<AttemptTimelineRow>();
+    for (const row of result.results ?? []) events.push({ ...timelineBase(row), type: "attempt", itemId: row.item_id,
+      polish: row.polish, meaningJa: row.meaning_ja, answer: row.answer, expectedAnswer: row.expected_answer,
+      isCorrect: row.is_correct === 1, verdict: row.verdict, rating: row.rating, elapsedMs: row.elapsed_ms,
+      questionType: row.question_type, direction: row.direction,
+      difficultyBefore: row.difficulty_before === null ? null : Math.max(0, Math.min(3, row.difficulty_before)) as DifficultyLevel,
+      difficultyAfter: row.difficulty_after === null ? null : Math.max(0, Math.min(3, row.difficulty_after)) as DifficultyLevel });
+  }
+  if (filter === "all" || filter === "session") {
+    const sql = ("SELECT s.id, s.started_at AS occurred_at, t.code AS track_code, u.unit_number, u.title_ja AS unit_title, " +
+      "s.lesson_id, l.title_ja AS lesson_title, s.mode, s.started_at, s.completed_at, s.duration_ms FROM pl_study_sessions s " +
+      "LEFT JOIN pl_lessons l ON l.id = s.lesson_id LEFT JOIN pl_units u ON u.id = l.unit_id LEFT JOIN pl_tracks t ON t.id = u.track_id " +
+      "WHERE s.profile_id = ?" + cursorClause.replaceAll("EVENT_TIME", "s.started_at").replaceAll("EVENT_KEY", "('session:' || s.id)") +
+      " ORDER BY s.started_at DESC, s.id DESC LIMIT ?");
+    const statement = db.prepare(sql);
+    const result = cursor
+      ? await statement.bind(currentProfileId, cursor.occurredAt, cursor.occurredAt, cursorKey, queryLimit).all<SessionTimelineRow>()
+      : await statement.bind(currentProfileId, queryLimit).all<SessionTimelineRow>();
+    for (const row of result.results ?? []) events.push({ ...timelineBase(row), type: "session", mode: row.mode,
+      startedAt: row.started_at, completedAt: row.completed_at, durationMs: row.duration_ms });
+  }
+  if (filter === "all" || filter === "voice") {
+    const eventTime = "COALESCE(v.evaluated_at, v.created_at)";
+    const sql = ("SELECT v.id, " + eventTime + " AS occurred_at, t.code AS track_code, u.unit_number, u.title_ja AS unit_title, " +
+      "m.lesson_id, l.title_ja AS lesson_title, v.mission_id, m.title AS mission_title, v.source_kind, v.overall_score, " +
+      "v.confidence, v.notes, v.scores_json, v.feedback_json FROM pl_voice_attempts v JOIN pl_voice_missions m ON m.id = v.mission_id " +
+      "LEFT JOIN pl_lessons l ON l.id = m.lesson_id LEFT JOIN pl_units u ON u.id = l.unit_id LEFT JOIN pl_tracks t ON t.id = u.track_id " +
+      "WHERE v.profile_id = ?" + cursorClause.replaceAll("EVENT_TIME", eventTime).replaceAll("EVENT_KEY", "('voice:' || v.id)") +
+      " ORDER BY " + eventTime + " DESC, v.id DESC LIMIT ?");
+    const statement = db.prepare(sql);
+    const result = cursor
+      ? await statement.bind(currentProfileId, cursor.occurredAt, cursor.occurredAt, cursorKey, queryLimit).all<VoiceTimelineRow>()
+      : await statement.bind(currentProfileId, queryLimit).all<VoiceTimelineRow>();
+    for (const row of result.results ?? []) events.push({ ...timelineBase(row), type: "voice", missionId: row.mission_id,
+      missionTitle: row.mission_title, sourceKind: row.source_kind ?? "self_report", overallScore: row.overall_score,
+      confidence: row.confidence, notes: row.notes, scores: parseJsonValue<VoiceScores>(row.scores_json),
+      feedback: parseJsonValue<VoiceImportedFeedback>(row.feedback_json) });
+  }
+  events.sort(timelineSort);
+  const pageItems = events.slice(0, limit);
+  return { items: pageItems, nextCursor: events.length > limit && pageItems.length > 0 ? encodeTimelineCursor(pageItems[pageItems.length - 1]) : null };
+}
 async function missionResponse(db: D1Database, lessonId: string | null, missionId: string | null): Promise<VoiceMission> {
   if (lessonId) {
     const mission = await missionForLesson(db, lessonId);
@@ -660,6 +762,7 @@ async function apiFetch(request: Request, env: Env): Promise<Response> {
   if (request.method === "GET" && path === "/reviews/due") return jsonResponse(await dueResponse(env.DB, currentProfileId, Number(url.searchParams.get("limit") ?? "15")));
   if (request.method === "GET" && path === "/mistakes") return jsonResponse(await mistakesResponse(env.DB, currentProfileId));
   if (request.method === "GET" && path === "/history") return jsonResponse(await historyResponse(env.DB, currentProfileId, Number(url.searchParams.get("limit") ?? "30")));
+  if (request.method === "GET" && path === "/timeline") return jsonResponse(await timelineResponse(env.DB, currentProfileId, url));
   if (request.method === "GET" && path === "/voice-results") return jsonResponse(await voiceResultsResponse(env.DB, currentProfileId, Number(url.searchParams.get("limit") ?? "30")));
   if (request.method === "GET" && path === "/sessions") {
     const result = await env.DB.prepare("SELECT s.id, s.lesson_id, l.title_ja AS lesson_title, s.mode, s.started_at, s.completed_at, s.duration_ms FROM pl_study_sessions s LEFT JOIN pl_lessons l ON l.id = s.lesson_id WHERE s.profile_id = ? ORDER BY s.started_at DESC LIMIT 100").bind(currentProfileId).all<SessionRow>();

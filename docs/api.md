@@ -27,7 +27,11 @@ Base pathは`/api/v1`です。ローカルではWorkerが`127.0.0.1:8787`で応�
   - `polski-loop.voice-result.v1` JSONを受け取る。
   - `missionId`と`lessonId`、5つの1〜5点、会話証拠、総評、最大3件の長所、最大5件の修正、次の練習を検証する。
   - `resultId`を外部冪等キーとして同じファイルの再読込を重複保存しない。総合点はWorkerが5軸の平均から再計算する。
-- `GET /history`、`GET /mistakes`、`GET /reviews/due`、`GET /sessions` — 学習履歴と復習キュー。`/mistakes`はgrammar/skillタグを集計する。
+- `GET /timeline?type=attempt|session|voice&limit=25&cursor=...`
+  - 回答、学習セッション、Voice結果を共通の`occurredAt`で新しい順に返す。`type`省略時は3種類を統合する。
+  - responseは`{ items, nextCursor }`。`nextCursor`がある間だけ同じ`type`で続きを取得する。`limit`は1〜50。
+  - 履歴画面は読み取り専用で、このAPIによる修正・削除は行わない。
+- `GET /history`、`GET /mistakes`、`GET /reviews/due`、`GET /sessions` — 既存画面・クライアント互換の学習履歴と復習キュー。`/mistakes`はgrammar/skillタグを集計する。
 
 同じprofileで同じidempotency keyを再送した場合、sessionとattemptは既存IDを返します。ChatGPT採点ファイルは`resultId`の再送時に既存結果を返します。
 
