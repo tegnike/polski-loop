@@ -50,16 +50,20 @@ npm run api:smoke
 
 `npm run content:validate` は教材JSON、A1/A2 step、4択正答、cloze/token、ID/参照、mission/Can-do参照、CEFR/register/situation、重複、published件数、ローカルD1実測を検査します。`npm run api:smoke` はA1回帰、A2 lesson/mission、session/attempt/Voice結果のidempotency、Can-do、JSON/CSV exportを検査します。
 
-git pushは、このリポジトリのローカル検証には含めません。
+`master`へのpushはCloudflare Workers Buildsを起動し、`npm test`、typecheck、production buildが成功した場合だけ本番Workerを更新します。
 
 ## Cloudflare本番
 
 本番は`production` environmentを使用し、EU jurisdictionの`polski-loop-prod` D1へ接続します。`https://polski-loop.o3nike-teg-14.workers.dev/`はCloudflare Accessで保護され、許可メールだけがログインできます。Worker APIも`REQUIRE_ACCESS_AUTH=true`でAccess JWTを検証します。
 
-```bash
-npm run db:migrate:remote
-npm run deploy:production
+Cloudflare Workers BuildsはGitHubの`tegnike/polski-loop`と接続済みです。production branchは`master`、preview branch buildは無効です。
+
+```text
+Build command:  npm test && npm run typecheck && npm run build
+Deploy command: npx wrangler deploy --env production
 ```
+
+D1 migrationはpush時に自動適用しません。migrationを追加した場合は、既存データへの影響を確認してから`npm run db:migrate:remote`を明示的に実行します。手元から緊急デプロイする場合のみ`npm run deploy:production`を使用します。
 
 Access applicationは`Polski Loop`、許可ポリシーは`Master only`です。未認証アクセスはAccessログインへリダイレクトされます。
 
