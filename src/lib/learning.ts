@@ -29,6 +29,26 @@ export function suggestedReviewRating(isCorrect: boolean): ReviewRating {
   return isCorrect ? "good" : "again";
 }
 
+export function seededShuffleIndexes(length: number, seed: string): number[] {
+  const values = Array.from({ length }, (_, index) => index);
+  let state = 2166136261;
+  for (const character of seed) {
+    state ^= character.codePointAt(0) ?? 0;
+    state = Math.imul(state, 16777619) >>> 0;
+  }
+  const nextRandom = () => {
+    state ^= state << 13;
+    state ^= state >>> 17;
+    state ^= state << 5;
+    return state >>> 0;
+  };
+  for (let index = values.length - 1; index > 0; index -= 1) {
+    const swap = nextRandom() % (index + 1);
+    [values[index], values[swap]] = [values[swap], values[index]];
+  }
+  return values;
+}
+
 export function gradeTarget(
   answer: string,
   acceptedAnswers: string[],

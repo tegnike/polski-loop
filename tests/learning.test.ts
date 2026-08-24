@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculateNextReview, clozeShape, gradeAnswer, nextDifficulty, normalizeAnswer, removePolishDiacritics, suggestedReviewRating } from "../src/lib/learning";
+import { calculateNextReview, clozeShape, gradeAnswer, nextDifficulty, normalizeAnswer, removePolishDiacritics, seededShuffleIndexes, suggestedReviewRating } from "../src/lib/learning";
 
 describe("answer grading", () => {
   it("normalizes surrounding whitespace and final punctuation", () => {
@@ -18,6 +18,13 @@ describe("answer grading", () => {
 });
 
 describe("review schedule", () => {
+  it("shuffles choices consistently within a session and differently across sessions", () => {
+    const first = seededShuffleIndexes(4, "session-a:options:item-1");
+    expect(first).toEqual(seededShuffleIndexes(4, "session-a:options:item-1"));
+    expect(first).not.toEqual(seededShuffleIndexes(4, "session-b:options:item-1"));
+    expect([...first].sort()).toEqual([0, 1, 2, 3]);
+  });
+
   it("selects a usable default rating after checking an answer", () => {
     expect(suggestedReviewRating(true)).toBe("good");
     expect(suggestedReviewRating(false)).toBe("again");

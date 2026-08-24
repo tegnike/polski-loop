@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../lib/api";
 import { downloadTextFile } from "../lib/download";
-import { formatDueDate, suggestedReviewRating } from "../lib/learning";
+import { formatDueDate, seededShuffleIndexes, suggestedReviewRating } from "../lib/learning";
 import type {
   AttemptResult, DueItem, ExerciseShape, Lesson, LessonStep, PromptDirection, QuestionType, ReviewRating, VoiceMission, VoiceResultImport,
 } from "../lib/types";
@@ -24,17 +24,6 @@ const questionLabels: Record<QuestionType, string> = {
 
 function directionLabel(direction: PromptDirection): string {
   return direction === "polish_to_meaning" ? "ポーランド語 → 意味" : "意味 → ポーランド語";
-}
-
-function shuffleIndexes(length: number, seed: string): number[] {
-  const values = Array.from({ length }, (_, index) => index);
-  let hash = Array.from(seed).reduce((sum, character) => sum + character.charCodeAt(0), 0);
-  for (let index = values.length - 1; index > 0; index -= 1) {
-    hash = (hash * 31 + index) % 997;
-    const swap = hash % (index + 1);
-    [values[index], values[swap]] = [values[swap], values[index]];
-  }
-  return values;
 }
 
 function isLessonStep(value: LessonStep | DueItem): value is LessonStep {
@@ -112,7 +101,11 @@ export default function StudyFlow({ mode, lessonId, onFinished, onBack }: StudyF
   }, [itemKey, exercise?.questionType]);
 
   const shuffledTokenIndexes = useMemo(
-    () => exercise?.questionType === "unscramble" ? shuffleIndexes(exercise.tokens.length, itemKey) : [],
+    () => exercise?.questionType === "unscramble" ? seededShuffleIndexes(exercise.tokens.length, sessionIdempotencyKey.current + ":tokens:" + itemKey) : [],
+    [exercise, itemKey],
+  );
+  const shuffledOptionIndexes = useMemo(
+    () => exercise?.questionType === "multiple_choice" ? seededShuffleIndexes(exercise.options.length, sessionIdempotencyKey.current + ":options:" + itemKey) : [],
     [exercise, itemKey],
   );
 
@@ -247,7 +240,7 @@ export default function StudyFlow({ mode, lessonId, onFinished, onBack }: StudyF
 
         {exercise.questionType === "multiple_choice" && (
           <div className="choice-list" role="group" aria-label={directionLabel(exercise.direction)}>
-            {exercise.options.map((option) => (
+            {shuffledOptionIndexes.map((optionIndex) => exercise.options[optionIndex]).map((option) => (
               <button key={option.value} type="button" className={"choice-option" + (answer === option.value ? " selected" : "")} aria-pressed={answer === option.value} onClick={() => setAnswer(option.value)} disabled={Boolean(result)}>
                 <span className="choice-marker" aria-hidden="true">{answer === option.value ? "✓" : ""}</span><span>{option.label}</span>
               </button>
