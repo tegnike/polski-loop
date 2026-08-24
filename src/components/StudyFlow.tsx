@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../lib/api";
 import { downloadTextFile } from "../lib/download";
 import { formatDueDate, seededShuffleIndexes, suggestedReviewRating } from "../lib/learning";
+import PronunciationButton from "./PronunciationButton";
 import type {
   AttemptResult, DueItem, ExerciseShape, Lesson, LessonStep, PromptDirection, QuestionType, ReviewRating, VoiceMission, VoiceResultImport,
 } from "../lib/types";
@@ -235,15 +236,23 @@ export default function StudyFlow({ mode, lessonId, onFinished, onBack }: StudyF
           <span className="direction-pill">{directionLabel(exercise.direction)}</span>
         </div>
         <p className="study-hint">{mode === "review" ? (currentStep && !isLessonStep(currentStep) ? currentStep.exercise.hintText : "") : "認識 → 足場付き想起 → 自由想起"}</p>
-        <h1 className="study-prompt">{visiblePrompt}</h1>
+        <div className="study-prompt-row">
+          <h1 className="study-prompt">{visiblePrompt}</h1>
+          {exercise.questionType === "multiple_choice" && exercise.direction === "polish_to_meaning" && (
+            <PronunciationButton text={currentItem.polish} className="pronunciation-large" />
+          )}
+        </div>
         {showMeaning && <div className="meaning-box"><span className="meaning-label">日本語</span><span>{currentItem.meaningJa}</span></div>}
 
         {exercise.questionType === "multiple_choice" && (
           <div className="choice-list" role="group" aria-label={directionLabel(exercise.direction)}>
             {shuffledOptionIndexes.map((optionIndex) => exercise.options[optionIndex]).map((option) => (
-              <button key={option.value} type="button" className={"choice-option" + (answer === option.value ? " selected" : "")} aria-pressed={answer === option.value} onClick={() => setAnswer(option.value)} disabled={Boolean(result)}>
-                <span className="choice-marker" aria-hidden="true">{answer === option.value ? "✓" : ""}</span><span>{option.label}</span>
-              </button>
+              <div className="choice-row" key={option.value}>
+                <button type="button" className={"choice-option" + (answer === option.value ? " selected" : "")} aria-pressed={answer === option.value} onClick={() => setAnswer(option.value)} disabled={Boolean(result)}>
+                  <span className="choice-marker" aria-hidden="true">{answer === option.value ? "✓" : ""}</span><span>{option.label}</span>
+                </button>
+                {exercise.direction === "meaning_to_polish" && <PronunciationButton text={option.label} />}
+              </div>
             ))}
           </div>
         )}
@@ -274,7 +283,7 @@ export default function StudyFlow({ mode, lessonId, onFinished, onBack }: StudyF
           <div className={"feedback-panel " + (result.isCorrect ? "correct" : result.verdict === "diacritic_missing" ? "close" : "incorrect")} role="status" aria-live="polite">
             <div className="feedback-title"><span>{result.isCorrect ? "✓" : result.verdict === "diacritic_missing" ? "~" : "!"}</span>{result.isCorrect ? "正解" : result.verdict === "diacritic_missing" ? "惜しい" : "もう一歩"}</div>
             <p>{result.feedback}</p>
-            <div className="answer-reveal"><span>正解</span><strong>{result.expectedAnswer}</strong></div>
+            <div className="answer-reveal"><span>正解</span><div><strong>{result.expectedAnswer}</strong>{targetIsPolish && <PronunciationButton text={currentItem.polish} />}</div></div>
             <p className="difficulty-result">次回の出題: <strong>{result.difficultyLabel}</strong></p>
             <details><summary>文法メモを見る</summary><p>{explanation}</p></details>
             {mode === "review" && (
@@ -306,7 +315,7 @@ function VoiceMissionCard({ mission, completion = false }: { mission: VoiceMissi
     <div className="section-heading"><div><span className="eyebrow">ChatGPT Voice mission</span><h2>{mission.title}</h2></div><span className="mission-level">{mission.difficultyLevel}</span></div>
     <p className="mission-objective">{mission.objective}</p>
     <div className="mission-grid"><div><span>場面</span><strong>{mission.scenario}</strong></div><div><span>あなた</span><strong>{mission.learnerRole}</strong></div><div><span>相手</span><strong>{mission.partnerRole}</strong></div><div><span>終了条件</span><strong>{mission.endingCondition}</strong></div></div>
-    <div className="mission-expression-columns"><div><span className="mission-label">必須表現</span><ul className="mission-expression-list">{mission.requiredExpressions.map((expression) => <li key={expression}>{expression}</li>)}</ul></div><div><span className="mission-label">相手側の表現</span><ul className="mission-expression-list secondary-list">{mission.partnerExpressions.map((expression) => <li key={expression}>{expression}</li>)}</ul></div></div>
+    <div className="mission-expression-columns"><div><span className="mission-label">必須表現</span><ul className="mission-expression-list">{mission.requiredExpressions.map((expression) => <li key={expression}><span>{expression}</span><PronunciationButton text={expression} /></li>)}</ul></div><div><span className="mission-label">相手側の表現</span><ul className="mission-expression-list secondary-list">{mission.partnerExpressions.map((expression) => <li key={expression}><span>{expression}</span><PronunciationButton text={expression} /></li>)}</ul></div></div>
     <details className="mission-prompt-details"><summary>保存される内容を表示</summary><pre className="mission-prompt">{mission.promptText}</pre></details>
     <button className="button ghost full-width" type="button" onClick={() => void downloadMission()}>⇩ ChatGPT Voice用ファイルを保存</button>
     {downloadState && <p className="copy-state" role="status">{downloadState}</p>}

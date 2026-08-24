@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { BottomNav, type AppView } from "./components/BottomNav";
+import PronunciationButton from "./components/PronunciationButton";
 import StudyFlow from "./components/StudyFlow";
 import { api, downloadExport } from "./lib/api";
 import { downloadTextFile } from "./lib/download";
@@ -991,7 +992,10 @@ function LibraryItem({
         <span className="type-pill">{typeLabel[item.type]}</span>
         <span className={"state-pill " + state}>{stateLabel[state]}</span>
       </div>
-      <h2>{item.polish}</h2>
+      <div className="pronounceable-heading">
+        <h2>{item.polish}</h2>
+        <PronunciationButton text={item.polish} />
+      </div>
       <p>{item.meaningJa}</p>
       <span className="english-line">{item.meaningEn}</span>
       <div className="tag-row">

@@ -69,6 +69,8 @@ Access applicationは`Polski Loop`、許可ポリシーは`Master only`です。
 
 ## API
 
+単語・表現の再生ボタンは、初回クリック時にPWA内のeSpeak NG（ポーランド語音声）でWAVを合成します。生成音声はブラウザのCache Storageへ保存され、同じ端末・ブラウザの次回再生では再合成せずに使い回します。音声モデルは初回利用時のみ遅延読み込みされます。ブラウザのサイトデータを消去すると、保存音声も削除されます。
+
 | Method | Path | 用途 |
 | --- | --- | --- |
 | GET | `/api/v1/status?track=A1\|A2` | 選択trackのUnit別進捗、A1+A2総数、次のlesson、復習件数、おすすめ |
