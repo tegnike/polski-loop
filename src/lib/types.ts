@@ -151,6 +151,10 @@ export interface VoiceMission {
 export interface VoiceResult {
   id: string;
   missionId: string;
+  trackCode: TrackCode | null;
+  unitNumber: number | null;
+  lessonId: string | null;
+  lessonTitle: string | null;
   sessionId: string | null;
   heard: boolean;
   replied: boolean;

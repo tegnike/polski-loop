@@ -1201,6 +1201,7 @@ function ProgressView({ status, onOpenHistory }: { status: StatusResponse; onOpe
                       ? `ChatGPT採点 ${result.overallScore?.toFixed(1) ?? "-"}/5`
                       : `自信度 ${result.confidence}/5`}
                   </strong>
+                  <small>{lessonContext(result)}</small>
                   <small>
                     {result.sourceKind === "chatgpt_file"
                       ? "採点ファイルから同期"
@@ -1243,7 +1244,7 @@ function displayDate(value: string): string {
 function displayTime(value: string): string {
   return new Intl.DateTimeFormat("ja-JP", { hour: "2-digit", minute: "2-digit" }).format(new Date(value));
 }
-function lessonContext(event: TimelineEvent): string {
+function lessonContext(event: Pick<TimelineEvent, "trackCode" | "unitNumber" | "lessonTitle">): string {
   const parts = [event.trackCode, event.unitNumber ? `Unit ${event.unitNumber}` : null, event.lessonTitle].filter(Boolean);
   return parts.join(" · ") || "学習記録";
 }

@@ -70,6 +70,7 @@ interface VoiceAttemptRow {
   rephrased: number; confidence: number; notes: string; created_at: string; updated_at: string;
   source_kind: "self_report" | "chatgpt_file"; external_result_id: string | null; schema_version: string | null;
   evaluated_at: string | null; overall_score: number | null; scores_json: string | null; feedback_json: string | null;
+  track_code?: TrackCode | null; unit_number?: number | null; lesson_id?: string | null; lesson_title?: string | null;
 }
 interface TimelineBaseRow {
   id: string; occurred_at: string; track_code: TrackCode | null; unit_number: number | null;
@@ -98,7 +99,8 @@ const CONTENT_VERSION = "a1-a2-2026.1";
 const QUESTION_TYPES: QuestionType[] = ["multiple_choice", "cloze", "unscramble", "free_input"];
 const DIRECTIONS: PromptDirection[] = ["meaning_to_polish", "polish_to_meaning"];
 const RATINGS: ReviewRating[] = ["again", "hard", "good", "easy"];
-const VOICE_RESULT_COLUMNS = "id, mission_id, session_id, heard, replied, asked_back, rephrased, confidence, notes, created_at, updated_at, source_kind, external_result_id, schema_version, evaluated_at, overall_score, scores_json, feedback_json";
+const VOICE_RESULT_WITH_CONTEXT_COLUMNS = "v.id, v.mission_id, v.session_id, v.heard, v.replied, v.asked_back, v.rephrased, v.confidence, v.notes, v.created_at, v.updated_at, v.source_kind, v.external_result_id, v.schema_version, v.evaluated_at, v.overall_score, v.scores_json, v.feedback_json, t.code AS track_code, u.unit_number, m.lesson_id, l.title_ja AS lesson_title";
+const VOICE_RESULT_CONTEXT_JOINS = " FROM pl_voice_attempts v JOIN pl_voice_missions m ON m.id = v.mission_id LEFT JOIN pl_lessons l ON l.id = m.lesson_id LEFT JOIN pl_units u ON u.id = l.unit_id LEFT JOIN pl_tracks t ON t.id = u.track_id";
 const TIMELINE_TYPES: TimelineEventType[] = ["attempt", "session", "voice"];
 
 interface TimelineCursor { occurredAt: string; type: TimelineEventType; id: string; }
@@ -183,7 +185,8 @@ function missionFromRow(row: MissionRow, items: LearningItem[]): VoiceMission {
     promptText: missionPrompt(row, requiredExpressions, partnerExpressions) };
 }
 function voiceResultFromRow(row: VoiceAttemptRow): VoiceResult {
-  return { id: row.id, missionId: row.mission_id, sessionId: row.session_id, heard: row.heard === 1, replied: row.replied === 1,
+  return { id: row.id, missionId: row.mission_id, trackCode: row.track_code ?? null, unitNumber: row.unit_number ?? null,
+    lessonId: row.lesson_id ?? null, lessonTitle: row.lesson_title ?? null, sessionId: row.session_id, heard: row.heard === 1, replied: row.replied === 1,
     askedBack: row.asked_back === 1, needsRestatement: row.rephrased === 1, confidence: Math.max(1, Math.min(5, row.confidence)) as VoiceResult["confidence"],
     notes: row.notes, createdAt: row.created_at, sourceKind: row.source_kind ?? "self_report", externalResultId: row.external_result_id,
     schemaVersion: row.schema_version, evaluatedAt: row.evaluated_at, overallScore: row.overall_score,
@@ -646,7 +649,7 @@ async function missionResponse(db: D1Database, lessonId: string | null, missionI
   return missionFromRow(row, await publishedItems(db));
 }
 async function voiceResultsResponse(db: D1Database, currentProfileId: string, limit: number): Promise<VoiceResult[]> {
-  const result = await db.prepare("SELECT " + VOICE_RESULT_COLUMNS + " FROM pl_voice_attempts WHERE profile_id = ? ORDER BY created_at DESC LIMIT ?").bind(currentProfileId, Math.max(1, Math.min(100, limit))).all<VoiceAttemptRow>();
+  const result = await db.prepare("SELECT " + VOICE_RESULT_WITH_CONTEXT_COLUMNS + VOICE_RESULT_CONTEXT_JOINS + " WHERE v.profile_id = ? ORDER BY v.created_at DESC LIMIT ?").bind(currentProfileId, Math.max(1, Math.min(100, limit))).all<VoiceAttemptRow>();
   return (result.results ?? []).map(voiceResultFromRow);
 }
 async function saveVoiceResult(db: D1Database, currentProfileId: string, request: Request): Promise<VoiceResult> {
@@ -659,7 +662,7 @@ async function saveVoiceResult(db: D1Database, currentProfileId: string, request
   const now = new Date().toISOString();
   await db.prepare("INSERT OR IGNORE INTO pl_voice_attempts (id, idempotency_key, profile_id, mission_id, session_id, heard, replied, asked_back, rephrased, confidence, notes, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
     .bind(id, body.idempotencyKey, currentProfileId, body.missionId, body.sessionId ?? null, body.heard ? 1 : 0, body.replied ? 1 : 0, body.askedBack ? 1 : 0, body.needsRestatement ? 1 : 0, body.confidence, body.notes ?? "", now, now).run();
-  const saved = await db.prepare("SELECT " + VOICE_RESULT_COLUMNS + " FROM pl_voice_attempts WHERE idempotency_key = ? AND profile_id = ?").bind(body.idempotencyKey, currentProfileId).first<VoiceAttemptRow>();
+  const saved = await db.prepare("SELECT " + VOICE_RESULT_WITH_CONTEXT_COLUMNS + VOICE_RESULT_CONTEXT_JOINS + " WHERE v.idempotency_key = ? AND v.profile_id = ?").bind(body.idempotencyKey, currentProfileId).first<VoiceAttemptRow>();
   if (!saved) throw new Error("voice_result_not_saved");
   return voiceResultFromRow(saved);
 }
@@ -677,7 +680,7 @@ async function importVoiceResult(db: D1Database, currentProfileId: string, reque
       body.evidence.understoodPartner ? 1 : 0, body.evidence.respondedToPartner ? 1 : 0, body.evidence.usedRepairStrategy ? 1 : 0,
       body.evidence.neededRestatement ? 1 : 0, Math.max(1, Math.min(5, Math.round(overallScore))), body.summary, now, now,
       body.resultId, body.schemaVersion, body.evaluatedAt, overallScore, JSON.stringify(body.scores), JSON.stringify(feedback), JSON.stringify(body)).run();
-  const saved = await db.prepare("SELECT " + VOICE_RESULT_COLUMNS + " FROM pl_voice_attempts WHERE profile_id = ? AND external_result_id = ?").bind(currentProfileId, body.resultId).first<VoiceAttemptRow>();
+  const saved = await db.prepare("SELECT " + VOICE_RESULT_WITH_CONTEXT_COLUMNS + VOICE_RESULT_CONTEXT_JOINS + " WHERE v.profile_id = ? AND v.external_result_id = ?").bind(currentProfileId, body.resultId).first<VoiceAttemptRow>();
   if (!saved) throw new Error("採点結果を同期できませんでした。");
   return voiceResultFromRow(saved);
 }
