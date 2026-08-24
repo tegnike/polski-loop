@@ -386,6 +386,7 @@ h1, h2, strong { letter-spacing: -.025em; }
 .voice-history-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 9px; padding: 11px 0; border-bottom: 1px solid var(--line); }
 .voice-history-row > div { display: grid; min-width: 0; gap: 2px; }
 .voice-history-row strong { color: var(--teal); font-size: 12px; }
+.voice-lesson-context { margin: 2px 0; color: var(--ink); font-size: 12px; font-weight: 800; }
 .voice-history-row small, .voice-history-row time { color: var(--muted); font-size: 10px; }
 .voice-history-row p { color: var(--ink); font-size: 11px; overflow-wrap: anywhere; }
 .voice-history-row time { flex: 0 0 auto; }

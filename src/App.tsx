@@ -1201,7 +1201,7 @@ function ProgressView({ status, onOpenHistory }: { status: StatusResponse; onOpe
                       ? `ChatGPT採点 ${result.overallScore?.toFixed(1) ?? "-"}/5`
                       : `自信度 ${result.confidence}/5`}
                   </strong>
-                  <small>{lessonContext(result)}</small>
+                  <span className="voice-lesson-context">レッスン：{lessonContext(result)}</span>
                   <small>
                     {result.sourceKind === "chatgpt_file"
                       ? "採点ファイルから同期"
