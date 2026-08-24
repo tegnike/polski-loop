@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculateNextReview, clozeShape, gradeAnswer, nextDifficulty, normalizeAnswer, removePolishDiacritics } from "../src/lib/learning";
+import { calculateNextReview, clozeShape, gradeAnswer, nextDifficulty, normalizeAnswer, removePolishDiacritics, suggestedReviewRating } from "../src/lib/learning";
 
 describe("answer grading", () => {
   it("normalizes surrounding whitespace and final punctuation", () => {
@@ -18,6 +18,11 @@ describe("answer grading", () => {
 });
 
 describe("review schedule", () => {
+  it("selects a usable default rating after checking an answer", () => {
+    expect(suggestedReviewRating(true)).toBe("good");
+    expect(suggestedReviewRating(false)).toBe("again");
+  });
+
   it("moves from recognition to scaffolded and free recall", () => {
     expect(nextDifficulty(null, "good", true)).toBe(1);
     expect(nextDifficulty({ difficultyLevel: 1 }, "good", true)).toBe(2);

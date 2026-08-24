@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../lib/api";
 import { downloadTextFile } from "../lib/download";
-import { formatDueDate } from "../lib/learning";
+import { formatDueDate, suggestedReviewRating } from "../lib/learning";
 import type {
   AttemptResult, DueItem, ExerciseShape, Lesson, LessonStep, PromptDirection, QuestionType, ReviewRating, VoiceMission, VoiceResultImport,
 } from "../lib/types";
@@ -160,6 +160,7 @@ export default function StudyFlow({ mode, lessonId, onFinished, onBack }: StudyF
         autoRate: mode === "lesson",
       });
       setResult(next);
+      if (mode === "review") setReviewRating(suggestedReviewRating(next.isCorrect));
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : "回答を保存できませんでした。");
     } finally {

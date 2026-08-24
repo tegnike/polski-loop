@@ -25,6 +25,10 @@ export function removePolishDiacritics(value: string): string {
   return Array.from(normalizeAnswer(value), (character) => POLISH_DIACRITIC_MAP[character] ?? character).join("");
 }
 
+export function suggestedReviewRating(isCorrect: boolean): ReviewRating {
+  return isCorrect ? "good" : "again";
+}
+
 export function gradeTarget(
   answer: string,
   acceptedAnswers: string[],
