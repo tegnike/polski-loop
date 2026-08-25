@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 256" role="img" aria-labelledby="title desc">
   <title id="title">Polski Loop</title>
-  <desc id="desc">Polski Loop logo with a Polish letter L and a learning loop.</desc>
+  <desc id="desc">Polski Loop logo with the letter P and a continuous learning loop.</desc>
   <g transform="scale(.5)">
     <rect width="512" height="512" rx="128" fill="#123c43"/>
     <circle
@@ -14,9 +14,8 @@
       stroke-dasharray="892 139"
       transform="rotate(-40 256 256)"
     />
-    <circle cx="377" cy="145" r="24" fill="#d85d4f"/>
-    <path d="M238 158v158c0 38 25 58 69 58" fill="none" stroke="#fff9ef" stroke-width="42" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="m196 280 91-55" fill="none" stroke="#fff9ef" stroke-width="34" stroke-linecap="round"/>
+    <circle cx="386" cy="137" r="24" fill="#d85d4f"/>
+    <path d="M215 354V160h55c43 0 66 23 66 59s-23 59-66 59h-55" fill="none" stroke="#fff9ef" stroke-width="42" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
   <text x="312" y="119" fill="#123c43" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="76" font-weight="800" letter-spacing="-3">Polski Loop</text>
   <text x="316" y="171" fill="#6b7b7c" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="26" font-weight="650" letter-spacing="2">LEARN · RECALL · REPEAT</text>

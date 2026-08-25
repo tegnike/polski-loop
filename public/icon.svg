@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
   <title id="title">Polski Loop icon</title>
-  <desc id="desc">A Polish letter L with stroke, surrounded by a learning loop.</desc>
+  <desc id="desc">The letter P, surrounded by a continuous learning loop.</desc>
   <rect width="512" height="512" rx="128" fill="#123c43"/>
   <circle
     cx="256"
@@ -13,20 +13,13 @@
     stroke-dasharray="892 139"
     transform="rotate(-40 256 256)"
   />
-  <circle cx="377" cy="145" r="24" fill="#d85d4f"/>
+  <circle cx="386" cy="137" r="24" fill="#d85d4f"/>
   <path
-    d="M238 158v158c0 38 25 58 69 58"
+    d="M215 354V160h55c43 0 66 23 66 59s-23 59-66 59h-55"
     fill="none"
     stroke="#fff9ef"
     stroke-width="42"
     stroke-linecap="round"
     stroke-linejoin="round"
-  />
-  <path
-    d="m196 280 91-55"
-    fill="none"
-    stroke="#fff9ef"
-    stroke-width="34"
-    stroke-linecap="round"
   />
 </svg>
