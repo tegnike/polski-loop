@@ -12,7 +12,6 @@ import type {
   CanDoUnit,
   DailyProgressActivity,
   DueItem,
-  HistoryEntry,
   LearningItem,
   MistakeSummary,
   QuestionType,
@@ -21,11 +20,11 @@ import type {
   TimelineEvent,
   TimelineFilter,
   TrackCode,
-  VoiceResult,
   VoiceResultImport,
 } from "./lib/types";
 
 type StudyRequest = { mode: "lesson" | "review"; lessonId?: string };
+type ProgressTab = "overview" | "analysis" | "history";
 const noticeFadeDelayMs = 2_500;
 const noticeDismissDelayMs = 3_000;
 
@@ -40,6 +39,7 @@ function App() {
   const [status, setStatus] = useState<StatusResponse | null>(null);
   const [activeTrack, setActiveTrack] = useState<TrackCode>("A1");
   const [view, setView] = useState<AppView>("today");
+  const [progressTab, setProgressTab] = useState<ProgressTab>("overview");
   const [study, setStudy] = useState<StudyRequest | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -233,10 +233,21 @@ function App() {
             onStatusChanged={() => void refreshStatus()}
           />
         )}
-        {view === "progress" && <ProgressView status={status} onOpenHistory={() => setView("history")} />}
-        {view === "history" && <HistoryView onBack={() => setView("progress")} />}
+        {view === "progress" && (
+          <ProgressView
+            status={status}
+            activeTab={progressTab}
+            onTabChange={setProgressTab}
+          />
+        )}
       </main>
-      <AIChat context={buildAppAiContext(status, view, activeTrack)} />
+      <AIChat
+        context={buildAppAiContext(
+          status,
+          view === "progress" && progressTab === "history" ? "history" : view,
+          activeTrack,
+        )}
+      />
       <BottomNav current={view} onChange={setView} />
     </div>
   );
@@ -1060,27 +1071,69 @@ function LibraryItem({
   );
 }
 
-function ProgressView({ status, onOpenHistory }: { status: StatusResponse; onOpenHistory: () => void }) {
-  const [mistakes, setMistakes] = useState<MistakeSummary[]>([]);
-  const [history, setHistory] = useState<HistoryEntry[]>([]);
-  const [voiceResults, setVoiceResults] = useState<VoiceResult[]>([]);
-  useEffect(() => {
-    void Promise.all([api.mistakes(), api.history(12), api.voiceResults(12)])
-      .then(([nextMistakes, nextHistory, nextVoiceResults]) => {
-        setMistakes(nextMistakes);
-        setHistory(nextHistory);
-        setVoiceResults(nextVoiceResults);
-      })
-      .catch(() => undefined);
-  }, []);
+const progressTabs: Array<{ id: ProgressTab; label: string }> = [
+  { id: "overview", label: "概要" },
+  { id: "analysis", label: "分析" },
+  { id: "history", label: "履歴" },
+];
+
+const progressDescriptions: Record<ProgressTab, string> = {
+  overview: "今日の一歩と、直近の学習リズムを確認できます。",
+  analysis: "28日間の積み上げと、誤答から見える苦手を振り返れます。",
+  history: "回答、学習セッション、ChatGPT Voice採点を時系列で遡れます。",
+};
+
+function ProgressView({
+  status,
+  activeTab,
+  onTabChange,
+}: {
+  status: StatusResponse;
+  activeTab: ProgressTab;
+  onTabChange: (tab: ProgressTab) => void;
+}) {
   return (
     <div className="page-stack">
       <section className="page-intro">
         <span className="eyebrow">Your progress</span>
         <h1>進捗</h1>
-        <p>今日の一歩と、続けてきたリズムを自分の記録だけで振り返れます。</p>
+        <p>{progressDescriptions[activeTab]}</p>
       </section>
-      <ProgressMotivation status={status} />
+      <div className="progress-tabs" role="tablist" aria-label="進捗の表示内容">
+        {progressTabs.map((tab) => (
+          <button
+            className={activeTab === tab.id ? "progress-tab active" : "progress-tab"}
+            id={`progress-tab-${tab.id}`}
+            type="button"
+            role="tab"
+            aria-controls="progress-panel"
+            aria-selected={activeTab === tab.id}
+            key={tab.id}
+            onClick={() => onTabChange(tab.id)}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+      <section
+        className="progress-tab-panel"
+        id="progress-panel"
+        role="tabpanel"
+        aria-labelledby={`progress-tab-${activeTab}`}
+        tabIndex={0}
+      >
+        {activeTab === "overview" && <ProgressOverview status={status} />}
+        {activeTab === "analysis" && <ProgressAnalysis status={status} />}
+        {activeTab === "history" && <HistoryView />}
+      </section>
+    </div>
+  );
+}
+
+function ProgressOverview({ status }: { status: StatusResponse }) {
+  return (
+    <>
+      <TodayProgressCard status={status} />
       <section className="metric-grid">
         <Metric
           label="現在の連続"
@@ -1108,61 +1161,21 @@ function ProgressView({ status, onOpenHistory }: { status: StatusResponse; onOpe
           note="復習キュー"
         />
       </section>
-      <section className="curriculum-summary card">
-        <div className="section-heading">
-          <div>
-            <span className="eyebrow">A1 + A2</span>
-            <h2>全体の教材</h2>
-          </div>
-          <strong>{status.curriculum.uniquePublishedItemCount}</strong>
-        </div>
-        <div className="summary-stat-grid">
-          <span>
-            <b>{status.curriculum.unitCount}</b> Units
-          </span>
-          <span>
-            <b>{status.curriculum.lessonCount}</b> lessons
-          </span>
-          <span>
-            <b>{status.curriculum.a1ItemCount}</b> A1 items
-          </span>
-          <span>
-            <b>{status.curriculum.a2ItemCount}</b> A2 items
-          </span>
-        </div>
-      </section>
-      <UnitProgressList
-        units={status.units}
-        level={status.track.code as TrackCode}
-      />
-      <section className="recommendation-card card">
-        <div className="section-heading">
-          <div>
-            <span className="eyebrow">Next actions</span>
-            <h2>次にやること</h2>
-          </div>
-          <span className="muted">おすすめ</span>
-        </div>
-        <div className="recommendation-list">
-          {status.recommendations.slice(0, 4).map((recommendation) => (
-            <div className="recommendation-row" key={recommendation.kind}>
-              <span className="recommendation-kind">
-                {recommendation.kind === "review"
-                  ? "復習"
-                  : recommendation.kind === "voice"
-                    ? "Voice"
-                    : recommendation.kind === "cando"
-                      ? "Can-do"
-                      : "Lesson"}
-              </span>
-              <div>
-                <strong>{recommendation.title}</strong>
-                <small>{recommendation.detail}</small>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      <WeeklyActivityChart status={status} />
+    </>
+  );
+}
+
+function ProgressAnalysis({ status }: { status: StatusResponse }) {
+  const [mistakes, setMistakes] = useState<MistakeSummary[]>([]);
+
+  useEffect(() => {
+    void api.mistakes().then(setMistakes).catch(() => undefined);
+  }, []);
+
+  return (
+    <>
+      <ActivityCalendar status={status} />
       <section className="weakness-section">
         <div className="section-heading">
           <div>
@@ -1184,102 +1197,7 @@ function ProgressView({ status, onOpenHistory }: { status: StatusResponse; onOpe
           </div>
         )}
       </section>
-      <button className="history-entry-card card" type="button" onClick={onOpenHistory}>
-        <span>
-          <span className="eyebrow">All learning activity</span>
-          <strong>すべての学習履歴を見る</strong>
-          <small>回答・セッション・Voice採点を時系列で遡れます</small>
-        </span>
-        <b aria-hidden="true">→</b>
-      </button>
-      <section className="history-section">
-        <div className="section-heading">
-          <div>
-            <span className="eyebrow">Recent attempts</span>
-            <h2>回答履歴</h2>
-          </div>
-          <span className="muted">{history.length}件</span>
-        </div>
-        {history.length === 0 ? (
-          <div className="empty-card compact">
-            <strong>まだ回答履歴はありません</strong>
-          </div>
-        ) : (
-          <div className="history-list">
-            {history.map((entry) => (
-              <div className="history-row" key={entry.id}>
-                <span
-                  className={
-                    "history-verdict " + (entry.isCorrect ? "good" : "bad")
-                  }
-                >
-                  {entry.isCorrect ? "✓" : "!"}
-                </span>
-                <div>
-                  <strong>{entry.polish}</strong>
-                  <small>
-                    {questionLabels[entry.questionType]} ·{" "}
-                    {entry.rating ?? "未評価"} ·{" "}
-                    {entry.difficultyAfter === null
-                      ? ""
-                      : difficultyLabel(entry.difficultyAfter ?? 0)}
-                  </small>
-                </div>
-                <time dateTime={entry.createdAt}>
-                  {formatDuration(entry.elapsedMs)}
-                </time>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
-      <section className="voice-history-section">
-        <div className="section-heading">
-          <div>
-            <span className="eyebrow">ChatGPT Voice</span>
-            <h2>Voice結果履歴</h2>
-          </div>
-          <span className="muted">{voiceResults.length}件</span>
-        </div>
-        {voiceResults.length === 0 ? (
-          <div className="empty-card compact">
-            <strong>まだVoice結果はありません</strong>
-            <p>ChatGPTが作成した採点ファイルを同期すると、ここに結果が表示されます。</p>
-          </div>
-        ) : (
-          <div className="voice-history-list">
-            {voiceResults.map((result) => (
-              <div className="voice-history-row" key={result.id}>
-                <div>
-                  <strong>
-                    {result.sourceKind === "chatgpt_file"
-                      ? `ChatGPT採点 ${result.overallScore?.toFixed(1) ?? "-"}/5`
-                      : `自信度 ${result.confidence}/5`}
-                  </strong>
-                  <span className="voice-lesson-context">レッスン：{lessonContext(result)}</span>
-                  <small>
-                    {result.sourceKind === "chatgpt_file"
-                      ? "採点ファイルから同期"
-                      : `${result.heard ? "聞けた" : "聞き取り要練習"} · ${result.replied ? "返答できた" : "返答要練習"} · ${result.needsRestatement ? "言い直しあり" : "言い直しなし"}`}
-                  </small>
-                  {result.notes && <p>{result.notes}</p>}
-                  {result.feedback?.nextStep && (
-                    <p className="voice-next-step">
-                      次: {result.feedback.nextStep}
-                    </p>
-                  )}
-                </div>
-                <time dateTime={result.evaluatedAt ?? result.createdAt}>
-                  {new Date(
-                    result.evaluatedAt ?? result.createdAt,
-                  ).toLocaleDateString("ja-JP")}
-                </time>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
-    </div>
+    </>
   );
 }
 
@@ -1308,19 +1226,112 @@ function progressActivityText(day: DailyProgressActivity): string {
   return `${progressDateLabel(day.date, true)}：${day.minutes}分、回答 ${day.attempts}問${accuracy}、Voice ${day.voiceResults}件`;
 }
 
-function ProgressMotivation({ status }: { status: StatusResponse }) {
+const emptyProgressDay: DailyProgressActivity = {
+  date: "",
+  completedSessions: 0,
+  lessonSessions: 0,
+  reviewSessions: 0,
+  minutes: 0,
+  attempts: 0,
+  correctAttempts: 0,
+  voiceResults: 0,
+};
+
+function TodayProgressCard({ status }: { status: StatusResponse }) {
   const activity = status.progress.dailyActivity;
-  const today = activity.at(-1) ?? {
-    date: "",
-    completedSessions: 0,
-    lessonSessions: 0,
-    reviewSessions: 0,
-    minutes: 0,
-    attempts: 0,
-    correctAttempts: 0,
-    voiceResults: 0,
-  };
-  const recentWeek = activity.slice(-7);
+  const today = activity.at(-1) ?? emptyProgressDay;
+  const todayAccuracy = today.attempts
+    ? Math.round((today.correctAttempts / today.attempts) * 100)
+    : null;
+  const todayActive = isActiveProgressDay(today);
+
+  return (
+    <section className={`today-progress card${todayActive ? " active" : ""}`}>
+      <div className="today-progress-heading">
+        <div>
+          <span className="eyebrow">Today</span>
+          <h2>{todayActive ? "今日も積み上がっています" : "今日はここから"}</h2>
+          <p>
+            {todayActive
+              ? today.completedSessions > 0
+                ? `${today.completedSessions}セッションの学習を記録しました。`
+                : "回答またはVoiceの学習記録が残っています。"
+              : "1問でも始めれば、今日のマスに色がつきます。"}
+          </p>
+        </div>
+        <span className="today-check" aria-hidden="true">
+          {todayActive ? "✓" : "○"}
+        </span>
+      </div>
+      <div className="today-stat-grid">
+        <span>
+          <strong>{today.minutes}</strong>
+          <small>分</small>
+          <b>学習時間</b>
+        </span>
+        <span>
+          <strong>{today.attempts}</strong>
+          <small>問</small>
+          <b>回答</b>
+        </span>
+        <span>
+          <strong>{todayAccuracy ?? "—"}</strong>
+          <small>{todayAccuracy === null ? "" : "%"}</small>
+          <b>正答率</b>
+        </span>
+      </div>
+    </section>
+  );
+}
+
+function WeeklyActivityChart({ status }: { status: StatusResponse }) {
+  const recentWeek = status.progress.dailyActivity.slice(-7);
+  const maxMinutes = Math.max(1, ...recentWeek.map((day) => day.minutes));
+
+  return (
+    <section className="activity-chart card" aria-labelledby="week-chart-title">
+      <div className="section-heading">
+        <div>
+          <span className="eyebrow">Last 7 days</span>
+          <h2 id="week-chart-title">毎日の学習時間</h2>
+        </div>
+        <strong>{recentWeek.reduce((sum, day) => sum + day.minutes, 0)}分</strong>
+      </div>
+      <div className="week-bars" role="group" aria-label="直近7日間の学習時間グラフ">
+        {recentWeek.map((day) => {
+          const activeWithoutMinutes = isActiveProgressDay(day) && day.minutes === 0;
+          const height = day.minutes
+            ? Math.max(10, Math.round((day.minutes / maxMinutes) * 100))
+            : activeWithoutMinutes
+              ? 6
+              : 2;
+          return (
+            <div className="week-bar-column" key={day.date}>
+              <span className="week-bar-value">
+                {day.minutes ? day.minutes : activeWithoutMinutes ? "•" : ""}
+              </span>
+              <button
+                className={`week-bar${isActiveProgressDay(day) ? " active" : ""}`}
+                type="button"
+                aria-label={progressActivityText(day)}
+              >
+                <span style={{ height: height + "%" }} />
+                <span className="chart-tooltip" role="tooltip">
+                  {progressActivityText(day)}
+                </span>
+              </button>
+              <small>{progressWeekdayLabel(day.date)}</small>
+            </div>
+          );
+        })}
+      </div>
+      <p className="chart-note">棒に触れると、その日の回答数や正答数も確認できます。</p>
+    </section>
+  );
+}
+
+function ActivityCalendar({ status }: { status: StatusResponse }) {
+  const activity = status.progress.dailyActivity;
   const activeDays = activity.filter(isActiveProgressDay).length;
   const totalMinutes = activity.reduce((sum, day) => sum + day.minutes, 0);
   const totalAttempts = activity.reduce((sum, day) => sum + day.attempts, 0);
@@ -1328,10 +1339,6 @@ function ProgressMotivation({ status }: { status: StatusResponse }) {
     (sum, day) => sum + day.correctAttempts,
     0,
   );
-  const todayAccuracy = today.attempts
-    ? Math.round((today.correctAttempts / today.attempts) * 100)
-    : null;
-  const maxMinutes = Math.max(1, ...recentWeek.map((day) => day.minutes));
   const maxActivityScore = Math.max(
     1,
     ...activity.map(
@@ -1342,137 +1349,59 @@ function ProgressMotivation({ status }: { status: StatusResponse }) {
         day.voiceResults * 5,
     ),
   );
-  const todayActive = isActiveProgressDay(today);
 
   return (
-    <div className="progress-motivation">
-      <section className={`today-progress card${todayActive ? " active" : ""}`}>
-        <div className="today-progress-heading">
-          <div>
-            <span className="eyebrow">Today</span>
-            <h2>{todayActive ? "今日も積み上がっています" : "今日はここから"}</h2>
-            <p>
-              {todayActive
-                ? today.completedSessions > 0
-                  ? `${today.completedSessions}セッションの学習を記録しました。`
-                  : "回答またはVoiceの学習記録が残っています。"
-                : "1問でも始めれば、今日のマスに色がつきます。"}
-            </p>
-          </div>
-          <span className="today-check" aria-hidden="true">
-            {todayActive ? "✓" : "○"}
-          </span>
+    <section className="activity-calendar card" aria-labelledby="activity-calendar-title">
+      <div className="section-heading">
+        <div>
+          <span className="eyebrow">Last 28 days</span>
+          <h2 id="activity-calendar-title">学習リズム</h2>
         </div>
-        <div className="today-stat-grid">
-          <span>
-            <strong>{today.minutes}</strong>
-            <small>分</small>
-            <b>学習時間</b>
-          </span>
-          <span>
-            <strong>{today.attempts}</strong>
-            <small>問</small>
-            <b>回答</b>
-          </span>
-          <span>
-            <strong>{todayAccuracy ?? "—"}</strong>
-            <small>{todayAccuracy === null ? "" : "%"}</small>
-            <b>正答率</b>
-          </span>
-        </div>
-      </section>
-
-      <section className="activity-chart card" aria-labelledby="week-chart-title">
-        <div className="section-heading">
-          <div>
-            <span className="eyebrow">Last 7 days</span>
-            <h2 id="week-chart-title">毎日の学習時間</h2>
-          </div>
-          <strong>{recentWeek.reduce((sum, day) => sum + day.minutes, 0)}分</strong>
-        </div>
-        <div className="week-bars" role="group" aria-label="直近7日間の学習時間グラフ">
-          {recentWeek.map((day) => {
-            const activeWithoutMinutes = isActiveProgressDay(day) && day.minutes === 0;
-            const height = day.minutes
-              ? Math.max(10, Math.round((day.minutes / maxMinutes) * 100))
-              : activeWithoutMinutes
-                ? 6
-                : 2;
-            return (
-              <div className="week-bar-column" key={day.date}>
-                <span className="week-bar-value">
-                  {day.minutes ? day.minutes : activeWithoutMinutes ? "•" : ""}
-                </span>
-                <button
-                  className={`week-bar${isActiveProgressDay(day) ? " active" : ""}`}
-                  type="button"
-                  aria-label={progressActivityText(day)}
-                >
-                  <span style={{ height: height + "%" }} />
-                  <span className="chart-tooltip" role="tooltip">
-                    {progressActivityText(day)}
-                  </span>
-                </button>
-                <small>{progressWeekdayLabel(day.date)}</small>
-              </div>
-            );
-          })}
-        </div>
-        <p className="chart-note">棒に触れると、その日の回答数や正答数も確認できます。</p>
-      </section>
-
-      <section className="activity-calendar card" aria-labelledby="activity-calendar-title">
-        <div className="section-heading">
-          <div>
-            <span className="eyebrow">Last 28 days</span>
-            <h2 id="activity-calendar-title">学習リズム</h2>
-          </div>
-          <strong>{activeDays}日</strong>
-        </div>
-        <div className="calendar-summary">
-          <span><b>{totalMinutes}</b>分</span>
-          <span><b>{totalAttempts}</b>問</span>
-          <span>
-            <b>{totalAttempts ? Math.round((totalCorrect / totalAttempts) * 100) : "—"}</b>
-            {totalAttempts ? "% 正答" : " 正答率"}
-          </span>
-        </div>
-        <div className="activity-weekdays" aria-hidden="true">
-          {activity.slice(0, 7).map((day) => (
-            <span key={day.date}>{progressWeekdayLabel(day.date)}</span>
-          ))}
-        </div>
-        <div className="activity-grid" aria-label="直近28日間の学習記録">
-          {activity.map((day) => {
-            const score =
-              day.minutes +
-              day.attempts +
-              day.completedSessions * 3 +
-              day.voiceResults * 5;
-            const level = score === 0
-              ? 0
-              : Math.max(1, Math.ceil((score / maxActivityScore) * 4));
-            return (
-              <button
-                className={`activity-cell level-${level}`}
-                type="button"
-                key={day.date}
-                aria-label={progressActivityText(day)}
-              >
-                <span className="chart-tooltip" role="tooltip">
-                  {progressActivityText(day)}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-        <div className="calendar-caption">
-          <span>{progressDateLabel(activity[0]?.date ?? "")}</span>
-          <span>濃いほど、その日の学習量が多い</span>
-          <span>今日</span>
-        </div>
-      </section>
-    </div>
+        <strong>{activeDays}日</strong>
+      </div>
+      <div className="calendar-summary">
+        <span><b>{totalMinutes}</b>分</span>
+        <span><b>{totalAttempts}</b>問</span>
+        <span>
+          <b>{totalAttempts ? Math.round((totalCorrect / totalAttempts) * 100) : "—"}</b>
+          {totalAttempts ? "% 正答" : " 正答率"}
+        </span>
+      </div>
+      <div className="activity-weekdays" aria-hidden="true">
+        {activity.slice(0, 7).map((day) => (
+          <span key={day.date}>{progressWeekdayLabel(day.date)}</span>
+        ))}
+      </div>
+      <div className="activity-grid" aria-label="直近28日間の学習記録">
+        {activity.map((day) => {
+          const score =
+            day.minutes +
+            day.attempts +
+            day.completedSessions * 3 +
+            day.voiceResults * 5;
+          const level = score === 0
+            ? 0
+            : Math.max(1, Math.ceil((score / maxActivityScore) * 4));
+          return (
+            <button
+              className={`activity-cell level-${level}`}
+              type="button"
+              key={day.date}
+              aria-label={progressActivityText(day)}
+            >
+              <span className="chart-tooltip" role="tooltip">
+                {progressActivityText(day)}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      <div className="calendar-caption">
+        <span>{progressDateLabel(activity[0]?.date ?? "")}</span>
+        <span>濃いほど、その日の学習量が多い</span>
+        <span>今日</span>
+      </div>
+    </section>
   );
 }
 
@@ -1497,7 +1426,7 @@ function lessonContext(event: Pick<TimelineEvent, "trackCode" | "unitNumber" | "
   return parts.join(" · ") || "学習記録";
 }
 
-function HistoryView({ onBack }: { onBack: () => void }) {
+function HistoryView() {
   const [filter, setFilter] = useState<TimelineFilter>("all");
   const [items, setItems] = useState<TimelineEvent[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
@@ -1539,13 +1468,8 @@ function HistoryView({ onBack }: { onBack: () => void }) {
 
   let previousDate = "";
   return (
-    <div className="page-stack history-page">
-      <section className="page-intro history-page-intro">
-        <button className="plain-button history-back" type="button" onClick={onBack}>← 進捗へ戻る</button>
-        <span className="eyebrow">Learning history</span>
-        <h1>学習履歴</h1>
-        <p>回答、学習セッション、ChatGPT Voice採点を新しい順に表示します。</p>
-      </section>
+    <div className="history-page progress-history">
+      <h2 className="visually-hidden">学習履歴</h2>
       <div className="filter-row history-filters" role="tablist" aria-label="履歴の種類">
         {timelineFilters.map((entry) => (
           <button className={filter === entry.id ? "filter active" : "filter"} type="button" role="tab"
