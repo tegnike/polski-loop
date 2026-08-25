@@ -8,9 +8,14 @@ import {
 const PRONUNCIATION_CACHE = "polski-loop-pronunciation-v2";
 const ENGINE_VERSION = "google-chirp3-hd-v1";
 
-let audioContext: AudioContext | null = null;
-let activeSource: AudioBufferSourceNode | null = null;
 let persistenceRequested = false;
+
+interface ActivePlayback {
+  audio: HTMLAudioElement;
+  finish: (error?: Error) => void;
+}
+
+let activePlayback: ActivePlayback | null = null;
 
 export interface PronunciationAudio {
   blob: Blob;
@@ -54,8 +59,6 @@ function requestPersistentStorage(): void {
 
 export function preparePronunciationPlayback(): void {
   requestPersistentStorage();
-  if (!audioContext) audioContext = new AudioContext();
-  if (audioContext.state === "suspended") void audioContext.resume();
 }
 
 export async function getPronunciationAudio(text: string, genderHint: SpeakerGender = "any"): Promise<PronunciationAudio> {
@@ -83,19 +86,34 @@ export async function getPronunciationAudio(text: string, genderHint: SpeakerGen
 
 export async function playPronunciation(blob: Blob): Promise<void> {
   preparePronunciationPlayback();
-  if (!audioContext) throw new Error("音声を再生できません。");
 
-  const buffer = await audioContext.decodeAudioData(await blob.arrayBuffer());
-  activeSource?.stop();
-  const source = audioContext.createBufferSource();
-  source.buffer = buffer;
-  source.connect(audioContext.destination);
-  activeSource = source;
-  await new Promise<void>((resolve) => {
-    source.addEventListener("ended", () => {
-      if (activeSource === source) activeSource = null;
-      resolve();
-    }, { once: true });
-    source.start();
+  activePlayback?.finish();
+  const objectUrl = URL.createObjectURL(blob);
+  const audio = new Audio(objectUrl);
+  audio.preload = "auto";
+  audio.volume = 1;
+
+  await new Promise<void>((resolve, reject) => {
+    let settled = false;
+    const finish = (error?: Error) => {
+      if (settled) return;
+      settled = true;
+      audio.removeEventListener("ended", onEnded);
+      audio.removeEventListener("error", onError);
+      audio.pause();
+      audio.removeAttribute("src");
+      audio.load();
+      URL.revokeObjectURL(objectUrl);
+      if (activePlayback?.audio === audio) activePlayback = null;
+      if (error) reject(error);
+      else resolve();
+    };
+    const onEnded = () => finish();
+    const onError = () => finish(new Error("音声を再生できませんでした。"));
+
+    audio.addEventListener("ended", onEnded, { once: true });
+    audio.addEventListener("error", onError, { once: true });
+    activePlayback = { audio, finish };
+    void audio.play().catch(() => finish(new Error("音声を再生できませんでした。")));
   });
 }
