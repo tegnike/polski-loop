@@ -3,4 +3,7 @@ dist/
 .wrangler/
 tmp/
 *.local
+.env
+.env.*
+!.env.example
 .DS_Store

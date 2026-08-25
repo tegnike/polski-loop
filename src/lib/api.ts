@@ -1,4 +1,6 @@
 import type {
+  AiChatRequest,
+  AiChatResponse,
   AttemptResult,
   DueItem,
   HistoryEntry,
@@ -36,6 +38,11 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
+  aiChat: (payload: AiChatRequest, signal?: AbortSignal) => request<AiChatResponse>("/ai/chat", {
+    method: "POST",
+    body: JSON.stringify(payload),
+    signal,
+  }),
   status: (track: TrackCode = "A1") => request<StatusResponse>(`/status?track=${track}`),
   lesson: (lessonId: string) => request<Lesson>(`/lessons/${encodeURIComponent(lessonId)}`),
   mission: (lessonId: string) => request<VoiceMission>(`/missions?lessonId=${encodeURIComponent(lessonId)}`),

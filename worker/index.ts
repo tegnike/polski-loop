@@ -9,6 +9,7 @@ import {
   ratingFromVerdict,
 } from "../src/lib/learning";
 import { buildMissionPrompt } from "../src/lib/mission";
+import { buildAiTutorInstructions, extractOpenAiResponseText, validateAiChatRequest } from "../src/lib/ai-chat";
 import { validateVoiceResultImport, VOICE_SCORE_KEYS } from "../src/lib/voice-result";
 import { normalizePronunciationText, selectPolishVoice, type SpeakerGender } from "../src/lib/pronunciation-config";
 import type {
@@ -27,6 +28,9 @@ interface Env {
   ACCESS_TEAM_DOMAIN?: string;
   ACCESS_AUDIENCE?: string;
   GOOGLE_TTS_API_KEY?: string;
+  OPENAI_API_KEY?: string;
+  OPENAI_MODEL?: string;
+  OPENAI_REASONING_EFFORT?: string;
 }
 interface ProfileRow { id: string; display_name: string; study_timezone: string; daily_new_limit: number; daily_review_limit: number; }
 interface TrackRow { id: string; code: TrackCode; title: string; cefr: string; content_version: string; }
@@ -122,6 +126,44 @@ function timelineSort(left: TimelineEvent, right: TimelineEvent): number {
 }
 
 function profileId(env: Env): string { return env.PROFILE_ID || PROFILE_FALLBACK; }
+
+async function privacySafeIdentifier(value: string): Promise<string> {
+  return sha256(`ai-chat:${value}`);
+}
+
+async function aiChatResponse(env: Env, currentProfileId: string, request: Request): Promise<Response> {
+  if (!env.OPENAI_API_KEY) throw new Error("openai_not_configured");
+  const payload = validateAiChatRequest(await readJson<unknown>(request));
+  const model = env.OPENAI_MODEL || "gpt-5.6-luna";
+  const allowedEfforts = ["none", "low", "medium", "high", "xhigh", "max"];
+  const effort = allowedEfforts.includes(env.OPENAI_REASONING_EFFORT || "") ? env.OPENAI_REASONING_EFFORT : "medium";
+  const response = await fetch("https://api.openai.com/v1/responses", {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${env.OPENAI_API_KEY}`,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      model,
+      instructions: buildAiTutorInstructions(payload.context),
+      input: payload.messages,
+      reasoning: { effort, context: "current_turn" },
+      text: { verbosity: "low" },
+      max_output_tokens: 2_000,
+      store: false,
+      safety_identifier: await privacySafeIdentifier(currentProfileId),
+    }),
+  });
+  if (!response.ok) {
+    if (response.status === 401 || response.status === 403) throw new Error("openai_auth_error");
+    if (response.status === 429) throw new Error("openai_rate_limit");
+    throw new Error("openai_provider_error");
+  }
+  const result: unknown = await response.json();
+  const message = extractOpenAiResponseText(result);
+  if (!message) throw new Error("openai_empty_response");
+  return jsonResponse({ message, model });
+}
 function jsonResponse(data: unknown, init: ResponseInit = {}): Response {
   const headers = new Headers(init.headers);
   headers.set("content-type", "application/json; charset=utf-8");
@@ -816,6 +858,7 @@ async function apiFetch(request: Request, env: Env, ctx: ExecutionContext): Prom
     const requestedTrack: TrackCode = url.searchParams.get("track") === "A2" ? "A2" : "A1";
     return jsonResponse(await statusResponse(env.DB, currentProfileId, requestedTrack));
   }
+  if (request.method === "POST" && path === "/ai/chat") return aiChatResponse(env, currentProfileId, request);
   if (request.method === "POST" && path === "/pronunciations") return pronunciationResponse(env, request, ctx);
   if (request.method === "GET" && path.startsWith("/lessons/")) return jsonResponse(await lessonResponse(env.DB, path.slice("/lessons/".length)));
   if (request.method === "GET" && path === "/missions") return jsonResponse(await missionResponse(env.DB, url.searchParams.get("lessonId"), url.searchParams.get("missionId")));
@@ -895,6 +938,10 @@ export default {
       if (message === "lesson_not_found" || message === "lesson_step_not_found" || message === "learning_item_not_found" || message === "attempt_not_found" || message === "mission_not_found" || message === "unit_not_found" || message === "cando_not_found") return errorResponse(404, "指定された教材、mission、Can-do、または履歴が見つかりません。");
       if (message === "tts_not_configured") return errorResponse(503, "音声サービスが設定されていません。");
       if (message === "tts_provider_error") return errorResponse(502, "音声サービスから音声を取得できませんでした。");
+      if (message === "openai_not_configured") return errorResponse(503, "AI会話が設定されていません。");
+      if (message === "openai_auth_error") return errorResponse(502, "OpenAI APIキーを確認してください。");
+      if (message === "openai_rate_limit") return errorResponse(429, "AIが混み合っているか、利用上限に達しました。少し待ってからお試しください。");
+      if (message === "openai_provider_error" || message === "openai_empty_response") return errorResponse(502, "AIから回答を取得できませんでした。もう一度お試しください。");
       return errorResponse(400, message);
     }
   },

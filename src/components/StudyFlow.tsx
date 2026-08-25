@@ -2,9 +2,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../lib/api";
 import { downloadTextFile } from "../lib/download";
 import { formatDueDate, seededShuffleIndexes, suggestedReviewRating } from "../lib/learning";
+import AIChat from "./AIChat";
 import PronunciationButton from "./PronunciationButton";
 import type {
-  AttemptResult, DueItem, ExerciseShape, Lesson, LessonStep, PromptDirection, QuestionType, ReviewRating, VoiceMission, VoiceResultImport,
+  AiPageContext, AttemptResult, DueItem, ExerciseShape, Lesson, LessonStep, PromptDirection, QuestionType, ReviewRating, VoiceMission, VoiceResultImport,
 } from "../lib/types";
 
 interface StudyFlowProps {
@@ -90,6 +91,45 @@ export default function StudyFlow({ mode, lessonId, onFinished, onBack }: StudyF
   const progress = total > 0 ? ((index + (result ? 1 : 0)) / total) * 100 : 0;
   const isLast = index >= total - 1;
   const itemKey = currentItem && exercise ? currentItem.id + ":" + exercise.questionType + ":" + index : "empty";
+  const aiContextLines = [
+    `学習種別: ${mode === "review" ? "復習" : "レッスン"}`,
+    `レッスン: ${lesson?.titleJa ?? (mode === "review" ? "復習キュー" : "")}`,
+    `進捗: ${index + 1} / ${total}`,
+  ];
+  if (currentItem && exercise) {
+    aiContextLines.push(
+      `問題形式: ${questionLabels[exercise.questionType]}`,
+      `出題方向: ${directionLabel(exercise.direction)}`,
+      `問題: ${prompt}`,
+      `学習表現: ${currentItem.polish}`,
+      `日本語の意味: ${currentItem.meaningJa}`,
+      `英語の意味: ${currentItem.meaningEn}`,
+      `文法メモ: ${explanation || currentItem.grammarNote}`,
+      `場面: ${currentItem.situation ?? "未指定"}`,
+      `文体: ${currentItem.register ?? "neutral"}`,
+    );
+    if (exercise.hintText) aiContextLines.push(`ヒント: ${exercise.hintText}`);
+    if (exercise.options.length) aiContextLines.push(`選択肢: ${exercise.options.map((option) => option.label).join(" / ")}`);
+    if (exercise.tokens.length) aiContextLines.push(`並べ替え語: ${exercise.tokens.join(" / ")}`);
+    if (exercise.questionType === "cloze") aiContextLines.push(`穴埋め文: ${exercise.clozePrefix} _____ ${exercise.clozeSuffix}`);
+    if (answer) aiContextLines.push(`利用者の入力中または送信済み回答: ${answer}`);
+    if (result) aiContextLines.push(`判定: ${result.verdict}`, `正解: ${result.expectedAnswer}`, `フィードバック: ${result.feedback}`);
+  }
+  if (lesson?.mission) {
+    aiContextLines.push(
+      `Voice mission: ${lesson.mission.title}`,
+      `ロールプレイ場面: ${lesson.mission.scenario}`,
+      `学習者の役割: ${lesson.mission.learnerRole}`,
+      `相手の役割: ${lesson.mission.partnerRole}`,
+      `必須表現: ${lesson.mission.requiredExpressions.join(" / ")}`,
+      `相手側の表現: ${lesson.mission.partnerExpressions.join(" / ")}`,
+    );
+  }
+  const aiContext: AiPageContext = {
+    key: `study:${mode}:${sessionId ?? sessionIdempotencyKey.current}:${itemKey}`,
+    label: mode === "review" ? `復習 ${index + 1}/${total}` : `${lesson?.titleJa ?? "レッスン"} ${index + 1}/${total}`,
+    content: aiContextLines.join("\n"),
+  };
 
   useEffect(() => {
     setAnswer("");
@@ -196,7 +236,7 @@ export default function StudyFlow({ mode, lessonId, onFinished, onBack }: StudyF
 
   if (loading) return <div className="screen-state"><span className="loader" />教材を準備しています…</div>;
   if (error) return <div className="screen-state"><p className="error-text">{error}</p><button className="button secondary" type="button" onClick={onBack}>戻る</button></div>;
-  if (completed) return <VoiceCompletion mission={lesson?.mission ?? null} onFinished={onFinished} />;
+  if (completed) return <VoiceCompletion mission={lesson?.mission ?? null} onFinished={onFinished} sessionId={sessionId} />;
   if (!currentItem || !exercise || total === 0) {
     return (
       <div className="screen-state empty-state">
@@ -296,6 +336,7 @@ export default function StudyFlow({ mode, lessonId, onFinished, onBack }: StudyF
         )}
       </main>
       <p className="study-footer-note">回答と所要時間は、あなたの学習履歴として保存されます。</p>
+      <AIChat context={aiContext} withBottomNav={false} />
     </div>
   );
 }
@@ -322,7 +363,7 @@ function VoiceMissionCard({ mission, completion = false }: { mission: VoiceMissi
   </section>;
 }
 
-function VoiceCompletion({ mission, onFinished }: { mission: VoiceMission | null; onFinished: () => void }) {
+function VoiceCompletion({ mission, onFinished, sessionId }: { mission: VoiceMission | null; onFinished: () => void; sessionId: string | null }) {
   const [importing, setImporting] = useState(false);
   const [importedScore, setImportedScore] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -342,6 +383,14 @@ function VoiceCompletion({ mission, onFinished }: { mission: VoiceMission | null
     }
   }
 
-  if (!mission) return <div className="screen-state completion-state"><span className="empty-icon">✓</span><h2>学習を完了しました</h2><p>回答履歴を保存しました。次は復習キューで思い出してみましょう。</p><button className="button primary" type="button" onClick={onFinished}>今日へ戻る</button></div>;
-  return <div className="study-shell completion-shell"><header className="study-header"><button className="icon-button" type="button" onClick={onFinished} aria-label="今日へ戻る">←</button><div className="study-heading"><span>レッスン完了</span><strong>ChatGPT Voice</strong></div><span className="study-time">{mission.difficultyLevel}</span></header><main className="study-card-area completion-area"><div className="completion-heading"><span className="empty-icon">✓</span><div><span className="eyebrow">Lesson complete</span><h1>会話につなげる</h1></div></div><p className="completion-intro">Voice会話後にChatGPTへ採点ファイルの作成を指示し、ここから同期できます。あとでホームから同期しても構いません。</p><VoiceMissionCard mission={mission} completion /><section className="voice-sync-card" aria-label="ChatGPT採点ファイルの同期"><div className="section-heading"><div><span className="eyebrow">ChatGPT score</span><h2>採点結果を同期</h2></div>{importedScore !== null && <span className="saved-pill">同期済み</span>}</div><p>ChatGPTが作成したJSONファイルを選択してください。採点と改善点が進捗へ保存されます。</p>{error && <p className="error-text" role="alert">{error}</p>}{importedScore !== null && <p className="voice-import-success" role="status">総合 {importedScore.toFixed(1)}/5 を同期しました。</p>}<div className="voice-result-actions">{importedScore === null && <label className={"button primary full-width upload-button" + (importing ? " disabled" : "")} aria-disabled={importing}>{importing ? "同期中…" : "⇧ ChatGPT採点ファイルを同期"}<input type="file" accept=".json,application/json" disabled={importing} onChange={(event) => { const file = event.currentTarget.files?.[0]; event.currentTarget.value = ""; if (file) void importResult(file); }} /></label>}<button className="button secondary full-width" type="button" onClick={onFinished}>{importedScore === null ? "あとで同期して今日へ戻る" : "今日へ戻る"}</button></div></section></main></div>;
+  if (!mission) {
+    const reviewCompletionContext: AiPageContext = { key: `completion:${sessionId ?? "review"}`, label: "復習完了", content: "画面: 復習完了\n回答履歴を保存済み\n次の行動: 今日の画面へ戻る" };
+    return <div className="screen-state completion-state"><span className="empty-icon">✓</span><h2>学習を完了しました</h2><p>回答履歴を保存しました。次は復習キューで思い出してみましょう。</p><button className="button primary" type="button" onClick={onFinished}>今日へ戻る</button><AIChat context={reviewCompletionContext} withBottomNav={false} /></div>;
+  }
+  const completionContext: AiPageContext = {
+    key: `completion:${sessionId ?? mission.id}`,
+    label: `${mission.title} 完了`,
+    content: [`画面: レッスン完了`, `難易度: ${mission.difficultyLevel}`, `mission: ${mission.title}`, `場面: ${mission.scenario}`, `学習者の役割: ${mission.learnerRole}`, `相手の役割: ${mission.partnerRole}`, `必須表現: ${mission.requiredExpressions.join(" / ")}`, `相手側の表現: ${mission.partnerExpressions.join(" / ")}`, `終了条件: ${mission.endingCondition}`].join("\n"),
+  };
+  return <div className="study-shell completion-shell"><header className="study-header"><button className="icon-button" type="button" onClick={onFinished} aria-label="今日へ戻る">←</button><div className="study-heading"><span>レッスン完了</span><strong>ChatGPT Voice</strong></div><span className="study-time">{mission.difficultyLevel}</span></header><main className="study-card-area completion-area"><div className="completion-heading"><span className="empty-icon">✓</span><div><span className="eyebrow">Lesson complete</span><h1>会話につなげる</h1></div></div><p className="completion-intro">Voice会話後にChatGPTへ採点ファイルの作成を指示し、ここから同期できます。あとでホームから同期しても構いません。</p><VoiceMissionCard mission={mission} completion /><section className="voice-sync-card" aria-label="ChatGPT採点ファイルの同期"><div className="section-heading"><div><span className="eyebrow">ChatGPT score</span><h2>採点結果を同期</h2></div>{importedScore !== null && <span className="saved-pill">同期済み</span>}</div><p>ChatGPTが作成したJSONファイルを選択してください。採点と改善点が進捗へ保存されます。</p>{error && <p className="error-text" role="alert">{error}</p>}{importedScore !== null && <p className="voice-import-success" role="status">総合 {importedScore.toFixed(1)}/5 を同期しました。</p>}<div className="voice-result-actions">{importedScore === null && <label className={"button primary full-width upload-button" + (importing ? " disabled" : "")} aria-disabled={importing}>{importing ? "同期中…" : "⇧ ChatGPT採点ファイルを同期"}<input type="file" accept=".json,application/json" disabled={importing} onChange={(event) => { const file = event.currentTarget.files?.[0]; event.currentTarget.value = ""; if (file) void importResult(file); }} /></label>}<button className="button secondary full-width" type="button" onClick={onFinished}>{importedScore === null ? "あとで同期して今日へ戻る" : "今日へ戻る"}</button></div></section></main><AIChat context={completionContext} withBottomNav={false} /></div>;
 }

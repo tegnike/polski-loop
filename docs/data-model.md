@@ -20,6 +20,8 @@ A2のlearner itemは男性話者想定、partner itemは典型的な質問・返
 - `pl_cando_progress` — profileごとのCan-do状態、自己評価、証拠メモ。
 - `pl_chatgpt_prompts` — ChatGPT Voice用promptファイルの保存履歴と任意のmission参照。
 
+アプリ内AI会話にはtableを追加しない。画面コンテキストと会話履歴はブラウザ内の一時状態で、画面移動、次の問題、会話終了、再読み込み時に破棄する。各リクエストは同一セッションの全会話をWorkerへ送り、WorkerもD1へ保存しない。
+
 全履歴画面では新しい保存用tableを増やさず、`pl_attempts`、`pl_study_sessions`、`pl_voice_attempts`をprofileで絞り、日時とIDをcursorにして読み取り専用の統合タイムラインへ変換する。元データの修正・削除は行わない。
 
 ## Migration境界

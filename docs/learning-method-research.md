@@ -16,7 +16,7 @@ Polski Loopは、初心者がいきなり全文を自由入力する構成をや
 
 ### CEFR A1の生活場面カリキュラム
 
-Council of EuropeのCEFR Companion Volumeは、言語活動を受容・産出・相互作用・媒介の記述子で整理し、A1を含む能力段階を定義している。Polski Loopでは会話機能そのものをアプリへ内蔵せず、A1の日常場面を固定教材として段階練習し、会話の実践はChatGPT Voiceへ渡す設計にした。
+Council of EuropeのCEFR Companion Volumeは、言語活動を受容・産出・相互作用・媒介の記述子で整理し、A1を含む能力段階を定義している。Polski LoopではA1/A2の日常場面を固定教材として段階練習し、テキストの質問・自由会話・ロールプレイは画面コンテキストに限定した一時AI会話、音声会話の実践はChatGPT Voiceへ渡す設計にした。
 
 - 公式資料: https://www.coe.int/en/web/common-european-framework-reference-languages/cefr-companion-volume-and-its-language-versions
 
@@ -28,7 +28,7 @@ A2は公的な試験合格を約束するコースではなく、ポーランド
 
 - ポーランド政府公式資料: https://www.gov.pl/web/udsc/materialy-dydaktyczne-do-nauki-jezyka-polskiego3
 
-各lessonにはChatGPT Voice role-play missionを付け、役割、場面、必須表現、相手側表現、難易度、終了条件、フィードバック形式をPC・スマホで扱えるUTF-8の`.txt` promptとして保存できるようにする。共有形式はこの詳細版だけとし、ホームとlessonで同じmissionを使う。冒頭にはユーザーがポーランド語の学習者であることを明示する。会話はChatGPT Voiceで実施し、ユーザーから指示された場合だけ、課題達成・理解・応答正確性・必須表現・対話流暢性の5軸を1〜5点で採点したversioned JSONを生成する。アプリはそのJSONを検証してD1へ同期し、手動のVoice自己評価は求めない。
+各lessonにはChatGPT Voice role-play missionを付け、役割、場面、必須表現、相手側表現、難易度、終了条件、フィードバック形式をPC・スマホで扱えるUTF-8の`.txt` promptとして保存できるようにする。共有形式はこの詳細版だけとし、ホームとlessonで同じmissionを使う。冒頭にはユーザーがポーランド語の学習者であることを明示する。音声会話はChatGPT Voiceで実施し、ユーザーから指示された場合だけ、課題達成・理解・応答正確性・必須表現・対話流暢性の5軸を1〜5点で採点したversioned JSONを生成する。アプリはそのJSONを検証してD1へ同期し、手動のVoice自己評価は求めない。
 
 ### 検索練習（retrieval practice）
 
@@ -54,7 +54,7 @@ Yanagisawaは、第二言語語彙学習における受容的・産出的な検�
 
 ## 採用しなかったこと
 
-- 会話・音声認識・読み上げは、今回の調査対象の学習ループに混ぜず、設計どおりChatGPT Voice連携用プロンプトだけを維持する。
+- 音声認識・音声会話・発音採点は学習ループに混ぜず、ChatGPT Voice連携用プロンプトを維持する。テキストのAI会話は学習成績を変更せず、画面単位の一時セッションとして分離する。
 - LLMの無制限な自動教材生成は、A1の順序・正答・誤判定を再現できないため、版付きの独自JSONとD1 migrationを正本にする。
 - 難易度を抽象的な「レベル」だけで変更せず、問題形式・出題方向・評価・次回日時を履歴として残す。
 

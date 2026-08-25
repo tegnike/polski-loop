@@ -2,7 +2,7 @@
 
 スマートフォン優先の個人用ポーランド語学習PWAです。既存A1をID・履歴ごと保持したまま、ポーランド在住者が軽い日常会話を目指す生活特化A2を追加しています。教材・回答・誤答・復習予定はローカルD1へ保存します。
 
-会話、音声認識、発音採点はChatGPT Voiceへ任せます。教材のポーランド語読み上げにはGoogle Cloud Text-to-SpeechのChirp 3 HDを使用し、ChatGPTが返す採点ファイルはPolski Loopへ記録します。
+全画面からGPT-5.6 Lunaへ質問、添削、自由会話、テキストのロールプレイができます。AI会話は質問開始時の画面コンテキストと、その場の全会話だけを使う一時セッションです。画面移動、次の問題、会話を閉じる操作で破棄され、D1へ保存しません。音声認識、音声会話、発音採点はChatGPT Voiceへ任せます。教材のポーランド語読み上げにはGoogle Cloud Text-to-SpeechのChirp 3 HDを使用し、ChatGPTが返す採点ファイルはPolski Loopへ記録します。
 
 ## 実装範囲
 
@@ -17,6 +17,7 @@
 - mission末尾に5軸1〜5点の採点基準と`polski-loop.voice-result.v1` JSON仕様を含める。ChatGPTが生成した採点JSONはレッスン完了画面またはホームから読み込み、mission照合・入力検証・重複排除後にD1へ同期
 - レッスン完了後は「ChatGPT採点ファイルを同期」「あとで同期」の2択。手動のVoice自己評価フォームは表示しない
 - Unit単位のCan-do checklist。教材完了率、想起成績、ChatGPT Voice採点を分けて表示
+- 現在の画面・問題・回答・解説を固定コンテキストとして渡す一時AI会話。GPT-5.6 Luna、reasoning effort `medium`、OpenAI Responses APIをWorker側から使用
 - 今日、復習、辞書、進捗、A1/A2 Units、Can-do、mission、結果、履歴、検索、exportを375px幅のPWAで到達可能
 - Cloudflare Worker + D1、ローカルAccessバイパス、設定時のAccess JWT検証境界、キーボード操作・focus・`aria-live`
 
@@ -29,6 +30,8 @@ Node.js 22以上を想定します。
 ```bash
 cd /Users/user/WorkSpace/polish-learning-app
 npm install
+cp .env.example .env
+# .envのOPENAI_API_KEY=の後ろへOpenAI APIキーを設定
 npm run db:migrate
 npm run content:validate
 npm run dev
@@ -67,6 +70,12 @@ D1 migrationはpush時に自動適用しません。migrationを追加した場�
 
 Access applicationは`Polski Loop`、許可ポリシーは`Master only`です。未認証アクセスはAccessログインへリダイレクトされます。
 
+OpenAI APIキーはリポジトリへ保存せず、production Worker Secretへ登録します。
+
+```bash
+npx wrangler secret put OPENAI_API_KEY --env production
+```
+
 ## API
 
 単語・表現の再生ボタンは、初回クリック時にWorker経由でGoogle Cloud Text-to-Speechのポーランド語Chirp 3 HD音声をMP3合成します。教材の`speakerGender`を優先し、男性・女性それぞれの音声プールから文字列に応じて安定選択します。性別不明の表現は強い一人称語尾だけを自動判定し、それ以外は全音声へ分散します。生成音声はCloudflareのCache APIとブラウザのCache Storageへ保存され、同じ文字列・性別・音声では再合成しません。
@@ -92,6 +101,7 @@ Access applicationは`Polski Loop`、許可ポリシーは`Master only`です。
 | POST | `/api/v1/cando` | Can-do状態・自己評価・証拠メモの保存 |
 | POST | `/api/v1/prompts` | ChatGPT用プロンプトファイルの保存履歴 |
 | POST | `/api/v1/voice-results/import` | ChatGPT採点JSONを検証して冪等同期 |
+| POST | `/api/v1/ai/chat` | 固定画面コンテキストと一時会話履歴からLunaの回答を生成（保存なし） |
 | POST | `/api/v1/items` | `draft`教材候補の登録 |
 | POST | `/api/v1/content/import` | 版付き`draft`教材候補の投入 |
 
@@ -120,7 +130,7 @@ docs/data-model.md                  D1の教材・履歴・Voice・Can-doモデ�
 docs/content-editing.md             教材編集・生成・検証手順
 ```
 
-利用者データは`profile_id`へ紐づき、教材版は`content_version`で追跡します。回答・セッション・Voice結果の再送はidempotency keyで同じ記録へ戻し、`pl_review_events`に復習評価と難易度遷移を残します。会話と音声はChatGPT Voice、Polski Loopは教材と採点結果の同期を担当します。
+利用者データは`profile_id`へ紐づき、教材版は`content_version`で追跡します。回答・セッション・Voice結果の再送はidempotency keyで同じ記録へ戻し、`pl_review_events`に復習評価と難易度遷移を残します。テキストのAI会話は一時的に扱い、音声会話はChatGPT Voice、Polski Loopは教材と採点結果の同期を担当します。
 
 ## 外部に残る範囲
 

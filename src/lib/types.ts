@@ -9,6 +9,29 @@ export type CanDoStatus = "not_started" | "practicing" | "self_assessed" | "evid
 export type ItemSkill = "listening" | "spoken_interaction" | "spoken_production";
 export type ItemRegister = "formal" | "informal" | "neutral";
 
+export type AiChatRole = "user" | "assistant";
+
+export interface AiChatMessage {
+  role: AiChatRole;
+  content: string;
+}
+
+export interface AiPageContext {
+  key: string;
+  label: string;
+  content: string;
+}
+
+export interface AiChatRequest {
+  context: AiPageContext;
+  messages: AiChatMessage[];
+}
+
+export interface AiChatResponse {
+  message: string;
+  model: string;
+}
+
 export interface ChoiceOption {
   value: string;
   label: string;

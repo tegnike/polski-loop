@@ -23,7 +23,7 @@ Base pathは`/api/v1`です。ローカルではWorkerが`127.0.0.1:8787`で応�
   - `steps`をstep番号順に返す。各stepは問題形式、方向、options、tokens、cloze、item metadataを含む。
   - `mission`にはVoice role-playの全情報と`promptText`を含む。
 - `GET /missions?lessonId=:lessonId` または `GET /missions?missionId=:missionId`
-  - `.txt`ファイルとして保存可能なVoice missionと、各表現の読み上げ用話者性別を返す。会話・音声認識・発音採点はアプリ内では行わない。
+  - `.txt`ファイルとして保存可能なVoice missionと、各表現の読み上げ用話者性別を返す。音声会話・音声認識・発音採点はアプリ内では行わない。
 - `GET /cando?unitId=:unitId`
   - Unitの3 Can-do、状態、自己評価、証拠メモ、教材完了、想起正答率、Voice自信度を返す。
 
@@ -42,6 +42,14 @@ Base pathは`/api/v1`です。ローカルではWorkerが`127.0.0.1:8787`で応�
   - responseは`{ items, nextCursor }`。`nextCursor`がある間だけ同じ`type`で続きを取得する。`limit`は1〜50。
   - 履歴画面は読み取り専用で、このAPIによる修正・削除は行わない。
 - `GET /history`、`GET /mistakes`、`GET /reviews/due`、`GET /sessions` — 既存画面・クライアント互換の学習履歴と復習キュー。`/mistakes`はgrammar/skillタグを集計する。
+
+## In-app AI conversation
+
+- `POST /ai/chat` — `{ context: { key, label, content }, messages: [{ role, content }] }`
+  - `context`は最初の質問時点の画面・問題情報。1セッション中は固定する。
+  - `messages`は利用者から始まり、user/assistantが交互に並ぶセッション内の全会話。D1へ保存しない。
+  - GPT-5.6 LunaのResponses APIを`reasoning.effort=medium`、`store=false`でWorkerから呼び出す。APIキーをブラウザへ返さない。
+  - 最大40メッセージ、1メッセージ8,000文字、会話合計60,000文字。上限時は切り捨てず、新しい会話を案内する。
 
 同じprofileで同じidempotency keyを再送した場合、sessionとattemptは既存IDを返します。ChatGPT採点ファイルは`resultId`の再送時に既存結果を返します。
 

@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { BottomNav, type AppView } from "./components/BottomNav";
+import AIChat from "./components/AIChat";
 import PronunciationButton from "./components/PronunciationButton";
 import StudyFlow from "./components/StudyFlow";
 import { api, downloadExport } from "./lib/api";
+import { buildAppAiContext } from "./lib/ai-context";
 import { downloadTextFile } from "./lib/download";
 import { difficultyLabel, formatDueDate, formatDuration } from "./lib/learning";
 import type {
@@ -227,6 +229,7 @@ function App() {
         {view === "progress" && <ProgressView status={status} onOpenHistory={() => setView("history")} />}
         {view === "history" && <HistoryView onBack={() => setView("progress")} />}
       </main>
+      <AIChat context={buildAppAiContext(status, view, activeTrack)} />
       <BottomNav current={view} onChange={setView} />
     </div>
   );
@@ -263,9 +266,9 @@ function SettingsMenu({
         </span>
       </div>
       <div className="menu-note">
-        <strong>会話の分業</strong>
+        <strong>AIとの会話</strong>
         <span>
-          会話と音声はChatGPT Voiceへ。Polski Loopは教材と記録を担当します。
+          「AIに聞く」から質問やテキストのロールプレイができます。音声会話はChatGPT Voiceを使います。
         </span>
       </div>
     </div>
