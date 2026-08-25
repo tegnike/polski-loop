@@ -15,6 +15,10 @@ describe("answer grading", () => {
   it("does not accept a different phrase", () => {
     expect(gradeAnswer("Przepraszam", ["Dziękuję"])).toEqual({ verdict: "incorrect", isCorrect: false });
   });
+
+  it("treats a blank answer as incorrect", () => {
+    expect(gradeAnswer("", ["Dziękuję"])).toEqual({ verdict: "incorrect", isCorrect: false });
+  });
 });
 
 describe("review schedule", () => {

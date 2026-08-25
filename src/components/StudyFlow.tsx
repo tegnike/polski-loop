@@ -177,13 +177,13 @@ export default function StudyFlow({ mode, lessonId, onFinished, onBack }: StudyF
   }
 
   async function submitAnswer() {
-    if (!currentItem || !exercise || !sessionId || !answer.trim() || saving) return;
+    if (!currentItem || !exercise || !sessionId || saving) return;
     setSaving(true);
     setError(null);
     try {
       const next = await api.attempt({
         itemId: currentItem.id,
-        answer,
+        answer: answer.trim(),
         idempotencyKey: sessionId + ":" + currentItem.id + ":" + index,
         sessionId,
         lessonId,
@@ -318,7 +318,7 @@ export default function StudyFlow({ mode, lessonId, onFinished, onBack }: StudyF
         )}
 
         {!result ? (
-          <button className="button primary full-width" type="button" onClick={() => void submitAnswer()} disabled={!answer.trim() || saving}>{saving ? "保存中…" : "回答を確認"}</button>
+          <button className="button primary full-width" type="button" onClick={() => void submitAnswer()} disabled={saving}>{saving ? "保存中…" : "回答を確認"}</button>
         ) : (
           <div className={"feedback-panel " + (result.isCorrect ? "correct" : result.verdict === "diacritic_missing" ? "close" : "incorrect")} role="status" aria-live="polite">
             <div className="feedback-title"><span>{result.isCorrect ? "✓" : result.verdict === "diacritic_missing" ? "~" : "!"}</span>{result.isCorrect ? "正解" : result.verdict === "diacritic_missing" ? "惜しい" : "もう一歩"}</div>
