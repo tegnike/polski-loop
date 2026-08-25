@@ -134,7 +134,7 @@ function App() {
   if (loading)
     return (
       <div className="app-loading">
-        <div className="brand-mark small">PL</div>
+        <img className="brand-mark small" src="/icon.svg" alt="" />
         <span className="loader" />
         読み込み中…
       </div>
@@ -142,7 +142,7 @@ function App() {
   if (error || !status)
     return (
       <div className="app-loading error-screen">
-        <div className="brand-mark">PL</div>
+        <img className="brand-mark" src="/icon.svg" alt="" />
         <h1>Polski Loop</h1>
         <p className="error-text">
           {error ?? "データを取得できませんでした。"}
@@ -167,7 +167,7 @@ function App() {
     <div className="app-shell">
       <header className="app-header">
         <div className="brand-lockup">
-          <div className="brand-mark">PL</div>
+          <img className="brand-mark" src="/icon.svg" alt="" />
           <div>
             <strong>Polski Loop</strong>
             <span>A1 / A2 · 段階的な想起ループ</span>
