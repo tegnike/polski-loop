@@ -1,6 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { api } from "../lib/api";
+import {
+  appendSpeechTranscript,
+  getSpeechRecognitionConstructor,
+  SPEECH_INPUT_LANGUAGES,
+  speechRecognitionErrorMessage,
+  transcriptFromResults,
+  type SpeechInputLanguage,
+  type SpeechRecognitionLike,
+} from "../lib/speech-recognition";
 import type { AiChatMessage, AiPageContext } from "../lib/types";
 
 interface AIChatProps {
@@ -15,12 +24,32 @@ export default function AIChat({ context, withBottomNav = true }: AIChatProps) {
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [speechLanguage, setSpeechLanguage] = useState<SpeechInputLanguage>("ja-JP");
+  const [listening, setListening] = useState(false);
+  const [speechError, setSpeechError] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messageEndRef = useRef<HTMLDivElement>(null);
   const generationRef = useRef(0);
   const requestAbortRef = useRef<AbortController | null>(null);
+  const speechRecognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  const speechBaseDraftRef = useRef("");
+  const speechSupported = getSpeechRecognitionConstructor() !== null;
+
+  function cancelSpeechRecognition() {
+    const recognition = speechRecognitionRef.current;
+    speechRecognitionRef.current = null;
+    if (recognition) {
+      recognition.onstart = null;
+      recognition.onresult = null;
+      recognition.onerror = null;
+      recognition.onend = null;
+      recognition.abort();
+    }
+    setListening(false);
+  }
 
   function resetSession() {
+    cancelSpeechRecognition();
     requestAbortRef.current?.abort();
     requestAbortRef.current = null;
     generationRef.current += 1;
@@ -30,6 +59,7 @@ export default function AIChat({ context, withBottomNav = true }: AIChatProps) {
     setDraft("");
     setSending(false);
     setError(null);
+    setSpeechError(null);
   }
 
   useEffect(() => {
@@ -45,6 +75,16 @@ export default function AIChat({ context, withBottomNav = true }: AIChatProps) {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [open]);
+
+  useEffect(() => () => {
+    const recognition = speechRecognitionRef.current;
+    if (!recognition) return;
+    recognition.onstart = null;
+    recognition.onresult = null;
+    recognition.onerror = null;
+    recognition.onend = null;
+    recognition.abort();
+  }, []);
 
   useEffect(() => {
     if (open) messageEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -81,6 +121,56 @@ export default function AIChat({ context, withBottomNav = true }: AIChatProps) {
     }
   }
 
+  function toggleSpeechRecognition() {
+    if (listening) {
+      try {
+        speechRecognitionRef.current?.stop();
+      } catch {
+        cancelSpeechRecognition();
+      }
+      return;
+    }
+
+    const Recognition = getSpeechRecognitionConstructor();
+    if (!Recognition || sending) return;
+
+    const recognition = new Recognition();
+    speechRecognitionRef.current = recognition;
+    speechBaseDraftRef.current = draft;
+    recognition.lang = speechLanguage;
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+    recognition.onstart = () => {
+      if (speechRecognitionRef.current !== recognition) return;
+      setListening(true);
+      setSpeechError(null);
+    };
+    recognition.onresult = (event) => {
+      if (speechRecognitionRef.current !== recognition) return;
+      setDraft(appendSpeechTranscript(speechBaseDraftRef.current, transcriptFromResults(event)));
+    };
+    recognition.onerror = (event) => {
+      if (speechRecognitionRef.current !== recognition) return;
+      setSpeechError(speechRecognitionErrorMessage(event.error));
+    };
+    recognition.onend = () => {
+      if (speechRecognitionRef.current !== recognition) return;
+      speechRecognitionRef.current = null;
+      setListening(false);
+      requestAnimationFrame(() => textareaRef.current?.focus());
+    };
+
+    try {
+      setListening(true);
+      recognition.start();
+    } catch {
+      speechRecognitionRef.current = null;
+      setListening(false);
+      setSpeechError("音声入力を開始できませんでした。少し待ってからもう一度お試しください。");
+    }
+  }
+
   return (
     <>
       <button className={`ai-chat-launcher${withBottomNav ? " above-nav" : ""}`} type="button" onClick={() => setOpen(true)} aria-haspopup="dialog" aria-expanded={open} aria-controls="ai-chat-panel">
@@ -102,9 +192,21 @@ export default function AIChat({ context, withBottomNav = true }: AIChatProps) {
             </div>
             <div className="ai-chat-composer">
               {error && <p className="ai-chat-error" role="alert">{error}</p>}
-              <div>
-                <textarea ref={textareaRef} value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); void sendMessage(); } }} placeholder="質問や会話を入力…" rows={2} maxLength={8_000} disabled={sending} />
-                <button type="button" onClick={() => void sendMessage()} disabled={!draft.trim() || sending} aria-label="送信">↑</button>
+              {speechError && <p className="ai-chat-error" role="alert">{speechError}</p>}
+              {speechSupported && (
+                <div className="ai-chat-speech-settings">
+                  <label>音声
+                    <select value={speechLanguage} onChange={(event) => setSpeechLanguage(event.target.value as SpeechInputLanguage)} disabled={sending || listening} aria-label="音声入力の言語">
+                      {SPEECH_INPUT_LANGUAGES.map((language) => <option key={language.value} value={language.value}>{language.label}</option>)}
+                    </select>
+                  </label>
+                  <span role="status">{listening ? "聞き取り中…話し終えたら停止" : "ブラウザの音声認識で文字に変換"}</span>
+                </div>
+              )}
+              <div className={`ai-chat-composer-main${speechSupported ? " has-speech" : ""}`}>
+                <textarea ref={textareaRef} value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); void sendMessage(); } }} placeholder="質問や会話を入力…" rows={2} maxLength={8_000} disabled={sending || listening} />
+                {speechSupported && <button className={`ai-chat-mic${listening ? " listening" : ""}`} type="button" onClick={toggleSpeechRecognition} disabled={sending} aria-label={listening ? "音声入力を停止" : "音声入力を開始"} aria-pressed={listening}>{listening ? <span aria-hidden="true">■</span> : <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="12" rx="4" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6" /></svg>}</button>}
+                <button className="ai-chat-send" type="button" onClick={() => void sendMessage()} disabled={!draft.trim() || sending || listening} aria-label="送信">↑</button>
               </div>
             </div>
           </section>
