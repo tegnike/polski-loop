@@ -7,8 +7,10 @@ import { api, downloadExport } from "./lib/api";
 import { buildAppAiContext } from "./lib/ai-context";
 import { downloadTextFile } from "./lib/download";
 import { difficultyLabel, formatDueDate, formatDuration } from "./lib/learning";
+import { isActiveProgressDay, longestActivityStreak } from "./lib/progress";
 import type {
   CanDoUnit,
+  DailyProgressActivity,
   DueItem,
   HistoryEntry,
   LearningItem,
@@ -1076,18 +1078,24 @@ function ProgressView({ status, onOpenHistory }: { status: StatusResponse; onOpe
       <section className="page-intro">
         <span className="eyebrow">Your progress</span>
         <h1>進捗</h1>
-        <p>教材完了率、想起成績、ChatGPT Voiceの採点結果を別々に確認できます。</p>
+        <p>今日の一歩と、続けてきたリズムを自分の記録だけで振り返れます。</p>
       </section>
+      <ProgressMotivation status={status} />
       <section className="metric-grid">
         <Metric
-          label="今週の学習日"
-          value={status.progress.studyDaysThisWeek + "日"}
-          note={"連続 " + status.progress.streakDays + "日"}
+          label="現在の連続"
+          value={status.progress.streakDays + "日"}
+          note="学習記録"
         />
         <Metric
-          label="今週の時間"
-          value={status.progress.minutesThisWeek + "分"}
-          note="学習セッション"
+          label="28日中"
+          value={
+            status.progress.dailyActivity.filter(isActiveProgressDay).length +
+            "日"
+          }
+          note={
+            "最長 " + longestActivityStreak(status.progress.dailyActivity) + "日"
+          }
         />
         <Metric
           label="定着した項目"
@@ -1270,6 +1278,199 @@ function ProgressView({ status, onOpenHistory }: { status: StatusResponse; onOpe
             ))}
           </div>
         )}
+      </section>
+    </div>
+  );
+}
+
+function progressDateLabel(date: string, weekday = false): string {
+  const [year, month, day] = date.split("-").map(Number);
+  return new Intl.DateTimeFormat("ja-JP", {
+    month: "numeric",
+    day: "numeric",
+    ...(weekday ? { weekday: "short" as const } : {}),
+    timeZone: "UTC",
+  }).format(new Date(Date.UTC(year, month - 1, day, 12)));
+}
+
+function progressWeekdayLabel(date: string): string {
+  const [year, month, day] = date.split("-").map(Number);
+  return new Intl.DateTimeFormat("ja-JP", {
+    weekday: "narrow",
+    timeZone: "UTC",
+  }).format(new Date(Date.UTC(year, month - 1, day, 12)));
+}
+
+function progressActivityText(day: DailyProgressActivity): string {
+  const accuracy = day.attempts
+    ? `、正答 ${day.correctAttempts}/${day.attempts}`
+    : "";
+  return `${progressDateLabel(day.date, true)}：${day.minutes}分、回答 ${day.attempts}問${accuracy}、Voice ${day.voiceResults}件`;
+}
+
+function ProgressMotivation({ status }: { status: StatusResponse }) {
+  const activity = status.progress.dailyActivity;
+  const today = activity.at(-1) ?? {
+    date: "",
+    completedSessions: 0,
+    lessonSessions: 0,
+    reviewSessions: 0,
+    minutes: 0,
+    attempts: 0,
+    correctAttempts: 0,
+    voiceResults: 0,
+  };
+  const recentWeek = activity.slice(-7);
+  const activeDays = activity.filter(isActiveProgressDay).length;
+  const totalMinutes = activity.reduce((sum, day) => sum + day.minutes, 0);
+  const totalAttempts = activity.reduce((sum, day) => sum + day.attempts, 0);
+  const totalCorrect = activity.reduce(
+    (sum, day) => sum + day.correctAttempts,
+    0,
+  );
+  const todayAccuracy = today.attempts
+    ? Math.round((today.correctAttempts / today.attempts) * 100)
+    : null;
+  const maxMinutes = Math.max(1, ...recentWeek.map((day) => day.minutes));
+  const maxActivityScore = Math.max(
+    1,
+    ...activity.map(
+      (day) =>
+        day.minutes +
+        day.attempts +
+        day.completedSessions * 3 +
+        day.voiceResults * 5,
+    ),
+  );
+  const todayActive = isActiveProgressDay(today);
+
+  return (
+    <div className="progress-motivation">
+      <section className={`today-progress card${todayActive ? " active" : ""}`}>
+        <div className="today-progress-heading">
+          <div>
+            <span className="eyebrow">Today</span>
+            <h2>{todayActive ? "今日も積み上がっています" : "今日はここから"}</h2>
+            <p>
+              {todayActive
+                ? today.completedSessions > 0
+                  ? `${today.completedSessions}セッションの学習を記録しました。`
+                  : "回答またはVoiceの学習記録が残っています。"
+                : "1問でも始めれば、今日のマスに色がつきます。"}
+            </p>
+          </div>
+          <span className="today-check" aria-hidden="true">
+            {todayActive ? "✓" : "○"}
+          </span>
+        </div>
+        <div className="today-stat-grid">
+          <span>
+            <strong>{today.minutes}</strong>
+            <small>分</small>
+            <b>学習時間</b>
+          </span>
+          <span>
+            <strong>{today.attempts}</strong>
+            <small>問</small>
+            <b>回答</b>
+          </span>
+          <span>
+            <strong>{todayAccuracy ?? "—"}</strong>
+            <small>{todayAccuracy === null ? "" : "%"}</small>
+            <b>正答率</b>
+          </span>
+        </div>
+      </section>
+
+      <section className="activity-chart card" aria-labelledby="week-chart-title">
+        <div className="section-heading">
+          <div>
+            <span className="eyebrow">Last 7 days</span>
+            <h2 id="week-chart-title">毎日の学習時間</h2>
+          </div>
+          <strong>{recentWeek.reduce((sum, day) => sum + day.minutes, 0)}分</strong>
+        </div>
+        <div className="week-bars" role="group" aria-label="直近7日間の学習時間グラフ">
+          {recentWeek.map((day) => {
+            const activeWithoutMinutes = isActiveProgressDay(day) && day.minutes === 0;
+            const height = day.minutes
+              ? Math.max(10, Math.round((day.minutes / maxMinutes) * 100))
+              : activeWithoutMinutes
+                ? 6
+                : 2;
+            return (
+              <div className="week-bar-column" key={day.date}>
+                <span className="week-bar-value">
+                  {day.minutes ? day.minutes : activeWithoutMinutes ? "•" : ""}
+                </span>
+                <button
+                  className={`week-bar${isActiveProgressDay(day) ? " active" : ""}`}
+                  type="button"
+                  aria-label={progressActivityText(day)}
+                >
+                  <span style={{ height: height + "%" }} />
+                  <span className="chart-tooltip" role="tooltip">
+                    {progressActivityText(day)}
+                  </span>
+                </button>
+                <small>{progressWeekdayLabel(day.date)}</small>
+              </div>
+            );
+          })}
+        </div>
+        <p className="chart-note">棒に触れると、その日の回答数や正答数も確認できます。</p>
+      </section>
+
+      <section className="activity-calendar card" aria-labelledby="activity-calendar-title">
+        <div className="section-heading">
+          <div>
+            <span className="eyebrow">Last 28 days</span>
+            <h2 id="activity-calendar-title">学習リズム</h2>
+          </div>
+          <strong>{activeDays}日</strong>
+        </div>
+        <div className="calendar-summary">
+          <span><b>{totalMinutes}</b>分</span>
+          <span><b>{totalAttempts}</b>問</span>
+          <span>
+            <b>{totalAttempts ? Math.round((totalCorrect / totalAttempts) * 100) : "—"}</b>
+            {totalAttempts ? "% 正答" : " 正答率"}
+          </span>
+        </div>
+        <div className="activity-weekdays" aria-hidden="true">
+          {activity.slice(0, 7).map((day) => (
+            <span key={day.date}>{progressWeekdayLabel(day.date)}</span>
+          ))}
+        </div>
+        <div className="activity-grid" aria-label="直近28日間の学習記録">
+          {activity.map((day) => {
+            const score =
+              day.minutes +
+              day.attempts +
+              day.completedSessions * 3 +
+              day.voiceResults * 5;
+            const level = score === 0
+              ? 0
+              : Math.max(1, Math.ceil((score / maxActivityScore) * 4));
+            return (
+              <button
+                className={`activity-cell level-${level}`}
+                type="button"
+                key={day.date}
+                aria-label={progressActivityText(day)}
+              >
+                <span className="chart-tooltip" role="tooltip">
+                  {progressActivityText(day)}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+        <div className="calendar-caption">
+          <span>{progressDateLabel(activity[0]?.date ?? "")}</span>
+          <span>濃いほど、その日の学習量が多い</span>
+          <span>今日</span>
+        </div>
       </section>
     </div>
   );

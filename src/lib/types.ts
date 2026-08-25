@@ -265,6 +265,17 @@ export interface Recommendation {
   missionId?: string;
 }
 
+export interface DailyProgressActivity {
+  date: string;
+  completedSessions: number;
+  lessonSessions: number;
+  reviewSessions: number;
+  minutes: number;
+  attempts: number;
+  correctAttempts: number;
+  voiceResults: number;
+}
+
 export interface StatusResponse {
   profile: {
     id: string;
@@ -290,6 +301,7 @@ export interface StatusResponse {
     streakDays: number;
     studyDaysThisWeek: number;
     minutesThisWeek: number;
+    dailyActivity: DailyProgressActivity[];
   };
   recommendations: Recommendation[];
   recentSessions: Array<{ id: string; lessonTitle: string; mode: string; durationMs: number; completedAt: string | null }>;

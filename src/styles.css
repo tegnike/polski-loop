@@ -164,6 +164,49 @@ h1, h2, strong { letter-spacing: -.025em; }
 .metric-card strong { color: var(--teal); font-size: 24px; line-height: 1.1; }
 .progress-detail { padding: 18px; }
 .progress-detail > p { margin-top: 13px; color: var(--muted); font-size: 12px; }
+.progress-motivation { display: grid; gap: 12px; }
+.today-progress { padding: 18px; border-color: #ead9ad; background: linear-gradient(145deg, #fffdf5, #fff5dc); }
+.today-progress.active { border-color: #bcd9ce; background: linear-gradient(145deg, #f4fbf7, #fffaf0); }
+.today-progress-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.today-progress-heading h2 { margin-top: 4px; color: var(--teal); font-size: 21px; }
+.today-progress-heading p { margin-top: 5px; color: var(--muted); font-size: 11px; }
+.today-check { display: grid; width: 48px; height: 48px; flex: 0 0 48px; place-items: center; border-radius: 17px; color: #9b7423; background: #fce7aa; font-size: 25px; font-weight: 900; }
+.today-progress.active .today-check { color: #fff; background: #2c7561; box-shadow: 0 4px 0 #185443; }
+.today-stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin-top: 16px; }
+.today-stat-grid > span { display: grid; grid-template-columns: auto 1fr; align-items: baseline; padding: 10px; border-radius: 12px; background: rgba(255, 255, 255, .68); }
+.today-stat-grid strong { color: var(--teal); font-size: 25px; line-height: 1; }
+.today-stat-grid small { margin-left: 2px; color: var(--teal); font-size: 10px; font-weight: 750; }
+.today-stat-grid b { grid-column: 1 / -1; margin-top: 4px; color: var(--muted); font-size: 9px; font-weight: 700; }
+.activity-chart, .activity-calendar { padding: 17px; }
+.activity-chart .section-heading > strong, .activity-calendar .section-heading > strong { color: var(--coral); font-size: 24px; }
+.week-bars { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; height: 166px; margin-top: 16px; }
+.week-bar-column { display: grid; grid-template-rows: 17px 1fr 18px; min-width: 0; text-align: center; }
+.week-bar-value { color: var(--muted); font-size: 9px; font-weight: 750; }
+.week-bar { position: relative; display: flex; width: 100%; min-width: 0; align-items: flex-end; padding: 0; border: 0; border-radius: 9px 9px 5px 5px; background: #f0ece5; }
+.week-bar > span:first-child { width: 100%; min-height: 2px; border-radius: 9px 9px 5px 5px; background: #d9d2c8; transition: height .25s ease; }
+.week-bar.active > span:first-child { min-height: 6px; background: linear-gradient(180deg, var(--coral), #ee9b5e); }
+.week-bar:focus-visible, .activity-cell:focus-visible { z-index: 4; outline: 3px solid #e18d38; outline-offset: 2px; }
+.week-bar-column small { align-self: end; color: var(--muted); font-size: 9px; }
+.chart-note { margin-top: 8px; color: var(--muted); font-size: 9px; text-align: center; }
+.chart-tooltip { position: absolute; z-index: 8; bottom: calc(100% + 8px); left: 50%; display: none; width: max-content; max-width: min(230px, 72vw); padding: 7px 9px; border-radius: 9px; color: #fffdf8; background: var(--teal); box-shadow: 0 7px 18px rgba(18, 60, 67, .2); font-size: 9px; font-weight: 700; line-height: 1.45; text-align: left; transform: translateX(-50%); pointer-events: none; }
+.week-bar:hover .chart-tooltip, .week-bar:focus-visible .chart-tooltip, .activity-cell:hover .chart-tooltip, .activity-cell:focus-visible .chart-tooltip { display: block; }
+.week-bar-column:first-child .chart-tooltip { left: 0; transform: none; }
+.week-bar-column:last-child .chart-tooltip { right: 0; left: auto; transform: none; }
+.calendar-summary { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 13px; }
+.calendar-summary span { padding: 5px 8px; border-radius: 8px; color: var(--muted); background: #f1eee8; font-size: 9px; }
+.calendar-summary b { color: var(--teal); font-size: 11px; }
+.activity-weekdays, .activity-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.activity-weekdays { margin-top: 14px; }
+.activity-weekdays span { color: var(--muted); font-size: 8px; text-align: center; }
+.activity-grid { margin-top: 4px; }
+.activity-cell { position: relative; min-width: 0; aspect-ratio: 1; padding: 0; border: 1px solid rgba(18, 60, 67, .05); border-radius: 9px; background: #eeeae3; }
+.activity-cell.level-1 { background: #dcebe6; }
+.activity-cell.level-2 { background: #a9d0c2; }
+.activity-cell.level-3 { background: #5d9f89; }
+.activity-cell.level-4 { background: #246f5b; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .22); }
+.activity-cell:nth-child(7n + 1) .chart-tooltip { left: 0; transform: none; }
+.activity-cell:nth-child(7n) .chart-tooltip { right: 0; left: auto; transform: none; }
+.calendar-caption { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; color: var(--muted); font-size: 8px; text-align: center; }
 .weakness-section { margin-top: 2px; }
 .weakness-section h2 { margin-top: 4px; color: var(--teal); font-size: 20px; }
 .weakness-list { margin-top: 10px; }
@@ -312,6 +355,8 @@ h1, h2, strong { letter-spacing: -.025em; }
   .metric-grid { grid-template-columns: repeat(4, 1fr); }
   .library-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .library-item h2 { font-size: 18px; }
+  .progress-motivation { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .today-progress { grid-column: 1 / -1; }
 }
 
 @media (max-width: 359px) {

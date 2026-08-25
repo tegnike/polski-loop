@@ -12,6 +12,7 @@ import { buildMissionPrompt } from "../src/lib/mission";
 import { buildAiTutorInstructions, extractOpenAiResponseText, validateAiChatRequest } from "../src/lib/ai-chat";
 import { validateVoiceResultImport, VOICE_SCORE_KEYS } from "../src/lib/voice-result";
 import { normalizePronunciationText, selectPolishVoice, type SpeakerGender } from "../src/lib/pronunciation-config";
+import { buildDailyProgressActivity, currentActivityStreak } from "../src/lib/progress";
 import type {
   AttemptResult, CanDoItem, CanDoStatus, CanDoUnit, ChoiceOption, CurriculumSummary, DifficultyLevel,
   DueItem, ExerciseShape, ItemType, LearningItem, Lesson, LessonStep, LessonSummary, MistakeSummary,
@@ -66,6 +67,8 @@ interface AttemptRow {
   difficulty_after: number; elapsed_ms?: number; created_at?: string;
 }
 interface SessionRow { id: string; lesson_id: string | null; lesson_title: string | null; mode: "lesson" | "review"; started_at: string; completed_at: string | null; duration_ms: number; }
+interface ActivityAttemptRow { is_correct: number; created_at: string; }
+interface ActivityVoiceRow { occurred_at: string; }
 interface MissionRow {
   id: string; unit_id: string; lesson_id: string; title: string; scenario: string; learner_role: string; partner_role: string;
   objective: string; learner_item_ids_json: string; partner_item_ids_json: string; required_item_ids_json: string;
@@ -514,9 +517,35 @@ async function statusResponse(db: D1Database, currentProfileId: string, requeste
   const sessions = sessionRows.results ?? [];
   const today = dateKeyInZone(new Date(), profile.study_timezone);
   const weekStart = shiftDateKey(today, -6);
+  const activityWindowStart = shiftDateKey(today, -30) + "T00:00:00.000Z";
+  const [activitySessionsResult, activityAttemptsResult, activityVoiceResult] = await Promise.all([
+    db.prepare("SELECT s.id, s.lesson_id, NULL AS lesson_title, s.mode, s.started_at, s.completed_at, s.duration_ms FROM pl_study_sessions s WHERE s.profile_id = ? AND s.completed_at IS NOT NULL AND s.started_at >= ? ORDER BY s.started_at")
+      .bind(currentProfileId, activityWindowStart).all<SessionRow>(),
+    db.prepare("SELECT is_correct, created_at FROM pl_attempts WHERE profile_id = ? AND created_at >= ? ORDER BY created_at")
+      .bind(currentProfileId, activityWindowStart).all<ActivityAttemptRow>(),
+    db.prepare("SELECT COALESCE(evaluated_at, created_at) AS occurred_at FROM pl_voice_attempts WHERE profile_id = ? AND COALESCE(evaluated_at, created_at) >= ? ORDER BY occurred_at")
+      .bind(currentProfileId, activityWindowStart).all<ActivityVoiceRow>(),
+  ]);
+  const dailyActivity = buildDailyProgressActivity(
+    today,
+    28,
+    (activitySessionsResult.results ?? []).map((session) => ({
+      date: dateKeyInZone(session.started_at, profile.study_timezone),
+      mode: session.mode,
+      durationMs: session.duration_ms,
+    })),
+    (activityAttemptsResult.results ?? []).map((attempt) => ({
+      date: dateKeyInZone(attempt.created_at, profile.study_timezone),
+      isCorrect: attempt.is_correct === 1,
+    })),
+    (activityVoiceResult.results ?? []).map((voice) => ({
+      date: dateKeyInZone(voice.occurred_at, profile.study_timezone),
+    })),
+  );
   const sessionDays = new Set(sessions.filter((session) => session.completed_at).map((session) => dateKeyInZone(session.started_at, profile.study_timezone)));
   let streakDays = 0;
   for (let index = 0; sessionDays.has(shiftDateKey(today, -index)); index += 1) streakDays += 1;
+  streakDays = Math.max(streakDays, currentActivityStreak(dailyActivity));
   const weekSessions = sessions.filter((session) => session.completed_at && dateKeyInZone(session.started_at, profile.study_timezone) >= weekStart);
   const nextMission = await missionForLesson(db, nextEntry.row.id);
   if (!nextMission) throw new Error("mission_seed_missing");
@@ -534,7 +563,8 @@ async function statusResponse(db: D1Database, currentProfileId: string, requeste
     progress: { completedLessons: allLessons.filter((entry) => entry.row.completed === 1).length, totalLessons: allLessons.length,
       learnedItems: learned?.count ?? 0, masteredItems: mastered?.count ?? 0, dueReviews: due?.count ?? 0, streakDays,
       studyDaysThisWeek: new Set(weekSessions.map((session) => dateKeyInZone(session.started_at, profile.study_timezone))).size,
-      minutesThisWeek: Math.round(weekSessions.reduce((total, session) => total + session.duration_ms, 0) / 60000) },
+      minutesThisWeek: Math.round(weekSessions.reduce((total, session) => total + session.duration_ms, 0) / 60000),
+      dailyActivity },
     recommendations,
     recentSessions: sessions.slice(0, 5).map((session) => ({ id: session.id, lessonTitle: session.lesson_title ?? (session.mode === "review" ? "復習" : "レッスン"), mode: session.mode, durationMs: session.duration_ms, completedAt: session.completed_at })) };
 }

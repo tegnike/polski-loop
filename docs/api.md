@@ -16,6 +16,7 @@ Base pathは`/api/v1`です。ローカルではWorkerが`127.0.0.1:8787`で応�
 
 - `GET /status?track=A1|A2`
   - 選択trackの`units`、`unit`、`nextLesson`、`nextMission`、学習進捗を返す。
+  - `progress.dailyActivity`はprofileの学習timezoneで揃えた直近28日分。各日は完了セッション、lesson/review内訳、学習分数、回答・正答、Voice結果を持つ。
   - ホーム画面も`nextMission.promptText`を使い、lesson画面と同じ詳細版`.txt`だけを生成する。
   - `allUnits`、`tracks`、`curriculum`にはA1+A2の集計を返す。
   - `recommendations`は復習、次lesson、Voice mission、Can-doの次候補を返す。
