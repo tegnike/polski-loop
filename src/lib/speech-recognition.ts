@@ -54,6 +54,13 @@ export function getSpeechRecognitionConstructor(): SpeechRecognitionConstructor 
   return speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition ?? null;
 }
 
+export function configureContinuousSpeechRecognition(recognition: SpeechRecognitionLike, language: SpeechInputLanguage): void {
+  recognition.lang = language;
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.maxAlternatives = 1;
+}
+
 export function transcriptFromResults(event: SpeechRecognitionResultEventLike): string {
   const transcripts: string[] = [];
   for (let index = 0; index < event.results.length; index += 1) {
@@ -88,4 +95,8 @@ export function speechRecognitionErrorMessage(error: string): string | null {
     default:
       return "音声を文字に変換できませんでした。もう一度お試しください。";
   }
+}
+
+export function canRestartSpeechRecognitionAfter(error: string): boolean {
+  return error === "no-speech" || error === "aborted";
 }

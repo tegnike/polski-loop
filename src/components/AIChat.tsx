@@ -3,6 +3,8 @@ import { createPortal } from "react-dom";
 import { api } from "../lib/api";
 import {
   appendSpeechTranscript,
+  canRestartSpeechRecognitionAfter,
+  configureContinuousSpeechRecognition,
   getSpeechRecognitionConstructor,
   SPEECH_INPUT_LANGUAGES,
   speechRecognitionErrorMessage,
@@ -33,9 +35,20 @@ export default function AIChat({ context, withBottomNav = true }: AIChatProps) {
   const requestAbortRef = useRef<AbortController | null>(null);
   const speechRecognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const speechBaseDraftRef = useRef("");
+  const speechCurrentDraftRef = useRef("");
+  const speechRequestedRef = useRef(false);
+  const speechRestartTimerRef = useRef<number | null>(null);
   const speechSupported = getSpeechRecognitionConstructor() !== null;
 
+  function clearSpeechRestartTimer() {
+    if (speechRestartTimerRef.current === null) return;
+    window.clearTimeout(speechRestartTimerRef.current);
+    speechRestartTimerRef.current = null;
+  }
+
   function cancelSpeechRecognition() {
+    speechRequestedRef.current = false;
+    clearSpeechRestartTimer();
     const recognition = speechRecognitionRef.current;
     speechRecognitionRef.current = null;
     if (recognition) {
@@ -77,6 +90,8 @@ export default function AIChat({ context, withBottomNav = true }: AIChatProps) {
   }, [open]);
 
   useEffect(() => () => {
+    speechRequestedRef.current = false;
+    clearSpeechRestartTimer();
     const recognition = speechRecognitionRef.current;
     if (!recognition) return;
     recognition.onstart = null;
@@ -121,26 +136,12 @@ export default function AIChat({ context, withBottomNav = true }: AIChatProps) {
     }
   }
 
-  function toggleSpeechRecognition() {
-    if (listening) {
-      try {
-        speechRecognitionRef.current?.stop();
-      } catch {
-        cancelSpeechRecognition();
-      }
-      return;
-    }
-
-    const Recognition = getSpeechRecognitionConstructor();
-    if (!Recognition || sending) return;
-
+  function startSpeechRecognitionCycle(Recognition: NonNullable<ReturnType<typeof getSpeechRecognitionConstructor>>, language: SpeechInputLanguage) {
+    if (!speechRequestedRef.current) return;
     const recognition = new Recognition();
+    let canRestart = true;
     speechRecognitionRef.current = recognition;
-    speechBaseDraftRef.current = draft;
-    recognition.lang = speechLanguage;
-    recognition.continuous = false;
-    recognition.interimResults = true;
-    recognition.maxAlternatives = 1;
+    configureContinuousSpeechRecognition(recognition, language);
     recognition.onstart = () => {
       if (speechRecognitionRef.current !== recognition) return;
       setListening(true);
@@ -148,15 +149,31 @@ export default function AIChat({ context, withBottomNav = true }: AIChatProps) {
     };
     recognition.onresult = (event) => {
       if (speechRecognitionRef.current !== recognition) return;
-      setDraft(appendSpeechTranscript(speechBaseDraftRef.current, transcriptFromResults(event)));
+      const nextDraft = appendSpeechTranscript(speechBaseDraftRef.current, transcriptFromResults(event));
+      speechCurrentDraftRef.current = nextDraft;
+      setDraft(nextDraft);
     };
     recognition.onerror = (event) => {
       if (speechRecognitionRef.current !== recognition) return;
-      setSpeechError(speechRecognitionErrorMessage(event.error));
+      canRestart = canRestartSpeechRecognitionAfter(event.error);
+      if (canRestart) {
+        setSpeechError(null);
+      } else {
+        speechRequestedRef.current = false;
+        setSpeechError(speechRecognitionErrorMessage(event.error));
+      }
     };
     recognition.onend = () => {
       if (speechRecognitionRef.current !== recognition) return;
       speechRecognitionRef.current = null;
+      if (speechRequestedRef.current && canRestart) {
+        speechBaseDraftRef.current = speechCurrentDraftRef.current;
+        speechRestartTimerRef.current = window.setTimeout(() => {
+          speechRestartTimerRef.current = null;
+          startSpeechRecognitionCycle(Recognition, language);
+        }, 150);
+        return;
+      }
       setListening(false);
       requestAnimationFrame(() => textareaRef.current?.focus());
     };
@@ -166,9 +183,38 @@ export default function AIChat({ context, withBottomNav = true }: AIChatProps) {
       recognition.start();
     } catch {
       speechRecognitionRef.current = null;
+      speechRequestedRef.current = false;
       setListening(false);
       setSpeechError("音声入力を開始できませんでした。少し待ってからもう一度お試しください。");
     }
+  }
+
+  function toggleSpeechRecognition() {
+    if (listening) {
+      speechRequestedRef.current = false;
+      clearSpeechRestartTimer();
+      const recognition = speechRecognitionRef.current;
+      if (!recognition) {
+        setListening(false);
+        requestAnimationFrame(() => textareaRef.current?.focus());
+        return;
+      }
+      try {
+        recognition.stop();
+      } catch {
+        cancelSpeechRecognition();
+      }
+      return;
+    }
+
+    const Recognition = getSpeechRecognitionConstructor();
+    if (!Recognition || sending) return;
+    speechBaseDraftRef.current = draft;
+    speechCurrentDraftRef.current = draft;
+    speechRequestedRef.current = true;
+    setListening(true);
+    setSpeechError(null);
+    startSpeechRecognitionCycle(Recognition, speechLanguage);
   }
 
   return (
@@ -200,7 +246,7 @@ export default function AIChat({ context, withBottomNav = true }: AIChatProps) {
                       {SPEECH_INPUT_LANGUAGES.map((language) => <option key={language.value} value={language.value}>{language.label}</option>)}
                     </select>
                   </label>
-                  <span role="status">{listening ? "聞き取り中…話し終えたら停止" : "ブラウザの音声認識で文字に変換"}</span>
+                  <span role="status">{listening ? "録音中…停止ボタンを押すまで継続" : "ブラウザの音声認識で文字に変換"}</span>
                 </div>
               )}
               <div className={`ai-chat-composer-main${speechSupported ? " has-speech" : ""}`}>
