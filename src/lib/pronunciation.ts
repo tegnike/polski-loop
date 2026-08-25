@@ -1,48 +1,49 @@
-const PRONUNCIATION_CACHE = "polski-loop-pronunciation-v1";
-const ENGINE_VERSION = "espeak-ng-1.0.2";
-const VOICE = "pl";
-const SPEED = 145;
-const PITCH = 48;
+import {
+  normalizePronunciationText,
+  resolveSpeakerGender,
+  selectPolishVoice,
+  type SpeakerGender,
+} from "./pronunciation-config";
+
+const PRONUNCIATION_CACHE = "polski-loop-pronunciation-v2";
+const ENGINE_VERSION = "google-chirp3-hd-v1";
 
 let audioContext: AudioContext | null = null;
 let activeSource: AudioBufferSourceNode | null = null;
 let persistenceRequested = false;
-
-interface ESpeakModule {
-  FS: { readFile(path: string): Uint8Array };
-}
-
-type CreateESpeak = (options: { arguments: string[] }) => Promise<ESpeakModule>;
 
 export interface PronunciationAudio {
   blob: Blob;
   cacheHit: boolean;
 }
 
-export function normalizePronunciationText(text: string): string {
-  return text.normalize("NFC").trim().replace(/\s+/gu, " ");
-}
+export { normalizePronunciationText } from "./pronunciation-config";
 
-export function pronunciationCachePath(text: string): string {
+export function pronunciationCachePath(text: string, genderHint: SpeakerGender = "any"): string {
   const normalized = normalizePronunciationText(text);
-  return `/__pronunciation-cache/${ENGINE_VERSION}/${VOICE}/${SPEED}/${PITCH}/${encodeURIComponent(normalized)}`;
+  const gender = resolveSpeakerGender(normalized, genderHint);
+  const voice = selectPolishVoice(normalized, gender);
+  return `/__pronunciation-cache/${ENGINE_VERSION}/${gender}/${voice.name}/${encodeURIComponent(normalized)}`;
 }
 
-function cacheRequest(text: string): Request {
-  return new Request(new URL(pronunciationCachePath(text), window.location.origin), { method: "GET" });
+function cacheRequest(text: string, genderHint: SpeakerGender): Request {
+  return new Request(new URL(pronunciationCachePath(text, genderHint), window.location.origin), { method: "GET" });
 }
 
-async function synthesize(text: string): Promise<Blob> {
-  // The package ships ESM/WASM without TypeScript declarations.
-  // @ts-expect-error espeak-ng has no declaration file
-  const { default: createESpeak } = await import("espeak-ng") as { default: CreateESpeak };
-  const outputName = `pronunciation-${crypto.randomUUID()}.wav`;
-  const instance = await createESpeak({
-    arguments: ["-v", VOICE, "-s", String(SPEED), "-p", String(PITCH), "-w", outputName, text],
+async function synthesize(text: string, genderHint: SpeakerGender): Promise<Blob> {
+  const response = await fetch("/api/v1/pronunciations", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ text, speakerGender: resolveSpeakerGender(text, genderHint) }),
   });
-  const audio = instance.FS.readFile(outputName);
-  const bytes = audio.buffer.slice(audio.byteOffset, audio.byteOffset + audio.byteLength) as ArrayBuffer;
-  return new Blob([bytes], { type: "audio/wav" });
+  if (!response.ok) {
+    const body: unknown = await response.json().catch(() => null);
+    const message = typeof body === "object" && body !== null && "message" in body && typeof body.message === "string"
+      ? body.message
+      : "音声を合成できませんでした。";
+    throw new Error(message);
+  }
+  return response.blob();
 }
 
 function requestPersistentStorage(): void {
@@ -57,17 +58,17 @@ export function preparePronunciationPlayback(): void {
   if (audioContext.state === "suspended") void audioContext.resume();
 }
 
-export async function getPronunciationAudio(text: string): Promise<PronunciationAudio> {
+export async function getPronunciationAudio(text: string, genderHint: SpeakerGender = "any"): Promise<PronunciationAudio> {
   const normalized = normalizePronunciationText(text);
   if (!normalized) throw new Error("発音するポーランド語がありません。");
 
   if ("caches" in window) {
     const cache = await caches.open(PRONUNCIATION_CACHE);
-    const request = cacheRequest(normalized);
+    const request = cacheRequest(normalized, genderHint);
     const cached = await cache.match(request);
     if (cached) return { blob: await cached.blob(), cacheHit: true };
 
-    const blob = await synthesize(normalized);
+    const blob = await synthesize(normalized, genderHint);
     await cache.put(request, new Response(blob, {
       headers: {
         "content-type": blob.type,
@@ -77,7 +78,7 @@ export async function getPronunciationAudio(text: string): Promise<Pronunciation
     return { blob, cacheHit: false };
   }
 
-  return { blob: await synthesize(normalized), cacheHit: false };
+  return { blob: await synthesize(normalized, genderHint), cacheHit: false };
 }
 
 export async function playPronunciation(blob: Blob): Promise<void> {

@@ -994,7 +994,7 @@ function LibraryItem({
       </div>
       <div className="pronounceable-heading">
         <h2>{item.polish}</h2>
-        <PronunciationButton text={item.polish} />
+        <PronunciationButton text={item.polish} speakerGender={item.speakerGender} />
       </div>
       <p>{item.meaningJa}</p>
       <span className="english-line">{item.meaningEn}</span>

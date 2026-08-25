@@ -140,7 +140,9 @@ export interface VoiceMission {
   partnerItemIds: string[];
   requiredItemIds: string[];
   requiredExpressions: string[];
+  requiredExpressionGenders: Array<"male" | "female" | "any">;
   partnerExpressions: string[];
+  partnerExpressionGenders: Array<"male" | "female" | "any">;
   partnerBehavior: string;
   difficultyLevel: "A1" | "A2";
   endingCondition: string;

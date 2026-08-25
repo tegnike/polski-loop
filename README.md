@@ -2,7 +2,7 @@
 
 スマートフォン優先の個人用ポーランド語学習PWAです。既存A1をID・履歴ごと保持したまま、ポーランド在住者が軽い日常会話を目指す生活特化A2を追加しています。教材・回答・誤答・復習予定はローカルD1へ保存します。
 
-会話、音声認識、発音採点、読み上げはアプリ内に実装しません。Polski LoopはChatGPT Voiceへ渡すrole-play missionを作り、ChatGPTが返す採点ファイルを記録します。
+会話、音声認識、発音採点はChatGPT Voiceへ任せます。教材のポーランド語読み上げにはGoogle Cloud Text-to-SpeechのChirp 3 HDを使用し、ChatGPTが返す採点ファイルはPolski Loopへ記録します。
 
 ## 実装範囲
 
@@ -69,11 +69,12 @@ Access applicationは`Polski Loop`、許可ポリシーは`Master only`です。
 
 ## API
 
-単語・表現の再生ボタンは、初回クリック時にPWA内のeSpeak NG（ポーランド語音声）でWAVを合成します。生成音声はブラウザのCache Storageへ保存され、同じ端末・ブラウザの次回再生では再合成せずに使い回します。音声モデルは初回利用時のみ遅延読み込みされます。ブラウザのサイトデータを消去すると、保存音声も削除されます。
+単語・表現の再生ボタンは、初回クリック時にWorker経由でGoogle Cloud Text-to-Speechのポーランド語Chirp 3 HD音声をMP3合成します。教材の`speakerGender`を優先し、男性・女性それぞれの音声プールから文字列に応じて安定選択します。性別不明の表現は強い一人称語尾だけを自動判定し、それ以外は全音声へ分散します。生成音声はCloudflareのCache APIとブラウザのCache Storageへ保存され、同じ文字列・性別・音声では再合成しません。
 
 | Method | Path | 用途 |
 | --- | --- | --- |
 | GET | `/api/v1/status?track=A1\|A2` | 選択trackのUnit別進捗、A1+A2総数、次のlesson、復習件数、おすすめ |
+| POST | `/api/v1/pronunciations` | Chirp 3 HDでポーランド語音声を合成し、性別整合・キャッシュ済みMP3を返却 |
 | GET | `/api/v1/lessons/:id` | lessonの段階stepとChatGPT Voice mission |
 | GET | `/api/v1/missions?lessonId=:id` | `.txt`保存可能なVoice role-play mission |
 | GET | `/api/v1/cando?unitId=:id` | Unit Can-do、教材完了、想起、Voice集計 |

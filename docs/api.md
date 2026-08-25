@@ -2,6 +2,16 @@
 
 Base pathは`/api/v1`です。ローカルではWorkerが`127.0.0.1:8787`で応答し、Viteが同じpathをproxyします。利用者データは現在の`PROFILE_ID`（未設定時はローカルfallback）に紐づきます。
 
+## Pronunciation
+
+- `POST /pronunciations`
+  - bodyは`{ text, speakerGender: "male"|"female"|"any" }`、本文は300文字以下。
+  - Google Cloud Text-to-Speechの`pl-PL-Chirp3-HD-*`でMP3を合成する。
+  - `male`または`female`では同じ性別の音声だけを使う。`any`では強い一人称語尾を補助判定し、それ以外は全音声へ分散する。
+  - 同じ文字列と選択音声はCloudflare Cache APIとクライアントのCache Storageへ保存する。
+  - responseは`audio/mpeg`。`x-polski-loop-voice`、`x-polski-loop-gender`、`x-polski-loop-cache`で選択音声とキャッシュ状態を返す。
+  - APIキーはWorker Secretの`GOOGLE_TTS_API_KEY`だけに保存し、クライアントへ公開しない。
+
 ## Curriculum
 
 - `GET /status?track=A1|A2`
@@ -13,7 +23,7 @@ Base pathは`/api/v1`です。ローカルではWorkerが`127.0.0.1:8787`で応�
   - `steps`をstep番号順に返す。各stepは問題形式、方向、options、tokens、cloze、item metadataを含む。
   - `mission`にはVoice role-playの全情報と`promptText`を含む。
 - `GET /missions?lessonId=:lessonId` または `GET /missions?missionId=:missionId`
-  - `.txt`ファイルとして保存可能なVoice missionを返す。missionはアプリ内の音声処理を意味しない。
+  - `.txt`ファイルとして保存可能なVoice missionと、各表現の読み上げ用話者性別を返す。会話・音声認識・発音採点はアプリ内では行わない。
 - `GET /cando?unitId=:unitId`
   - Unitの3 Can-do、状態、自己評価、証拠メモ、教材完了、想起正答率、Voice自信度を返す。
 

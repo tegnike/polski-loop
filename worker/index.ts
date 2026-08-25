@@ -10,6 +10,7 @@ import {
 } from "../src/lib/learning";
 import { buildMissionPrompt } from "../src/lib/mission";
 import { validateVoiceResultImport, VOICE_SCORE_KEYS } from "../src/lib/voice-result";
+import { normalizePronunciationText, selectPolishVoice, type SpeakerGender } from "../src/lib/pronunciation-config";
 import type {
   AttemptResult, CanDoItem, CanDoStatus, CanDoUnit, ChoiceOption, CurriculumSummary, DifficultyLevel,
   DueItem, ExerciseShape, ItemType, LearningItem, Lesson, LessonStep, LessonSummary, MistakeSummary,
@@ -25,6 +26,7 @@ interface Env {
   REQUIRE_ACCESS_AUTH?: string;
   ACCESS_TEAM_DOMAIN?: string;
   ACCESS_AUDIENCE?: string;
+  GOOGLE_TTS_API_KEY?: string;
 }
 interface ProfileRow { id: string; display_name: string; study_timezone: string; daily_new_limit: number; daily_review_limit: number; }
 interface TrackRow { id: string; code: TrackCode; title: string; cefr: string; content_version: string; }
@@ -176,13 +178,73 @@ function missionFromRow(row: MissionRow, items: LearningItem[]): VoiceMission {
   const partnerItemIds = parseArray(row.partner_item_ids_json);
   const requiredItemIds = parseArray(row.required_item_ids_json);
   const itemMap = new Map(items.map((item) => [item.id, item]));
-  const requiredExpressions = requiredItemIds.map((id) => itemMap.get(id)?.polish).filter((value): value is string => Boolean(value));
-  const partnerExpressions = partnerItemIds.map((id) => itemMap.get(id)?.polish).filter((value): value is string => Boolean(value));
+  const requiredItems = requiredItemIds.map((id) => itemMap.get(id)).filter((value): value is LearningItem => Boolean(value));
+  const partnerItems = partnerItemIds.map((id) => itemMap.get(id)).filter((value): value is LearningItem => Boolean(value));
+  const requiredExpressions = requiredItems.map((item) => item.polish);
+  const partnerExpressions = partnerItems.map((item) => item.polish);
   return { id: row.id, unitId: row.unit_id, lessonId: row.lesson_id, title: row.title, scenario: row.scenario,
     learnerRole: row.learner_role, partnerRole: row.partner_role, objective: row.objective, learnerItemIds,
-    partnerItemIds, requiredItemIds, requiredExpressions, partnerExpressions, partnerBehavior: row.partner_behavior,
+    partnerItemIds, requiredItemIds, requiredExpressions, requiredExpressionGenders: requiredItems.map((item) => item.speakerGender ?? "any"),
+    partnerExpressions, partnerExpressionGenders: partnerItems.map((item) => item.speakerGender ?? "any"), partnerBehavior: row.partner_behavior,
     difficultyLevel: row.difficulty_level, endingCondition: row.ending_condition, feedbackFormat: row.feedback_format,
     promptText: missionPrompt(row, requiredExpressions, partnerExpressions) };
+}
+
+async function sha256(value: string): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
+  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+function decodeBase64(value: string): Uint8Array {
+  const binary = atob(value);
+  return Uint8Array.from(binary, (character) => character.charCodeAt(0));
+}
+
+async function pronunciationResponse(env: Env, request: Request, ctx: ExecutionContext): Promise<Response> {
+  if (!env.GOOGLE_TTS_API_KEY) throw new Error("tts_not_configured");
+  const body = await readJson<{ text?: string; speakerGender?: SpeakerGender }>(request);
+  const text = normalizePronunciationText(body.text ?? "");
+  if (!text) throw new Error("発音するポーランド語がありません。");
+  if (text.length > 300) throw new Error("読み上げる文章は300文字以下にしてください。");
+  const speakerGender: SpeakerGender = ["male", "female", "any"].includes(body.speakerGender ?? "")
+    ? body.speakerGender as SpeakerGender
+    : "any";
+  const voice = selectPolishVoice(text, speakerGender);
+  const cacheId = await sha256(`${voice.name}\0${text}`);
+  const cacheKey = new Request(`https://pronunciation-cache.polski-loop.internal/google-chirp3-hd-v1/${voice.name}/${cacheId}.mp3`);
+  const cache = (caches as CacheStorage & { default: Cache }).default;
+  const cached = await cache.match(cacheKey);
+  if (cached) {
+    const headers = new Headers(cached.headers);
+    headers.set("x-polski-loop-cache", "hit");
+    return new Response(cached.body, { status: cached.status, headers });
+  }
+
+  const googleResponse = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${encodeURIComponent(env.GOOGLE_TTS_API_KEY)}`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      input: { text },
+      voice: { languageCode: "pl-PL", name: voice.name },
+      audioConfig: { audioEncoding: "MP3" },
+    }),
+  });
+  const googleBody = await googleResponse.json<{ audioContent?: string }>().catch(() => null);
+  if (!googleResponse.ok || !googleBody?.audioContent) throw new Error("tts_provider_error");
+  const headers = new Headers({
+    "content-type": "audio/mpeg",
+    "cache-control": "public, max-age=31536000, immutable",
+    "x-content-type-options": "nosniff",
+    "x-polski-loop-provider": "google-chirp3-hd",
+    "x-polski-loop-voice": voice.name,
+    "x-polski-loop-gender": voice.gender,
+    "x-polski-loop-cache": "miss",
+  });
+  const audio = decodeBase64(googleBody.audioContent);
+  const audioBuffer = audio.buffer.slice(audio.byteOffset, audio.byteOffset + audio.byteLength) as ArrayBuffer;
+  const response = new Response(audioBuffer, { headers });
+  ctx.waitUntil(cache.put(cacheKey, response.clone()));
+  return response;
 }
 function voiceResultFromRow(row: VoiceAttemptRow): VoiceResult {
   return { id: row.id, missionId: row.mission_id, trackCode: row.track_code ?? null, unitNumber: row.unit_number ?? null,
@@ -745,7 +807,7 @@ async function createItem(db: D1Database, request: Request): Promise<LearningIte
   return item;
 }
 
-async function apiFetch(request: Request, env: Env): Promise<Response> {
+async function apiFetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   const url = new URL(request.url);
   const path = url.pathname.replace(/^\/api\/v1/, "") || "/";
   const currentProfileId = profileId(env);
@@ -754,6 +816,7 @@ async function apiFetch(request: Request, env: Env): Promise<Response> {
     const requestedTrack: TrackCode = url.searchParams.get("track") === "A2" ? "A2" : "A1";
     return jsonResponse(await statusResponse(env.DB, currentProfileId, requestedTrack));
   }
+  if (request.method === "POST" && path === "/pronunciations") return pronunciationResponse(env, request, ctx);
   if (request.method === "GET" && path.startsWith("/lessons/")) return jsonResponse(await lessonResponse(env.DB, path.slice("/lessons/".length)));
   if (request.method === "GET" && path === "/missions") return jsonResponse(await missionResponse(env.DB, url.searchParams.get("lessonId"), url.searchParams.get("missionId")));
   if (request.method === "GET" && path === "/cando") {
@@ -820,16 +883,18 @@ async function apiFetch(request: Request, env: Env): Promise<Response> {
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     if (!url.pathname.startsWith("/api/")) return env.ASSETS.fetch(request);
     const accessError = await verifyAccess(request, env);
     if (accessError) return accessError;
-    try { return await apiFetch(request, env); }
+    try { return await apiFetch(request, env, ctx); }
     catch (error) {
       const message = error instanceof Error ? error.message : "予期しないエラーが発生しました。";
       if (message === "seed_data_missing" || message === "lesson_seed_missing" || message === "mission_seed_missing") return errorResponse(500, "D1の初期データが不足しています。npm run db:migrateを実行してください。");
       if (message === "lesson_not_found" || message === "lesson_step_not_found" || message === "learning_item_not_found" || message === "attempt_not_found" || message === "mission_not_found" || message === "unit_not_found" || message === "cando_not_found") return errorResponse(404, "指定された教材、mission、Can-do、または履歴が見つかりません。");
+      if (message === "tts_not_configured") return errorResponse(503, "音声サービスが設定されていません。");
+      if (message === "tts_provider_error") return errorResponse(502, "音声サービスから音声を取得できませんでした。");
       return errorResponse(400, message);
     }
   },

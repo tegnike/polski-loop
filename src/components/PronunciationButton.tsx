@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { getPronunciationAudio, playPronunciation, preparePronunciationPlayback } from "../lib/pronunciation";
+import type { SpeakerGender } from "../lib/pronunciation-config";
 
 interface PronunciationButtonProps {
   text: string;
+  speakerGender?: SpeakerGender;
   className?: string;
 }
 
 type PlaybackState = "idle" | "loading" | "playing" | "error";
 
-export default function PronunciationButton({ text, className = "" }: PronunciationButtonProps) {
+export default function PronunciationButton({ text, speakerGender = "any", className = "" }: PronunciationButtonProps) {
   const [state, setState] = useState<PlaybackState>("idle");
   const [message, setMessage] = useState("");
 
@@ -18,7 +20,7 @@ export default function PronunciationButton({ text, className = "" }: Pronunciat
       preparePronunciationPlayback();
       setState("loading");
       setMessage("音声を合成しています…");
-      const audio = await getPronunciationAudio(text);
+      const audio = await getPronunciationAudio(text, speakerGender);
       setState("playing");
       setMessage(audio.cacheHit ? "保存済み音声を再生中" : "音声を保存して再生中");
       await playPronunciation(audio.blob);
