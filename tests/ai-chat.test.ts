@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildAiTutorInstructions, extractOpenAiResponseText, validateAiChatRequest } from "../src/lib/ai-chat";
+import { buildAiTutorInstructions, extractOpenAiResponseText, parseAiTutorMessage, validateAiChatRequest } from "../src/lib/ai-chat";
 import { buildAppAiContext } from "../src/lib/ai-context";
 import type { AiChatRequest, StatusResponse } from "../src/lib/types";
 
@@ -28,6 +28,22 @@ describe("AI chat contract", () => {
     expect(instructions).toContain("問題: Dzień dobry");
     expect(instructions).toContain("参照データ");
     expect(instructions).toContain("Markdownの記号は使わない");
+    expect(instructions).toContain("<polish>");
+  });
+
+  it("separates tagged Polish phrases for pronunciation controls", () => {
+    expect(parseAiTutorMessage("挨拶は <polish>Dzień dobry</polish> です。<polish>Do widzenia!</polish> も使えます。")).toEqual([
+      { kind: "text", content: "挨拶は " },
+      { kind: "polish", content: "Dzień dobry" },
+      { kind: "text", content: " です。" },
+      { kind: "polish", content: "Do widzenia!" },
+      { kind: "text", content: " も使えます。" },
+    ]);
+  });
+
+  it("keeps malformed or untagged output visible as plain text", () => {
+    expect(parseAiTutorMessage("Dzień dobry")).toEqual([{ kind: "text", content: "Dzień dobry" }]);
+    expect(parseAiTutorMessage("例: <polish>Dzień dobry")).toEqual([{ kind: "text", content: "例: <polish>Dzień dobry" }]);
   });
 
   it("extracts all assistant output text blocks", () => {

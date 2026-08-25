@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { api } from "../lib/api";
+import { parseAiTutorMessage } from "../lib/ai-chat";
 import {
   appendSpeechTranscript,
   canRestartSpeechRecognitionAfter,
@@ -13,10 +14,26 @@ import {
   type SpeechRecognitionLike,
 } from "../lib/speech-recognition";
 import type { AiChatMessage, AiPageContext } from "../lib/types";
+import PronunciationButton from "./PronunciationButton";
 
 interface AIChatProps {
   context: AiPageContext;
   withBottomNav?: boolean;
+}
+
+function MessageContent({ message }: { message: AiChatMessage }) {
+  if (message.role === "user") return <p>{message.content}</p>;
+
+  return (
+    <p>
+      {parseAiTutorMessage(message.content).map((part, index) => part.kind === "polish" ? (
+        <span className="ai-chat-polish" key={`${index}-${part.content}`}>
+          <span lang="pl">{part.content}</span>
+          <PronunciationButton text={part.content} className="ai-chat-pronunciation" />
+        </span>
+      ) : <span key={`${index}-${part.content}`}>{part.content}</span>)}
+    </p>
+  );
 }
 
 export default function AIChat({ context, withBottomNav = true }: AIChatProps) {
@@ -232,7 +249,7 @@ export default function AIChat({ context, withBottomNav = true }: AIChatProps) {
             <div className="ai-chat-reset-note">画面上の操作はそのまま使えます。閉じる・画面移動・次の問題で会話はリセットされます。</div>
             <div className="ai-chat-messages" aria-live="polite">
               {messages.length === 0 && <div className="ai-chat-welcome"><span aria-hidden="true">✦</span><strong>この画面について自由に話せます</strong><p>質問、添削、例文、ロールプレイなど、そのまま入力してください。</p></div>}
-              {messages.map((message, index) => <div className={`ai-chat-message ${message.role}`} key={`${message.role}-${index}`}><small>{message.role === "user" ? "あなた" : "AI"}</small><p>{message.content}</p></div>)}
+              {messages.map((message, index) => <div className={`ai-chat-message ${message.role}`} key={`${message.role}-${index}`}><small>{message.role === "user" ? "あなた" : "AI"}</small><MessageContent message={message} /></div>)}
               {sending && <div className="ai-chat-thinking"><span className="loader" />考えています…</div>}
               <div ref={messageEndRef} />
             </div>
