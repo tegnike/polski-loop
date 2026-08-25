@@ -24,6 +24,9 @@ import type {
 } from "./lib/types";
 
 type StudyRequest = { mode: "lesson" | "review"; lessonId?: string };
+const noticeFadeDelayMs = 2_500;
+const noticeDismissDelayMs = 3_000;
+
 const questionLabels: Record<QuestionType, string> = {
   multiple_choice: "4択",
   cloze: "穴埋め",
@@ -41,6 +44,7 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [voiceImporting, setVoiceImporting] = useState(false);
+  const dismissNotice = useCallback(() => setNotice(null), []);
 
   const refreshStatus = useCallback(async () => {
     try {
@@ -190,10 +194,11 @@ function App() {
         )}
       </header>
       {notice && (
-        <button className="toast" type="button" onClick={() => setNotice(null)}>
-          {notice}
-          <span>×</span>
-        </button>
+        <AutoDismissNotice
+          key={notice}
+          message={notice}
+          onDismiss={dismissNotice}
+        />
       )}
       <main className="main-content">
         {view === "today" && (
@@ -232,6 +237,41 @@ function App() {
       <AIChat context={buildAppAiContext(status, view, activeTrack)} />
       <BottomNav current={view} onChange={setView} />
     </div>
+  );
+}
+
+function AutoDismissNotice({
+  message,
+  onDismiss,
+}: {
+  message: string;
+  onDismiss: () => void;
+}) {
+  const [fading, setFading] = useState(false);
+
+  useEffect(() => {
+    const fadeTimer = window.setTimeout(
+      () => setFading(true),
+      noticeFadeDelayMs,
+    );
+    const dismissTimer = window.setTimeout(onDismiss, noticeDismissDelayMs);
+
+    return () => {
+      window.clearTimeout(fadeTimer);
+      window.clearTimeout(dismissTimer);
+    };
+  }, [onDismiss]);
+
+  return (
+    <button
+      className={`toast${fading ? " fading" : ""}`}
+      type="button"
+      aria-label={`${message} 通知を閉じる`}
+      onClick={onDismiss}
+    >
+      {message}
+      <span aria-hidden="true">×</span>
+    </button>
   );
 }
 

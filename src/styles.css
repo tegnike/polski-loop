@@ -102,7 +102,8 @@ h1, h2, strong { letter-spacing: -.025em; }
 .menu-note { display: grid; gap: 2px; padding: 9px 0; border-top: 1px solid var(--line); font-size: 11px; }
 .menu-note strong { color: var(--teal); }
 .menu-note span { color: var(--muted); }
-.toast { position: fixed; z-index: 20; right: 20px; bottom: calc(84px + env(safe-area-inset-bottom)); left: 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 10px 13px; border: 0; border-radius: 13px; color: #fffdf8; background: var(--teal); box-shadow: 0 8px 22px rgba(18, 60, 67, .22); font-size: 12px; text-align: left; }
+.toast { position: fixed; z-index: 20; right: 20px; bottom: calc(84px + env(safe-area-inset-bottom)); left: 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 10px 13px; border: 0; border-radius: 13px; color: #fffdf8; background: var(--teal); box-shadow: 0 8px 22px rgba(18, 60, 67, .22); font-size: 12px; text-align: left; transition: opacity .5s ease, transform .5s ease; }
+.toast.fading { opacity: 0; transform: translateY(8px); }
 .toast span { color: #b8d2ca; font-size: 18px; }
 .bottom-nav { position: fixed; z-index: 9; right: 0; bottom: 0; left: 0; display: grid; grid-template-columns: repeat(4, 1fr); max-width: 760px; margin: 0 auto; padding: 8px 12px calc(8px + env(safe-area-inset-bottom)); border-top: 1px solid rgba(230, 222, 211, .95); background: rgba(255, 253, 248, .94); backdrop-filter: blur(14px); }
 .nav-item { display: grid; min-height: 52px; place-items: center; gap: 2px; border: 0; color: #8b9491; background: transparent; font-size: 10px; font-weight: 700; }
