@@ -117,6 +117,9 @@
 .vocab-card-usage summary { min-height: 44px; padding: 13px; cursor: pointer; font-size: 12px; }
 .vocab-card-usage p { margin: 5px 0 9px; font-size: 12px; }
 .vocab-card-usage p[lang="pl"] { color: var(--vocab-ink); font-family: Georgia, "Times New Roman", serif; font-size: 20px; }
+.vocab-example-audio { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+.vocab-example-audio p { flex: 1; min-width: 0; margin: 0; overflow-wrap: anywhere; }
+.vocab-example-audio .pronunciation-control { flex: 0 0 auto; }
 .vocab-rating-buttons { display: grid; width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: auto; padding-top: 27px; }
 .vocab-rating-buttons > .vocab-button { min-height: 52px; }
 .vocab-again { border: 1px solid #b9cbbf; color: var(--vocab-ink); background: transparent; }

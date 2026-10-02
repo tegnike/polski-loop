@@ -146,7 +146,16 @@ function VocabularyLibraryWord({ word, onStart }: { word: VocabularyWord; onStar
       <div className="vocab-word-top"><span className={`vocab-state${word.state?.lastRating === "again" ? " vocab-state-again" : word.state ? " vocab-state-known" : ""}`}>{stateLabel}</span>{word.personal && <span className="vocab-personal-label">自分の単語</span>}</div>
       <div className="vocab-word-heading"><h3 lang="pl">{word.polish}</h3><PronunciationButton text={word.polish} speakerGender={word.speakerGender} /></div>
       <p className="vocab-word-meaning">{word.meaningJa}</p>
-      {word.examplePl && <details className="vocab-word-usage"><summary>使い方を見る</summary><p lang="pl">{word.examplePl}</p>{word.exampleJa && <p>{word.exampleJa}</p>}</details>}
+      {word.examplePl && (
+        <details className="vocab-word-usage">
+          <summary>使い方を見る</summary>
+          <div className="vocab-example-audio">
+            <p lang="pl">{word.examplePl}</p>
+            <PronunciationButton text={word.examplePl} />
+          </div>
+          {word.exampleJa && <p>{word.exampleJa}</p>}
+        </details>
+      )}
       <button className="vocab-text-button" type="button" onClick={() => onStart({ mode: "learn", wordId: word.id })}>この単語を覚える <span aria-hidden="true">→</span></button>
     </article>
   );

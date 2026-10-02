@@ -182,7 +182,16 @@ export default function VocabularyFlow({ request, onFinished, onBack }: Vocabula
           <div className="vocab-card-audio"><PronunciationButton text={card.word.polish} speakerGender={card.word.speakerGender} /><span>発音を聞く</span></div>
           <div className="vocab-translation" aria-live="polite">{revealed ? <p className="vocab-card-meaning">{card.word.meaningJa}</p> : <button ref={revealRef} className="vocab-reveal-button" type="button" onClick={() => setRevealed(true)}>意味を表示</button>}</div>
         </article>
-        {revealed && card.word.examplePl && <details className="vocab-card-usage" key={`${card.key}:example`}><summary>使い方を見る</summary><p lang="pl">{card.word.examplePl}</p>{card.word.exampleJa && <p>{card.word.exampleJa}</p>}</details>}
+        {revealed && card.word.examplePl && (
+          <details className="vocab-card-usage" key={`${card.key}:example`}>
+            <summary>使い方を見る</summary>
+            <div className="vocab-example-audio">
+              <p lang="pl">{card.word.examplePl}</p>
+              <PronunciationButton text={card.word.examplePl} />
+            </div>
+            {card.word.exampleJa && <p>{card.word.exampleJa}</p>}
+          </details>
+        )}
         <div className="vocab-rating-buttons" aria-label="思い出せたかを自己評価"><button className="vocab-button vocab-again" type="button" onClick={() => void saveRating("again")} disabled={!revealed || saving || retryRating !== null}>もう一度</button><button className="vocab-button vocab-primary" type="button" onClick={() => void saveRating("known")} disabled={!revealed || saving || retryRating !== null}>わかった</button></div>
         {!revealed && <p className="vocab-help">意味を確認すると、自己評価を選べます。</p>}
         {revealed && !saving && !saveError && <p className="vocab-help">{card.repeat ? "自己評価を選ぶと、次の復習予定を保存します。" : "「もう一度」の単語は、この回でもう1回練習します。"}</p>}
