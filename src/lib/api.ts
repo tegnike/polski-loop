@@ -17,6 +17,10 @@ import type {
   VoiceMission,
   VoiceResult,
   VoiceResultImport,
+  VocabularyWord,
+  VocabularySummary,
+  VocabularyStudyRequest,
+  VocabularyRating,
 } from "./types";
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -38,6 +42,37 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
+  vocabularySummary: () => request<VocabularySummary>("/vocabulary"),
+  vocabularyWords: (params: { search?: string; topic?: string; state?: string; personal?: boolean } = {}) => {
+    const query = new URLSearchParams();
+    if (params.search) query.set("search", params.search);
+    if (params.topic) query.set("topic", params.topic);
+    if (params.state) query.set("state", params.state);
+    if (params.personal) query.set("personal", "true");
+    return request<VocabularyWord[]>("/vocabulary/words?" + query.toString());
+  },
+  vocabularyQueue: (params: VocabularyStudyRequest & { limit?: number }) => {
+    const query = new URLSearchParams({ mode: params.mode, limit: String(params.limit ?? 5) });
+    if (params.topic) query.set("topic", params.topic);
+    if (params.wordId) query.set("wordId", params.wordId);
+    return request<VocabularyWord[]>("/vocabulary/queue?" + query.toString());
+  },
+  rateVocabulary: (payload: { wordId: string; rating: VocabularyRating; idempotencyKey: string; elapsedMs: number }) =>
+    request<{ eventId: string; word: VocabularyWord }>("/vocabulary/reviews", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  addVocabularyWord: (payload: {
+    polish: string;
+    meaningJa: string;
+    topic: string;
+    examplePl?: string;
+    exampleJa?: string;
+    idempotencyKey: string;
+  }) => request<VocabularyWord>("/vocabulary/words", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  }),
   aiChat: (payload: AiChatRequest, signal?: AbortSignal) => request<AiChatResponse>("/ai/chat", {
     method: "POST",
     body: JSON.stringify(payload),

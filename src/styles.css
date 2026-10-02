@@ -419,7 +419,7 @@ h1, h2, strong { letter-spacing: -.025em; }
 .voice-import-success { padding: 9px 10px; border-radius: 10px; color: #28715d !important; background: #dcebe6; font-weight: 800; }
 .voice-result-actions { display: grid; gap: 7px; margin-top: 4px; }
 .filter { min-height: 44px; }
-.bottom-nav { grid-template-columns: repeat(5, 1fr); }
+.bottom-nav { grid-template-columns: repeat(4, 1fr); }
 
 /* Context-bound AI conversation */
 .ai-chat-launcher { position: fixed; z-index: 12; right: max(18px, calc((100vw - 760px) / 2 + 18px)); bottom: calc(18px + env(safe-area-inset-bottom)); display: inline-flex; min-height: 48px; align-items: center; gap: 7px; padding: 10px 15px; border: 0; border-radius: 99px; color: #fffdf8; background: var(--teal); box-shadow: 0 7px 0 #09282d, 0 14px 28px rgba(18, 60, 67, .22); font-size: 12px; font-weight: 850; }

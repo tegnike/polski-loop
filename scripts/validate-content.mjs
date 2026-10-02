@@ -2,6 +2,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { renderVocabularyMigration, validateVocabulary } from "./generate-vocabulary.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const a1Path = join(root, "content", "a1-curriculum.json");
@@ -16,6 +17,8 @@ const migrationA1 = readFileSync(migrationA1Path, "utf8");
 const correctionMigration = readFileSync(correctionMigrationPath, "utf8");
 const migrationA2 = readFileSync(migrationA2Path, "utf8");
 const migrationA2Fix = readFileSync(migrationA2FixPath, "utf8");
+const vocabulary = JSON.parse(readFileSync(join(root, "content", "vocabulary.json"), "utf8"));
+const vocabularyWords = (Array.isArray(vocabulary.topics) ? vocabulary.topics : []).flatMap((topic) => (Array.isArray(topic?.words) ? topic.words : []).map((word) => ({ ...word, topic: topic.id })));
 const failures = [];
 const expectedA1Types = ["multiple_choice", "multiple_choice", "cloze", "unscramble", "free_input"];
 const expectedA2Types = [
@@ -28,6 +31,13 @@ function check(condition, message) {
   if (!condition) failures.push(message);
 }
 function unique(values) { return new Set(values); }
+
+for (const failure of validateVocabulary(vocabulary)) check(false, `Vocabulary: ${failure}`);
+try {
+  check(readFileSync(join(root, "migrations", "0009_vocabulary_content.sql"), "utf8") === renderVocabularyMigration(vocabulary), "単語教材のmigrationがJSONと一致しません。node scripts/generate-vocabulary.mjsを実行してください。");
+} catch (error) {
+  check(false, `単語教材を生成できません: ${error instanceof Error ? error.message : String(error)}`);
+}
 
 check(a1.version === "a1-2026.2", `A1教材版が不正です: ${a1.version}`);
 check(a1.track === "A1", `A1 trackが不正です: ${a1.track}`);
@@ -96,24 +106,37 @@ function queryDatabase(dbPath, sql) {
   }
 }
 function checkD1(dbPath) {
-  const counts = queryDatabase(dbPath, "SELECT (SELECT COUNT(*) FROM pl_tracks WHERE status='published') AS tracks, (SELECT COUNT(*) FROM pl_units WHERE status='published') AS units, (SELECT COUNT(*) FROM pl_lessons WHERE status='published') AS lessons, (SELECT COUNT(*) FROM pl_learning_items WHERE status='published') AS items, (SELECT COUNT(DISTINCT lower(trim(polish))) FROM pl_learning_items WHERE status='published') AS unique_items, (SELECT COUNT(*) FROM pl_lesson_steps) AS steps, (SELECT COUNT(*) FROM pl_voice_missions WHERE status='published') AS missions, (SELECT COUNT(*) FROM pl_cando_items) AS cando;")[0] ?? {};
+  const counts = queryDatabase(dbPath, "SELECT (SELECT COUNT(*) FROM pl_tracks WHERE status='published') AS tracks, (SELECT COUNT(*) FROM pl_units WHERE status='published') AS units, (SELECT COUNT(*) FROM pl_lessons WHERE status='published') AS lessons, (SELECT COUNT(*) FROM pl_learning_items WHERE status='published' AND type <> 'word') AS items, (SELECT COUNT(DISTINCT lower(trim(polish))) FROM pl_learning_items WHERE status='published' AND type <> 'word') AS unique_items, (SELECT COUNT(*) FROM pl_lesson_steps) AS steps, (SELECT COUNT(*) FROM pl_voice_missions WHERE status='published') AS missions, (SELECT COUNT(*) FROM pl_cando_items) AS cando;")[0] ?? {};
   check(counts.tracks === 2, `D1 published track数が2ではありません: ${counts.tracks}`);
   check(counts.units === 20, `D1 published Unit数が20ではありません: ${counts.units}`);
   check(counts.lessons === 120, `D1 published lesson数が120ではありません: ${counts.lessons}`);
-  check(counts.items >= 450 && counts.items <= 600, `D1 published item数が目標範囲外です: ${counts.items}`);
+  check(counts.items === 492, `D1 published lesson item数が492ではありません: ${counts.items}`);
   check(counts.unique_items >= 400, `D1 unique published item数が不足しています: ${counts.unique_items}`);
   check(counts.steps === 1140, `D1 step数が1140ではありません: ${counts.steps}`);
   check(counts.missions === 120, `D1 mission数が120ではありません: ${counts.missions}`);
   check(counts.cando === 60, `D1 Can-do数が60ではありません: ${counts.cando}`);
+  const seededVocabulary = queryDatabase(dbPath, "SELECT i.id, i.polish, i.meaning_ja, i.meaning_en, i.grammar_note, i.topic, i.tags_json, i.accepted_answers_json, d.example_pl, d.example_ja, d.sort_order FROM pl_learning_items i JOIN pl_vocabulary_details d ON d.item_id=i.id WHERE i.status='published' AND i.type='word' AND i.content_version='vocabulary-2026.1' AND d.owner_profile_id IS NULL;");
+  check(seededVocabulary.length >= 80, `D1の共有単語seedが80語未満です: ${seededVocabulary.length}`);
+  const seededById = new Map(seededVocabulary.map((row) => [row.id, row]));
+  for (const [index, word] of vocabularyWords.entries()) {
+    const stored = seededById.get(word.id);
+    check(Boolean(stored), `D1に共有単語がありません: ${word.id}`);
+    if (!stored) continue;
+    for (const [column, field] of [["polish", "polish"], ["meaning_ja", "meaningJa"], ["meaning_en", "meaningEn"], ["grammar_note", "grammarNote"], ["topic", "topic"], ["example_pl", "examplePl"], ["example_ja", "exampleJa"]]) {
+      check(stored[column] === word[field], `${word.id}の${column}が単語教材JSONと一致しません。`);
+    }
+    check(stored.tags_json === JSON.stringify(word.tags) && stored.accepted_answers_json === JSON.stringify(word.acceptedAnswers), `${word.id}の単語metadataがJSONと一致しません。`);
+    check(stored.sort_order === index + 1, `${word.id}の単語表示順が不正です。`);
+  }
   const a1Steps = queryDatabase(dbPath, "SELECT COUNT(*) AS count FROM pl_lesson_steps WHERE lesson_id LIKE 'a1-%';")[0]?.count ?? 0;
   const a2Steps = queryDatabase(dbPath, "SELECT COUNT(*) AS count FROM pl_lesson_steps WHERE lesson_id LIKE 'a2-%';")[0]?.count ?? 0;
   check(a1Steps === 300 && a2Steps === 840, `A1/A2 step内訳が不正です: A1=${a1Steps}, A2=${a2Steps}`);
-  const levelCounts = queryDatabase(dbPath, "SELECT cefr_level, COUNT(*) AS count FROM pl_learning_items WHERE status='published' GROUP BY cefr_level ORDER BY cefr_level;");
+  const levelCounts = queryDatabase(dbPath, "SELECT cefr_level, COUNT(*) AS count FROM pl_learning_items WHERE status='published' AND type <> 'word' GROUP BY cefr_level ORDER BY cefr_level;");
   check(levelCounts.some((row) => row.cefr_level === "A1" && row.count === 132), "D1 A1 published item数が132ではありません。");
   check(levelCounts.some((row) => row.cefr_level === "A2" && row.count === 360), "D1 A2 published item数が360ではありません。");
-  const malformed = queryDatabase(dbPath, "SELECT COUNT(*) AS count FROM pl_learning_items WHERE status='published' AND (polish='' OR meaning_ja='' OR meaning_en='' OR grammar_note='' OR topic='' OR tags_json='' OR accepted_answers_json='' OR cefr_level='' OR skills_json='' OR scene='' OR register='' OR speaker_gender='' OR dialogue_role='');")[0]?.count ?? 0;
+  const malformed = queryDatabase(dbPath, "SELECT COUNT(*) AS count FROM pl_learning_items WHERE status='published' AND type <> 'word' AND (polish='' OR meaning_ja='' OR meaning_en='' OR grammar_note='' OR topic='' OR tags_json='' OR accepted_answers_json='' OR cefr_level='' OR skills_json='' OR scene='' OR register='' OR speaker_gender='' OR dialogue_role='');")[0]?.count ?? 0;
   check(malformed === 0, `published itemに空欄があります: ${malformed}`);
-  const metadata = queryDatabase(dbPath, "SELECT COUNT(*) AS count FROM pl_learning_items WHERE status='published' AND cefr_level='A2' AND (register NOT IN ('formal','informal','neutral') OR speaker_gender <> 'male' OR scene IS NULL OR trim(scene) = '' OR lower(scene) = 'undefined' OR dialogue_role NOT IN ('learner','partner') OR source_kind='' OR json_array_length(skills_json) < 1 OR tags_json NOT LIKE '%cefr:a2%' OR tags_json NOT LIKE '%speaker:male%');")[0]?.count ?? 0;
+  const metadata = queryDatabase(dbPath, "SELECT COUNT(*) AS count FROM pl_learning_items WHERE status='published' AND type <> 'word' AND cefr_level='A2' AND (register NOT IN ('formal','informal','neutral') OR speaker_gender <> 'male' OR scene IS NULL OR trim(scene) = '' OR lower(scene) = 'undefined' OR dialogue_role NOT IN ('learner','partner') OR source_kind='' OR json_array_length(skills_json) < 1 OR tags_json NOT LIKE '%cefr:a2%' OR tags_json NOT LIKE '%speaker:male%');")[0]?.count ?? 0;
   check(metadata === 0, `A2 item metadataが不整合です: ${metadata}`);
   const lessonRows = queryDatabase(dbPath, "SELECT l.id, COUNT(*) AS steps, COUNT(DISTINCT ls.item_id) AS items, GROUP_CONCAT(ls.question_type, '|') AS types FROM pl_lessons l JOIN pl_lesson_steps ls ON ls.lesson_id=l.id WHERE l.id LIKE 'a2-%' GROUP BY l.id ORDER BY l.id;");
   check(lessonRows.length === 60, `D1 A2 lessonの検査数が60ではありません: ${lessonRows.length}`);
@@ -122,9 +145,9 @@ function checkD1(dbPath) {
     check(row.items === 6, `${row.id}のitem参照数が6ではありません: ${row.items}`);
     check(row.types === expectedA2Types.join("|"), `${row.id}の問題形式が不正です: ${row.types}`);
   }
-  const unreferenced = queryDatabase(dbPath, "SELECT COUNT(*) AS count FROM pl_learning_items i WHERE i.status='published' AND i.cefr_level='A2' AND NOT EXISTS (SELECT 1 FROM pl_lesson_steps ls WHERE ls.item_id=i.id);")[0]?.count ?? 0;
+  const unreferenced = queryDatabase(dbPath, "SELECT COUNT(*) AS count FROM pl_learning_items i WHERE i.status='published' AND i.type <> 'word' AND i.cefr_level='A2' AND NOT EXISTS (SELECT 1 FROM pl_lesson_steps ls WHERE ls.item_id=i.id);")[0]?.count ?? 0;
   check(unreferenced === 0, `A2 itemにstep参照がないものがあります: ${unreferenced}`);
-  const a2Duplicates = queryDatabase(dbPath, "SELECT COUNT(*) AS count FROM (SELECT lower(trim(polish)) FROM pl_learning_items WHERE status='published' AND cefr_level='A2' GROUP BY lower(trim(polish)) HAVING COUNT(*)>1);")[0]?.count ?? 0;
+  const a2Duplicates = queryDatabase(dbPath, "SELECT COUNT(*) AS count FROM (SELECT lower(trim(polish)) FROM pl_learning_items WHERE status='published' AND type <> 'word' AND cefr_level='A2' GROUP BY lower(trim(polish)) HAVING COUNT(*)>1);")[0]?.count ?? 0;
   check(a2Duplicates === 0, `A2教材内に重複表現があります: ${a2Duplicates}`);
   const choices = queryDatabase(dbPath, "SELECT id, answer_text, options_json FROM pl_lesson_steps WHERE question_type='multiple_choice';");
   for (const choice of choices) {
@@ -173,4 +196,4 @@ if (failures.length > 0) {
   process.exit(1);
 }
 const suffix = process.argv.includes("--db") ? ", local D1 checked" : "";
-console.log(`教材整合性検査: PASS (A1 60 lessons/132 items, A2 60 lessons/360 items, 1,140 steps${suffix})`);
+console.log(`教材整合性検査: PASS (A1 60 lessons/132 items, A2 60 lessons/360 items, 1,140 steps, vocabulary 80 words/8 topics${suffix})`);

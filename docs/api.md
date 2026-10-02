@@ -2,6 +2,16 @@
 
 Base pathは`/api/v1`です。ローカルではWorkerが`127.0.0.1:8787`で応答し、Viteが同じpathをproxyします。利用者データは現在の`PROFILE_ID`（未設定時はローカルfallback）に紐づきます。
 
+## Vocabulary
+
+- `GET /vocabulary` — 全語数、学習済み・覚えた・期限到来の語数、今日の学習語数、場面別の進捗、今日と最近の自己評価を返す。
+- `GET /vocabulary/words?search=...&topic=...&state=new|learning|remembered&personal=true` — 共有の80語と現在のprofileの個人単語を絞り込む。
+- `GET /vocabulary/queue?mode=learn|review&topic=...&wordId=...&limit=5` — 新規単語または期限到来の単語を返す。指定した単語からの練習も可能。
+- `POST /vocabulary/reviews` — `{ wordId, rating: "again"|"known", idempotencyKey, elapsedMs }` を保存し、`{ eventId, word }` を返す。同じprofile・keyの再送は同じ結果を返し、異なる内容では409となる。
+- `POST /vocabulary/words` — `{ polish, meaningJa, topic, examplePl?, exampleJa?, idempotencyKey }` から個人単語を作成する。同じkeyの再送と同じprofileの同一単語は重複登録しない。
+
+カードの評価は正誤判定とは別の自己評価として保存する。`again`は15分後、`known`は初回1日後、以降は間隔を2.5倍（最大365日）にする。今日の集計はEurope/Warsaw基準。個人単語とその履歴は他のprofileへ公開しない。既存のlesson進捗・正答率・復習キューには単語カードの評価を加算しない。
+
 ## Pronunciation
 
 - `POST /pronunciations`
@@ -11,6 +21,7 @@ Base pathは`/api/v1`です。ローカルではWorkerが`127.0.0.1:8787`で応�
   - 同じ文字列と選択音声はCloudflare Cache APIとクライアントのCache Storageへ保存する。
   - responseは`audio/mpeg`。`x-polski-loop-voice`、`x-polski-loop-gender`、`x-polski-loop-cache`で選択音声とキャッシュ状態を返す。
   - APIキーはWorker Secretの`GOOGLE_TTS_API_KEY`だけに保存し、クライアントへ公開しない。
+  - macOSのVite開発環境でGoogleキー未設定の場合だけ、ローカルのZosia音声を`audio/wav`で返す。本番のWorker経路は変更しない。
 
 ## Curriculum
 
@@ -79,3 +90,5 @@ Base pathは`/api/v1`です。ローカルではWorkerが`127.0.0.1:8787`で応�
 ## Export
 
 `GET /export?format=json|csv`はprofileに属するprofile、session、attempt、review、prompt、Voice結果、Can-do進捗を出力します。CSVには`record_type`、`mission_id`、`heard`、`replied`、`asked_back`、`needs_restatement`、`confidence`、`notes`を含みます。
+
+単語の共有教材・詳細、現在のprofileの個人単語・復習状態・自己評価履歴・登録の冪等記録も含めます。他のprofileの個人単語と履歴は含みません。

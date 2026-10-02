@@ -1,10 +1,17 @@
 # Polski Loop
 
-スマートフォン優先の個人用ポーランド語学習PWAです。既存A1をID・履歴ごと保持したまま、ポーランド在住者が軽い日常会話を目指す生活特化A2を追加しています。教材・回答・誤答・復習予定はローカルD1へ保存します。
+ポーランドでの生活に使う単語を、短い時間で覚える個人用PWAです。ホームから5語ずつカードを開き、発音を聞いて意味を思い出し、「わかった／もう一度」で次へ進みます。スーパー、カフェ・外食、移動、家の中、病院・薬局、手続き、人と会話、時間の8場面・80語を収録し、街で見かけた単語も自分の単語帳へ追加できます。
+
+単語カードの自己評価と復習予定はD1に保存し、入力問題の正誤とは分けて記録します。既存A1/A2教材と学習履歴は保持しており、ホームの「例文・レッスン」やメニューから引き続き開けます。
 
 全画面からGPT-5.6 Lunaへ質問、添削、自由会話、テキストのロールプレイができます。AI会話は質問開始時の画面コンテキストと、その場の全会話だけを使う一時セッションです。画面移動、次の問題、会話を閉じる操作で破棄され、D1へ保存しません。音声認識、音声会話、発音採点はChatGPT Voiceへ任せます。教材のポーランド語読み上げにはGoogle Cloud Text-to-SpeechのChirp 3 HDを使用し、ChatGPTが返す採点ファイルはPolski Loopへ記録します。
 
 ## 実装範囲
+
+- 単語中心のホーム、場面別・状態別・検索対応の単語帳、意味を開くカード、単語ごとの復習予定と自己評価履歴
+- 1回5語の新規学習。期限が来た単語だけを復習キューに入れ、「もう一度」の単語は同じラウンドで最大1回再登場
+- 見かけた単語を個人単語帳へ追加。単語・意味・任意の例文を保存し、そのままカードで練習
+- 既存の回答正答率を変えない専用保存と、再送時の重複保存防止。単語データもJSON/CSVへexport
 
 - 既存A1: 10 Units・60 lessons・132 published items・300 steps。既存ID、プロフィール、回答、復習、sessionをforward migrationで保持
 - A2: 10 Units・60 lessons・360新規published items。合計20 Units・120 lessons・492 published items・1,140 steps
@@ -39,7 +46,9 @@ npm run dev
 
 ブラウザで [http://127.0.0.1:5173](http://127.0.0.1:5173) を開きます。`npm run dev` はVite（5173）とWrangler Worker + D1（8787）を同時に起動し、Viteの`/api`プロキシがWorkerへ接続します。
 
-既存のローカルD1へmigrationを適用するだけで、既存のプロフィール、回答、復習状態、セッションを削除しません。`0001`〜`0006`はすべてforward migrationです。履歴を残したまま`.wrangler/state`を削除・リセットしないでください。
+macOSの開発環境では、Googleのキーが未設定の場合に限り、Macのポーランド語音声Zosiaで発音を再生します。本番はGoogle Cloud Text-to-Speechを使用します。ローカルのWAVと本番のMP3は別のキャッシュへ保存します。
+
+既存のローカルD1へmigrationを適用するだけで、既存のプロフィール、回答、復習状態、セッションを削除しません。`0001`〜`0009`はすべてforward migrationです。履歴を残したまま`.wrangler/state`を削除・リセットしないでください。
 
 ## 検証
 
@@ -82,6 +91,11 @@ npx wrangler secret put OPENAI_API_KEY --env production
 
 | Method | Path | 用途 |
 | --- | --- | --- |
+| GET | `/api/v1/vocabulary` | 単語数、場面別の学習状況、復習期限、今日の自己評価、最近の記録 |
+| GET | `/api/v1/vocabulary/words` | 検索・場面・学習状態・個人単語の絞り込み |
+| GET | `/api/v1/vocabulary/queue` | 新規学習または期限到来の単語カード |
+| POST | `/api/v1/vocabulary/reviews` | `again`または`known`の自己評価を冪等保存し、復習日時を更新 |
+| POST | `/api/v1/vocabulary/words` | 個人単語と任意の例文を冪等保存 |
 | GET | `/api/v1/status?track=A1\|A2` | 選択trackのUnit別進捗、A1+A2総数、次のlesson、復習件数、おすすめ |
 | POST | `/api/v1/pronunciations` | Chirp 3 HDでポーランド語音声を合成し、性別整合・キャッシュ済みMP3を返却 |
 | GET | `/api/v1/lessons/:id` | lessonの段階stepとChatGPT Voice mission |
@@ -118,6 +132,12 @@ migrations/0003_staged_retrieval_a1_full.sql
 migrations/0004_fix_u1_staged_step_metadata.sql
 migrations/0005_a2_missions_content.sql  A2教材・mission・Can-do・結果schema
 migrations/0006_fix_a2_item_situation.sql A2 situation metadata補正
+migrations/0007_voice_result_import.sql ChatGPT採点JSONの同期
+migrations/0008_vocabulary_schema.sql 単語の詳細・自己評価・復習予定
+migrations/0009_vocabulary_content.sql 生活単語80語の追加
+content/vocabulary.json           単語教材・短い使用例の正本
+scripts/generate-vocabulary.mjs   単語seed migrationの生成・検査
+worker/vocabulary.ts              単語API、個人単語、自己評価の冪等保存
 worker/index.ts                     Worker API、判定、復習計算、Access境界
 src/lib/learning.ts                 正規化、採点、難易度、間隔反復
 src/                                React UI、API client、PWA表示

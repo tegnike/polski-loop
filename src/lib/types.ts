@@ -405,3 +405,58 @@ export interface ApiError {
   error: string;
   message: string;
 }
+
+export type VocabularyRating = "again" | "known";
+export type VocabularyMode = "learn" | "review";
+
+export interface VocabularyState {
+  dueAt: string;
+  intervalDays: number;
+  repetitions: number;
+  lapses: number;
+  lastRating: VocabularyRating;
+  updatedAt: string;
+}
+
+export interface VocabularyWord extends LearningItem {
+  examplePl: string;
+  exampleJa: string;
+  personal: boolean;
+  state: VocabularyState | null;
+}
+
+export interface VocabularyTopic {
+  id: string;
+  label: string;
+  icon: string;
+  total: number;
+  started: number;
+}
+
+export interface VocabularyReviewEntry {
+  id: string;
+  wordId: string;
+  polish: string;
+  meaningJa: string;
+  rating: VocabularyRating;
+  elapsedMs: number;
+  createdAt: string;
+  dueAt: string;
+}
+
+export interface VocabularySummary {
+  total: number;
+  started: number;
+  remembered: number;
+  due: number;
+  learnedToday: number;
+  topics: VocabularyTopic[];
+  today: VocabularyWord[];
+  recentReviews: VocabularyReviewEntry[];
+}
+
+export interface VocabularyStudyRequest {
+  mode: VocabularyMode;
+  topic?: string;
+  wordId?: string;
+}

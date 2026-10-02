@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-export type AppView = "today" | "review" | "library" | "curriculum" | "progress";
+export type AppView = "today" | "review" | "library" | "curriculum" | "progress" | "lessonHome" | "legacyLibrary" | "legacyReview" | "legacyProgress";
 
 interface BottomNavProps {
   current: AppView;
@@ -9,10 +9,9 @@ interface BottomNavProps {
 
 const items: Array<{ id: AppView; icon: string; label: string }> = [
   { id: "today", icon: "◒", label: "今日" },
+  { id: "library", icon: "▤", label: "単語帳" },
   { id: "review", icon: "↻", label: "復習" },
-  { id: "library", icon: "▤", label: "辞書" },
-  { id: "curriculum", icon: "▦", label: "Units" },
-  { id: "progress", icon: "↗", label: "進捗" },
+  { id: "progress", icon: "↗", label: "記録" },
 ];
 
 export function BottomNav({ current, onChange }: BottomNavProps): ReactNode {

@@ -1,0 +1,1516 @@
+{
+  "version": "vocabulary-2026.1",
+  "references": [
+    {
+      "word": "filiżanka",
+      "url": "https://wsjp.pl/haslo/podglad/1869/filizanka/1110715/naczynie"
+    },
+    {
+      "word": "kaszel",
+      "url": "https://wsjp.pl/haslo/podglad/31603/kaszel"
+    },
+    {
+      "word": "drzwi",
+      "url": "https://wsjp.pl/haslo/podglad/4088/drzwi/2848198/ruchome-zamkniecie"
+    }
+  ],
+  "topics": [
+    {
+      "id": "supermarket",
+      "titleJa": "スーパー・買い物",
+      "titlePl": "Sklep spożywczy",
+      "words": [
+        {
+          "id": "voc-supermarket-chleb",
+          "type": "word",
+          "polish": "chleb",
+          "meaningJa": "パン",
+          "meaningEn": "bread",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:supermarket",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "chleb"
+          ],
+          "examplePl": "Proszę chleb.",
+          "exampleJa": "パンをください。"
+        },
+        {
+          "id": "voc-supermarket-woda",
+          "type": "word",
+          "polish": "woda",
+          "meaningJa": "水",
+          "meaningEn": "water",
+          "grammarNote": "女性名詞。注文では wodę。",
+          "tags": [
+            "vocabulary",
+            "scene:supermarket",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "woda"
+          ],
+          "examplePl": "Proszę wodę.",
+          "exampleJa": "水をください。"
+        },
+        {
+          "id": "voc-supermarket-mleko",
+          "type": "word",
+          "polish": "mleko",
+          "meaningJa": "牛乳",
+          "meaningEn": "milk",
+          "grammarNote": "中性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:supermarket",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "mleko"
+          ],
+          "examplePl": "To jest mleko.",
+          "exampleJa": "これは牛乳です。"
+        },
+        {
+          "id": "voc-supermarket-kawa",
+          "type": "word",
+          "polish": "kawa",
+          "meaningJa": "コーヒー",
+          "meaningEn": "coffee",
+          "grammarNote": "女性名詞。注文では kawę。",
+          "tags": [
+            "vocabulary",
+            "scene:supermarket",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "kawa"
+          ],
+          "examplePl": "Proszę kawę.",
+          "exampleJa": "コーヒーをください。"
+        },
+        {
+          "id": "voc-supermarket-sklep",
+          "type": "word",
+          "polish": "sklep",
+          "meaningJa": "店",
+          "meaningEn": "shop",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:supermarket",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "sklep"
+          ],
+          "examplePl": "Gdzie jest sklep?",
+          "exampleJa": "店はどこですか？"
+        },
+        {
+          "id": "voc-supermarket-ser",
+          "type": "word",
+          "polish": "ser",
+          "meaningJa": "チーズ",
+          "meaningEn": "cheese",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:supermarket",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "ser"
+          ],
+          "examplePl": "Kupuję ser.",
+          "exampleJa": "チーズを買います。"
+        },
+        {
+          "id": "voc-supermarket-jajko",
+          "type": "word",
+          "polish": "jajko",
+          "meaningJa": "卵",
+          "meaningEn": "egg",
+          "grammarNote": "中性名詞。複数は jajka。",
+          "tags": [
+            "vocabulary",
+            "scene:supermarket",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "jajko"
+          ],
+          "examplePl": "To jest jajko.",
+          "exampleJa": "これは卵です。"
+        },
+        {
+          "id": "voc-supermarket-maslo",
+          "type": "word",
+          "polish": "masło",
+          "meaningJa": "バター",
+          "meaningEn": "butter",
+          "grammarNote": "中性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:supermarket",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "masło"
+          ],
+          "examplePl": "Proszę masło.",
+          "exampleJa": "バターをください。"
+        },
+        {
+          "id": "voc-supermarket-jablko",
+          "type": "word",
+          "polish": "jabłko",
+          "meaningJa": "りんご",
+          "meaningEn": "apple",
+          "grammarNote": "中性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:supermarket",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "jabłko"
+          ],
+          "examplePl": "Jem jabłko.",
+          "exampleJa": "りんごを食べます。"
+        },
+        {
+          "id": "voc-supermarket-cena",
+          "type": "word",
+          "polish": "cena",
+          "meaningJa": "値段",
+          "meaningEn": "price",
+          "grammarNote": "女性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:supermarket",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "cena"
+          ],
+          "examplePl": "Jaka jest cena?",
+          "exampleJa": "値段はいくらですか？"
+        }
+      ]
+    },
+    {
+      "id": "cafe",
+      "titleJa": "カフェ・食事",
+      "titlePl": "Kawiarnia",
+      "words": [
+        {
+          "id": "voc-cafe-herbata",
+          "type": "word",
+          "polish": "herbata",
+          "meaningJa": "お茶",
+          "meaningEn": "tea",
+          "grammarNote": "女性名詞。注文では herbatę。",
+          "tags": [
+            "vocabulary",
+            "scene:cafe",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "herbata"
+          ],
+          "examplePl": "Proszę herbatę.",
+          "exampleJa": "お茶をください。"
+        },
+        {
+          "id": "voc-cafe-cukier",
+          "type": "word",
+          "polish": "cukier",
+          "meaningJa": "砂糖",
+          "meaningEn": "sugar",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:cafe",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "cukier"
+          ],
+          "examplePl": "Poproszę cukier.",
+          "exampleJa": "砂糖をお願いします。"
+        },
+        {
+          "id": "voc-cafe-filizanka",
+          "type": "word",
+          "polish": "filiżanka",
+          "meaningJa": "カップ",
+          "meaningEn": "cup",
+          "grammarNote": "女性名詞。コーヒーやお茶用の取っ手付きカップ。",
+          "tags": [
+            "vocabulary",
+            "scene:cafe",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "filiżanka"
+          ],
+          "examplePl": "To jest moja filiżanka.",
+          "exampleJa": "これは私のカップです。"
+        },
+        {
+          "id": "voc-cafe-szklanka",
+          "type": "word",
+          "polish": "szklanka",
+          "meaningJa": "グラス",
+          "meaningEn": "drinking glass",
+          "grammarNote": "女性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:cafe",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "szklanka"
+          ],
+          "examplePl": "Szklanka jest pusta.",
+          "exampleJa": "グラスは空です。"
+        },
+        {
+          "id": "voc-cafe-ciasto",
+          "type": "word",
+          "polish": "ciasto",
+          "meaningJa": "ケーキ",
+          "meaningEn": "cake",
+          "grammarNote": "中性名詞。生地の意味もあります。",
+          "tags": [
+            "vocabulary",
+            "scene:cafe",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "ciasto"
+          ],
+          "examplePl": "To ciasto jest dobre.",
+          "exampleJa": "このケーキはおいしいです。"
+        },
+        {
+          "id": "voc-cafe-kanapka",
+          "type": "word",
+          "polish": "kanapka",
+          "meaningJa": "サンドイッチ",
+          "meaningEn": "sandwich",
+          "grammarNote": "女性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:cafe",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "kanapka"
+          ],
+          "examplePl": "Jem kanapkę.",
+          "exampleJa": "サンドイッチを食べます。"
+        },
+        {
+          "id": "voc-cafe-rachunek",
+          "type": "word",
+          "polish": "rachunek",
+          "meaningJa": "勘定・請求書",
+          "meaningEn": "bill",
+          "grammarNote": "男性名詞。飲食店の会計でも使います。",
+          "tags": [
+            "vocabulary",
+            "scene:cafe",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "rachunek"
+          ],
+          "examplePl": "Poproszę rachunek.",
+          "exampleJa": "お会計をお願いします。"
+        },
+        {
+          "id": "voc-cafe-stolik",
+          "type": "word",
+          "polish": "stolik",
+          "meaningJa": "テーブル",
+          "meaningEn": "table",
+          "grammarNote": "男性名詞。カフェなどの小さなテーブル。",
+          "tags": [
+            "vocabulary",
+            "scene:cafe",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "stolik"
+          ],
+          "examplePl": "Ten stolik jest wolny.",
+          "exampleJa": "このテーブルは空いています。"
+        },
+        {
+          "id": "voc-cafe-lyzeczka",
+          "type": "word",
+          "polish": "łyżeczka",
+          "meaningJa": "ティースプーン",
+          "meaningEn": "teaspoon",
+          "grammarNote": "女性名詞。łyżka（スプーン）の小さいもの。",
+          "tags": [
+            "vocabulary",
+            "scene:cafe",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "łyżeczka"
+          ],
+          "examplePl": "Poproszę łyżeczkę.",
+          "exampleJa": "ティースプーンをお願いします。"
+        },
+        {
+          "id": "voc-cafe-sok",
+          "type": "word",
+          "polish": "sok",
+          "meaningJa": "ジュース",
+          "meaningEn": "juice",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:cafe",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "sok"
+          ],
+          "examplePl": "Proszę sok.",
+          "exampleJa": "ジュースをください。"
+        }
+      ]
+    },
+    {
+      "id": "transport",
+      "titleJa": "交通・移動",
+      "titlePl": "Transport",
+      "words": [
+        {
+          "id": "voc-transport-bilet",
+          "type": "word",
+          "polish": "bilet",
+          "meaningJa": "切符",
+          "meaningEn": "ticket",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:transport",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "bilet"
+          ],
+          "examplePl": "Proszę jeden bilet.",
+          "exampleJa": "切符を1枚ください。"
+        },
+        {
+          "id": "voc-transport-autobus",
+          "type": "word",
+          "polish": "autobus",
+          "meaningJa": "バス",
+          "meaningEn": "bus",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:transport",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "autobus"
+          ],
+          "examplePl": "Ten autobus jedzie do centrum.",
+          "exampleJa": "このバスは中心部へ行きます。"
+        },
+        {
+          "id": "voc-transport-tramwaj",
+          "type": "word",
+          "polish": "tramwaj",
+          "meaningJa": "路面電車",
+          "meaningEn": "tram",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:transport",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "tramwaj"
+          ],
+          "examplePl": "Tramwaj już jedzie.",
+          "exampleJa": "路面電車がもう来ています。"
+        },
+        {
+          "id": "voc-transport-pociag",
+          "type": "word",
+          "polish": "pociąg",
+          "meaningJa": "列車",
+          "meaningEn": "train",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:transport",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "pociąg"
+          ],
+          "examplePl": "Pociąg jest na peronie.",
+          "exampleJa": "列車はホームにあります。"
+        },
+        {
+          "id": "voc-transport-przystanek",
+          "type": "word",
+          "polish": "przystanek",
+          "meaningJa": "停留所",
+          "meaningEn": "stop",
+          "grammarNote": "男性名詞。バスや路面電車の停留所。",
+          "tags": [
+            "vocabulary",
+            "scene:transport",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "przystanek"
+          ],
+          "examplePl": "Gdzie jest przystanek?",
+          "exampleJa": "停留所はどこですか？"
+        },
+        {
+          "id": "voc-transport-dworzec",
+          "type": "word",
+          "polish": "dworzec",
+          "meaningJa": "駅・ターミナル",
+          "meaningEn": "station",
+          "grammarNote": "男性名詞。主に鉄道駅やバスターミナル。",
+          "tags": [
+            "vocabulary",
+            "scene:transport",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "dworzec"
+          ],
+          "examplePl": "Gdzie jest dworzec?",
+          "exampleJa": "駅はどこですか？"
+        },
+        {
+          "id": "voc-transport-peron",
+          "type": "word",
+          "polish": "peron",
+          "meaningJa": "ホーム",
+          "meaningEn": "platform",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:transport",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "peron"
+          ],
+          "examplePl": "To jest peron drugi.",
+          "exampleJa": "これは2番ホームです。"
+        },
+        {
+          "id": "voc-transport-lotnisko",
+          "type": "word",
+          "polish": "lotnisko",
+          "meaningJa": "空港",
+          "meaningEn": "airport",
+          "grammarNote": "中性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:transport",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "lotnisko"
+          ],
+          "examplePl": "Jadę na lotnisko.",
+          "exampleJa": "空港へ行きます。"
+        },
+        {
+          "id": "voc-transport-taksowka",
+          "type": "word",
+          "polish": "taksówka",
+          "meaningJa": "タクシー",
+          "meaningEn": "taxi",
+          "grammarNote": "女性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:transport",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "taksówka"
+          ],
+          "examplePl": "Taksówka już czeka.",
+          "exampleJa": "タクシーがもう待っています。"
+        },
+        {
+          "id": "voc-transport-opoznienie",
+          "type": "word",
+          "polish": "opóźnienie",
+          "meaningJa": "遅れ",
+          "meaningEn": "delay",
+          "grammarNote": "中性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:transport",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "opóźnienie"
+          ],
+          "examplePl": "Pociąg ma opóźnienie.",
+          "exampleJa": "列車が遅れています。"
+        }
+      ]
+    },
+    {
+      "id": "home",
+      "titleJa": "家・住まい",
+      "titlePl": "Dom",
+      "words": [
+        {
+          "id": "voc-home-dom",
+          "type": "word",
+          "polish": "dom",
+          "meaningJa": "家",
+          "meaningEn": "house",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:home",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "dom"
+          ],
+          "examplePl": "To jest mój dom.",
+          "exampleJa": "これは私の家です。"
+        },
+        {
+          "id": "voc-home-mieszkanie",
+          "type": "word",
+          "polish": "mieszkanie",
+          "meaningJa": "住居・アパート",
+          "meaningEn": "flat",
+          "grammarNote": "中性名詞。建物内の住居を指します。",
+          "tags": [
+            "vocabulary",
+            "scene:home",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "mieszkanie"
+          ],
+          "examplePl": "To mieszkanie jest małe.",
+          "exampleJa": "このアパートは小さいです。"
+        },
+        {
+          "id": "voc-home-pokoj",
+          "type": "word",
+          "polish": "pokój",
+          "meaningJa": "部屋",
+          "meaningEn": "room",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:home",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "pokój"
+          ],
+          "examplePl": "To jest mój pokój.",
+          "exampleJa": "これは私の部屋です。"
+        },
+        {
+          "id": "voc-home-kuchnia",
+          "type": "word",
+          "polish": "kuchnia",
+          "meaningJa": "キッチン",
+          "meaningEn": "kitchen",
+          "grammarNote": "女性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:home",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "kuchnia"
+          ],
+          "examplePl": "Kuchnia jest mała.",
+          "exampleJa": "キッチンは小さいです。"
+        },
+        {
+          "id": "voc-home-lazienka",
+          "type": "word",
+          "polish": "łazienka",
+          "meaningJa": "浴室・洗面所",
+          "meaningEn": "bathroom",
+          "grammarNote": "女性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:home",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "łazienka"
+          ],
+          "examplePl": "Gdzie jest łazienka?",
+          "exampleJa": "浴室はどこですか？"
+        },
+        {
+          "id": "voc-home-klucz",
+          "type": "word",
+          "polish": "klucz",
+          "meaningJa": "鍵",
+          "meaningEn": "key",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:home",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "klucz"
+          ],
+          "examplePl": "Mam klucz.",
+          "exampleJa": "鍵を持っています。"
+        },
+        {
+          "id": "voc-home-drzwi",
+          "type": "word",
+          "polish": "drzwi",
+          "meaningJa": "ドア",
+          "meaningEn": "door",
+          "grammarNote": "複数形だけで使う名詞。ドア1つでも drzwi。",
+          "tags": [
+            "vocabulary",
+            "scene:home",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "drzwi"
+          ],
+          "examplePl": "Drzwi są otwarte.",
+          "exampleJa": "ドアが開いています。"
+        },
+        {
+          "id": "voc-home-okno",
+          "type": "word",
+          "polish": "okno",
+          "meaningJa": "窓",
+          "meaningEn": "window",
+          "grammarNote": "中性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:home",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "okno"
+          ],
+          "examplePl": "Okno jest zamknięte.",
+          "exampleJa": "窓は閉まっています。"
+        },
+        {
+          "id": "voc-home-lozko",
+          "type": "word",
+          "polish": "łóżko",
+          "meaningJa": "ベッド",
+          "meaningEn": "bed",
+          "grammarNote": "中性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:home",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "łóżko"
+          ],
+          "examplePl": "Łóżko jest wygodne.",
+          "exampleJa": "ベッドは快適です。"
+        },
+        {
+          "id": "voc-home-pralka",
+          "type": "word",
+          "polish": "pralka",
+          "meaningJa": "洗濯機",
+          "meaningEn": "washing machine",
+          "grammarNote": "女性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:home",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "pralka"
+          ],
+          "examplePl": "Pralka nie działa.",
+          "exampleJa": "洗濯機が動きません。"
+        }
+      ]
+    },
+    {
+      "id": "health",
+      "titleJa": "健康・薬局",
+      "titlePl": "Zdrowie",
+      "words": [
+        {
+          "id": "voc-health-lekarz",
+          "type": "word",
+          "polish": "lekarz",
+          "meaningJa": "医師",
+          "meaningEn": "doctor",
+          "grammarNote": "男性名詞。女性の医師は lekarka。",
+          "tags": [
+            "vocabulary",
+            "scene:health",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "lekarz"
+          ],
+          "examplePl": "Potrzebuję lekarza.",
+          "exampleJa": "医師が必要です。"
+        },
+        {
+          "id": "voc-health-apteka",
+          "type": "word",
+          "polish": "apteka",
+          "meaningJa": "薬局",
+          "meaningEn": "pharmacy",
+          "grammarNote": "女性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:health",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "apteka"
+          ],
+          "examplePl": "Gdzie jest apteka?",
+          "exampleJa": "薬局はどこですか？"
+        },
+        {
+          "id": "voc-health-lek",
+          "type": "word",
+          "polish": "lek",
+          "meaningJa": "薬",
+          "meaningEn": "medicine",
+          "grammarNote": "男性名詞。複数は leki。",
+          "tags": [
+            "vocabulary",
+            "scene:health",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "lek"
+          ],
+          "examplePl": "Ten lek jest na kaszel.",
+          "exampleJa": "この薬はせき用です。"
+        },
+        {
+          "id": "voc-health-recepta",
+          "type": "word",
+          "polish": "recepta",
+          "meaningJa": "処方箋",
+          "meaningEn": "prescription",
+          "grammarNote": "女性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:health",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "recepta"
+          ],
+          "examplePl": "Mam receptę.",
+          "exampleJa": "処方箋を持っています。"
+        },
+        {
+          "id": "voc-health-bol",
+          "type": "word",
+          "polish": "ból",
+          "meaningJa": "痛み",
+          "meaningEn": "pain",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:health",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "ból"
+          ],
+          "examplePl": "Czuję ból.",
+          "exampleJa": "痛みを感じます。"
+        },
+        {
+          "id": "voc-health-goraczka",
+          "type": "word",
+          "polish": "gorączka",
+          "meaningJa": "発熱",
+          "meaningEn": "fever",
+          "grammarNote": "女性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:health",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "gorączka"
+          ],
+          "examplePl": "Mam gorączkę.",
+          "exampleJa": "熱があります。"
+        },
+        {
+          "id": "voc-health-glowa",
+          "type": "word",
+          "polish": "głowa",
+          "meaningJa": "頭",
+          "meaningEn": "head",
+          "grammarNote": "女性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:health",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "głowa"
+          ],
+          "examplePl": "Boli mnie głowa.",
+          "exampleJa": "頭が痛いです。"
+        },
+        {
+          "id": "voc-health-brzuch",
+          "type": "word",
+          "polish": "brzuch",
+          "meaningJa": "お腹",
+          "meaningEn": "belly",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:health",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "brzuch"
+          ],
+          "examplePl": "Boli mnie brzuch.",
+          "exampleJa": "お腹が痛いです。"
+        },
+        {
+          "id": "voc-health-kaszel",
+          "type": "word",
+          "polish": "kaszel",
+          "meaningJa": "せき",
+          "meaningEn": "cough",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:health",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "kaszel"
+          ],
+          "examplePl": "Mam kaszel.",
+          "exampleJa": "せきが出ます。"
+        },
+        {
+          "id": "voc-health-pomoc",
+          "type": "word",
+          "polish": "pomoc",
+          "meaningJa": "助け",
+          "meaningEn": "help",
+          "grammarNote": "女性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:health",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "pomoc"
+          ],
+          "examplePl": "Potrzebuję pomocy.",
+          "exampleJa": "助けが必要です。"
+        }
+      ]
+    },
+    {
+      "id": "errands",
+      "titleJa": "手続き・用事",
+      "titlePl": "Sprawy codzienne",
+      "words": [
+        {
+          "id": "voc-errands-poczta",
+          "type": "word",
+          "polish": "poczta",
+          "meaningJa": "郵便局",
+          "meaningEn": "post office",
+          "grammarNote": "女性名詞。郵便の意味もあります。",
+          "tags": [
+            "vocabulary",
+            "scene:errands",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "poczta"
+          ],
+          "examplePl": "Gdzie jest poczta?",
+          "exampleJa": "郵便局はどこですか？"
+        },
+        {
+          "id": "voc-errands-paczka",
+          "type": "word",
+          "polish": "paczka",
+          "meaningJa": "小包",
+          "meaningEn": "parcel",
+          "grammarNote": "女性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:errands",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "paczka"
+          ],
+          "examplePl": "To jest moja paczka.",
+          "exampleJa": "これは私の小包です。"
+        },
+        {
+          "id": "voc-errands-list",
+          "type": "word",
+          "polish": "list",
+          "meaningJa": "手紙",
+          "meaningEn": "letter",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:errands",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "list"
+          ],
+          "examplePl": "Wysyłam list.",
+          "exampleJa": "手紙を送ります。"
+        },
+        {
+          "id": "voc-errands-bank",
+          "type": "word",
+          "polish": "bank",
+          "meaningJa": "銀行",
+          "meaningEn": "bank",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:errands",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "bank"
+          ],
+          "examplePl": "Bank jest blisko.",
+          "exampleJa": "銀行は近くにあります。"
+        },
+        {
+          "id": "voc-errands-karta",
+          "type": "word",
+          "polish": "karta",
+          "meaningJa": "カード",
+          "meaningEn": "card",
+          "grammarNote": "女性名詞。支払いでは kartą（カードで）。",
+          "tags": [
+            "vocabulary",
+            "scene:errands",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "karta"
+          ],
+          "examplePl": "Płacę kartą.",
+          "exampleJa": "カードで払います。"
+        },
+        {
+          "id": "voc-errands-gotowka",
+          "type": "word",
+          "polish": "gotówka",
+          "meaningJa": "現金",
+          "meaningEn": "cash",
+          "grammarNote": "女性名詞。支払いでは gotówką（現金で）。",
+          "tags": [
+            "vocabulary",
+            "scene:errands",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "gotówka"
+          ],
+          "examplePl": "Płacę gotówką.",
+          "exampleJa": "現金で払います。"
+        },
+        {
+          "id": "voc-errands-urzad",
+          "type": "word",
+          "polish": "urząd",
+          "meaningJa": "役所",
+          "meaningEn": "government office",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:errands",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "urząd"
+          ],
+          "examplePl": "Urząd jest otwarty.",
+          "exampleJa": "役所は開いています。"
+        },
+        {
+          "id": "voc-errands-dokument",
+          "type": "word",
+          "polish": "dokument",
+          "meaningJa": "書類",
+          "meaningEn": "document",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:errands",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "dokument"
+          ],
+          "examplePl": "Mam ten dokument.",
+          "exampleJa": "その書類を持っています。"
+        },
+        {
+          "id": "voc-errands-formularz",
+          "type": "word",
+          "polish": "formularz",
+          "meaningJa": "記入用紙",
+          "meaningEn": "form",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:errands",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "formularz"
+          ],
+          "examplePl": "Wypełniam formularz.",
+          "exampleJa": "用紙に記入しています。"
+        },
+        {
+          "id": "voc-errands-podpis",
+          "type": "word",
+          "polish": "podpis",
+          "meaningJa": "署名",
+          "meaningEn": "signature",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:errands",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "podpis"
+          ],
+          "examplePl": "Tutaj jest mój podpis.",
+          "exampleJa": "ここに私の署名があります。"
+        }
+      ]
+    },
+    {
+      "id": "people",
+      "titleJa": "人・関係",
+      "titlePl": "Ludzie",
+      "words": [
+        {
+          "id": "voc-people-czlowiek",
+          "type": "word",
+          "polish": "człowiek",
+          "meaningJa": "人",
+          "meaningEn": "person",
+          "grammarNote": "男性名詞。複数は ludzie。",
+          "tags": [
+            "vocabulary",
+            "scene:people",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "człowiek"
+          ],
+          "examplePl": "To dobry człowiek.",
+          "exampleJa": "その人はいい人です。"
+        },
+        {
+          "id": "voc-people-kobieta",
+          "type": "word",
+          "polish": "kobieta",
+          "meaningJa": "女性",
+          "meaningEn": "woman",
+          "grammarNote": "女性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:people",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "kobieta"
+          ],
+          "examplePl": "Ta kobieta pracuje tutaj.",
+          "exampleJa": "その女性はここで働いています。"
+        },
+        {
+          "id": "voc-people-mezczyzna",
+          "type": "word",
+          "polish": "mężczyzna",
+          "meaningJa": "男性",
+          "meaningEn": "man",
+          "grammarNote": "aで終わりますが男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:people",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "mężczyzna"
+          ],
+          "examplePl": "Ten mężczyzna jest moim sąsiadem.",
+          "exampleJa": "その男性は私の隣人です。"
+        },
+        {
+          "id": "voc-people-dziecko",
+          "type": "word",
+          "polish": "dziecko",
+          "meaningJa": "子ども",
+          "meaningEn": "child",
+          "grammarNote": "中性名詞。複数は dzieci。",
+          "tags": [
+            "vocabulary",
+            "scene:people",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "dziecko"
+          ],
+          "examplePl": "Dziecko śpi.",
+          "exampleJa": "子どもが寝ています。"
+        },
+        {
+          "id": "voc-people-rodzina",
+          "type": "word",
+          "polish": "rodzina",
+          "meaningJa": "家族",
+          "meaningEn": "family",
+          "grammarNote": "女性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:people",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "rodzina"
+          ],
+          "examplePl": "Moja rodzina jest w Japonii.",
+          "exampleJa": "私の家族は日本にいます。"
+        },
+        {
+          "id": "voc-people-przyjaciel",
+          "type": "word",
+          "polish": "przyjaciel",
+          "meaningJa": "友人",
+          "meaningEn": "friend",
+          "grammarNote": "男性名詞。女性の友人は przyjaciółka。",
+          "tags": [
+            "vocabulary",
+            "scene:people",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "przyjaciel"
+          ],
+          "examplePl": "To jest mój przyjaciel.",
+          "exampleJa": "これは私の友人です。"
+        },
+        {
+          "id": "voc-people-sasiad",
+          "type": "word",
+          "polish": "sąsiad",
+          "meaningJa": "隣人",
+          "meaningEn": "neighbour",
+          "grammarNote": "男性名詞。女性の隣人は sąsiadka。",
+          "tags": [
+            "vocabulary",
+            "scene:people",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "sąsiad"
+          ],
+          "examplePl": "Mój sąsiad jest miły.",
+          "exampleJa": "私の隣人は親切です。"
+        },
+        {
+          "id": "voc-people-sprzedawca",
+          "type": "word",
+          "polish": "sprzedawca",
+          "meaningJa": "販売員",
+          "meaningEn": "salesperson",
+          "grammarNote": "aで終わりますが男性名詞。女性は sprzedawczyni。",
+          "tags": [
+            "vocabulary",
+            "scene:people",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "sprzedawca"
+          ],
+          "examplePl": "Sprzedawca mi pomaga.",
+          "exampleJa": "販売員が私を手伝ってくれています。"
+        },
+        {
+          "id": "voc-people-pracownik",
+          "type": "word",
+          "polish": "pracownik",
+          "meaningJa": "職員・従業員",
+          "meaningEn": "employee",
+          "grammarNote": "男性名詞。女性は pracownica。",
+          "tags": [
+            "vocabulary",
+            "scene:people",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "pracownik"
+          ],
+          "examplePl": "Pracownik jest w biurze.",
+          "exampleJa": "職員は事務所にいます。"
+        },
+        {
+          "id": "voc-people-imie",
+          "type": "word",
+          "polish": "imię",
+          "meaningJa": "名前",
+          "meaningEn": "first name",
+          "grammarNote": "中性名詞。個人の名を指します。",
+          "tags": [
+            "vocabulary",
+            "scene:people",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "imię"
+          ],
+          "examplePl": "Jak masz na imię?",
+          "exampleJa": "名前は何ですか？"
+        }
+      ]
+    },
+    {
+      "id": "time",
+      "titleJa": "時間・予定",
+      "titlePl": "Czas",
+      "words": [
+        {
+          "id": "voc-time-dzis",
+          "type": "word",
+          "polish": "dziś",
+          "meaningJa": "今日",
+          "meaningEn": "today",
+          "grammarNote": "副詞。dzisiaj と同じ意味。",
+          "tags": [
+            "vocabulary",
+            "scene:time",
+            "part:adverb"
+          ],
+          "acceptedAnswers": [
+            "dziś",
+            "dzisiaj"
+          ],
+          "examplePl": "Dziś pracuję.",
+          "exampleJa": "今日は働きます。"
+        },
+        {
+          "id": "voc-time-jutro",
+          "type": "word",
+          "polish": "jutro",
+          "meaningJa": "明日",
+          "meaningEn": "tomorrow",
+          "grammarNote": "副詞。",
+          "tags": [
+            "vocabulary",
+            "scene:time",
+            "part:adverb"
+          ],
+          "acceptedAnswers": [
+            "jutro"
+          ],
+          "examplePl": "Jutro mam wolne.",
+          "exampleJa": "明日は休みです。"
+        },
+        {
+          "id": "voc-time-wczoraj",
+          "type": "word",
+          "polish": "wczoraj",
+          "meaningJa": "昨日",
+          "meaningEn": "yesterday",
+          "grammarNote": "副詞。",
+          "tags": [
+            "vocabulary",
+            "scene:time",
+            "part:adverb"
+          ],
+          "acceptedAnswers": [
+            "wczoraj"
+          ],
+          "examplePl": "Wczoraj padało.",
+          "exampleJa": "昨日は雨が降りました。"
+        },
+        {
+          "id": "voc-time-teraz",
+          "type": "word",
+          "polish": "teraz",
+          "meaningJa": "今",
+          "meaningEn": "now",
+          "grammarNote": "副詞。",
+          "tags": [
+            "vocabulary",
+            "scene:time",
+            "part:adverb"
+          ],
+          "acceptedAnswers": [
+            "teraz"
+          ],
+          "examplePl": "Teraz jestem w domu.",
+          "exampleJa": "今は家にいます。"
+        },
+        {
+          "id": "voc-time-pozniej",
+          "type": "word",
+          "polish": "później",
+          "meaningJa": "あとで",
+          "meaningEn": "later",
+          "grammarNote": "副詞。",
+          "tags": [
+            "vocabulary",
+            "scene:time",
+            "part:adverb"
+          ],
+          "acceptedAnswers": [
+            "później"
+          ],
+          "examplePl": "Zadzwonię później.",
+          "exampleJa": "あとで電話します。"
+        },
+        {
+          "id": "voc-time-rano",
+          "type": "word",
+          "polish": "rano",
+          "meaningJa": "朝に",
+          "meaningEn": "in the morning",
+          "grammarNote": "時を表す副詞。",
+          "tags": [
+            "vocabulary",
+            "scene:time",
+            "part:adverb"
+          ],
+          "acceptedAnswers": [
+            "rano"
+          ],
+          "examplePl": "Rano piję kawę.",
+          "exampleJa": "朝にコーヒーを飲みます。"
+        },
+        {
+          "id": "voc-time-wieczor",
+          "type": "word",
+          "polish": "wieczór",
+          "meaningJa": "夕方・夜",
+          "meaningEn": "evening",
+          "grammarNote": "男性名詞。「夜に」は wieczorem。",
+          "tags": [
+            "vocabulary",
+            "scene:time",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "wieczór"
+          ],
+          "examplePl": "Wieczór jest spokojny.",
+          "exampleJa": "穏やかな夜です。"
+        },
+        {
+          "id": "voc-time-dzien",
+          "type": "word",
+          "polish": "dzień",
+          "meaningJa": "日・1日",
+          "meaningEn": "day",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:time",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "dzień"
+          ],
+          "examplePl": "To był dobry dzień.",
+          "exampleJa": "いい1日でした。"
+        },
+        {
+          "id": "voc-time-tydzien",
+          "type": "word",
+          "polish": "tydzień",
+          "meaningJa": "週",
+          "meaningEn": "week",
+          "grammarNote": "男性名詞。",
+          "tags": [
+            "vocabulary",
+            "scene:time",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "tydzień"
+          ],
+          "examplePl": "Za tydzień wracam.",
+          "exampleJa": "1週間後に戻ります。"
+        },
+        {
+          "id": "voc-time-godzina",
+          "type": "word",
+          "polish": "godzina",
+          "meaningJa": "時間・1時間",
+          "meaningEn": "hour",
+          "grammarNote": "女性名詞。時刻を尋ねるときにも使います。",
+          "tags": [
+            "vocabulary",
+            "scene:time",
+            "part:noun"
+          ],
+          "acceptedAnswers": [
+            "godzina"
+          ],
+          "examplePl": "Która jest godzina?",
+          "exampleJa": "今何時ですか？"
+        }
+      ]
+    }
+  ]
+}

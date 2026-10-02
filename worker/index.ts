@@ -13,6 +13,7 @@ import { buildAiTutorInstructions, extractOpenAiResponseText, validateAiChatRequ
 import { validateVoiceResultImport, VOICE_SCORE_KEYS } from "../src/lib/voice-result";
 import { normalizePronunciationText, selectPolishVoice, type SpeakerGender } from "../src/lib/pronunciation-config";
 import { buildDailyProgressActivity, currentActivityStreak } from "../src/lib/progress";
+import { VocabularyError, vocabularyExport, vocabularyRoute } from "./vocabulary";
 import type {
   AttemptResult, CanDoItem, CanDoStatus, CanDoUnit, ChoiceOption, CurriculumSummary, DifficultyLevel,
   DueItem, ExerciseShape, ItemType, LearningItem, Lesson, LessonStep, LessonSummary, MistakeSummary,
@@ -428,7 +429,7 @@ function reviewExercise(item: LearningItem, state: ReviewState, otherItems: Lear
     clozeSuffix: questionType === "cloze" ? cloze.clozeSuffix : "", hintText: difficultyLabel(state.difficultyLevel) };
 }
 async function publishedItems(db: D1Database): Promise<LearningItem[]> {
-  const result = await db.prepare("SELECT id, type, polish, meaning_ja, meaning_en, grammar_note, topic, tags_json, accepted_answers_json, content_version, cefr_level, skills_json, scene, register, speaker_gender, dialogue_role FROM pl_learning_items WHERE status = 'published' ORDER BY id").all<ItemRow>();
+  const result = await db.prepare("SELECT id, type, polish, meaning_ja, meaning_en, grammar_note, topic, tags_json, accepted_answers_json, content_version, cefr_level, skills_json, scene, register, speaker_gender, dialogue_role FROM pl_learning_items WHERE status = 'published' AND NOT EXISTS (SELECT 1 FROM pl_vocabulary_details d WHERE d.item_id = pl_learning_items.id) ORDER BY id").all<ItemRow>();
   return (result.results ?? []).map(itemFromRow);
 }
 
@@ -497,7 +498,7 @@ async function statusResponse(db: D1Database, currentProfileId: string, requeste
     "SELECT t.id, t.code, t.title, t.cefr, t.content_version, " +
     "(SELECT COUNT(*) FROM pl_units u WHERE u.track_id = t.id AND u.status = 'published') AS unit_count, " +
     "(SELECT COUNT(*) FROM pl_lessons l JOIN pl_units u ON u.id = l.unit_id WHERE u.track_id = t.id AND l.status = 'published') AS lesson_count, " +
-    "(SELECT COUNT(*) FROM pl_learning_items i WHERE i.status = 'published' AND i.cefr_level = t.cefr) AS item_count " +
+    "(SELECT COUNT(*) FROM pl_learning_items i WHERE i.status = 'published' AND i.cefr_level = t.cefr AND NOT EXISTS (SELECT 1 FROM pl_vocabulary_details d WHERE d.item_id = i.id)) AS item_count " +
     "FROM pl_tracks t WHERE t.status = 'published' ORDER BY t.code",
   ).all<TrackRow & { unit_count: number; lesson_count: number; item_count: number }>();
   const tracks: TrackSummary[] = (trackRows.results ?? []).map((row) => ({ id: row.id, code: row.code, title: row.title, cefr: row.cefr,
@@ -505,14 +506,15 @@ async function statusResponse(db: D1Database, currentProfileId: string, requeste
   const counts = await db.prepare(
     "SELECT COUNT(*) AS published, COUNT(DISTINCT lower(trim(polish))) AS unique_published, " +
     "SUM(CASE WHEN cefr_level = 'A1' THEN 1 ELSE 0 END) AS a1, SUM(CASE WHEN cefr_level = 'A2' THEN 1 ELSE 0 END) AS a2 " +
-    "FROM pl_learning_items WHERE status = 'published'",
+    "FROM pl_learning_items WHERE status = 'published' AND NOT EXISTS (SELECT 1 FROM pl_vocabulary_details d WHERE d.item_id = pl_learning_items.id)",
   ).first<{ published: number; unique_published: number; a1: number; a2: number }>();
   const curriculum: CurriculumSummary = { unitCount: allUnitProgress.length, lessonCount: allUnitProgress.reduce((sum, unit) => sum + unit.totalLessons, 0),
     publishedItemCount: counts?.published ?? 0, uniquePublishedItemCount: counts?.unique_published ?? 0, a1ItemCount: counts?.a1 ?? 0, a2ItemCount: counts?.a2 ?? 0 };
   const now = new Date().toISOString();
-  const due = await db.prepare("SELECT COUNT(*) AS count FROM pl_review_states WHERE profile_id = ? AND due_at <= ?").bind(currentProfileId, now).first<{ count: number }>();
-  const learned = await db.prepare("SELECT COUNT(*) AS count FROM pl_review_states WHERE profile_id = ? AND status != 'new'").bind(currentProfileId).first<{ count: number }>();
-  const mastered = await db.prepare("SELECT COUNT(*) AS count FROM pl_review_states WHERE profile_id = ? AND status = 'mastered'").bind(currentProfileId).first<{ count: number }>();
+  const legacyState = " FROM pl_review_states rs WHERE rs.profile_id = ? AND NOT EXISTS (SELECT 1 FROM pl_vocabulary_details d WHERE d.item_id = rs.item_id)";
+  const due = await db.prepare("SELECT COUNT(*) AS count" + legacyState + " AND rs.due_at <= ?").bind(currentProfileId, now).first<{ count: number }>();
+  const learned = await db.prepare("SELECT COUNT(*) AS count" + legacyState + " AND rs.status != 'new'").bind(currentProfileId).first<{ count: number }>();
+  const mastered = await db.prepare("SELECT COUNT(*) AS count" + legacyState + " AND rs.status = 'mastered'").bind(currentProfileId).first<{ count: number }>();
   const sessionRows = await db.prepare("SELECT s.id, s.lesson_id, l.title_ja AS lesson_title, s.mode, s.started_at, s.completed_at, s.duration_ms FROM pl_study_sessions s LEFT JOIN pl_lessons l ON l.id = s.lesson_id WHERE s.profile_id = ? ORDER BY s.started_at DESC LIMIT 200").bind(currentProfileId).all<SessionRow>();
   const sessions = sessionRows.results ?? [];
   const today = dateKeyInZone(new Date(), profile.study_timezone);
@@ -592,7 +594,7 @@ async function itemsResponse(db: D1Database, currentProfileId: string, url: URL)
   const type = url.searchParams.get("type") ?? "";
   const topic = url.searchParams.get("topic") ?? "";
   const state = url.searchParams.get("state") ?? "";
-  const clauses = ["i.status = 'published'"];
+  const clauses = ["i.status = 'published'", "NOT EXISTS (SELECT 1 FROM pl_vocabulary_details d WHERE d.item_id = i.id)"];
   const values: Array<string | number> = [];
   if (search) { clauses.push("(i.polish LIKE ? OR i.meaning_ja LIKE ? OR i.meaning_en LIKE ? OR i.tags_json LIKE ?)"); const pattern = "%" + search + "%"; values.push(pattern, pattern, pattern, pattern); }
   if (["word", "phrase", "sentence", "grammar"].includes(type)) { clauses.push("i.type = ?"); values.push(type); }
@@ -610,7 +612,7 @@ async function dueResponse(db: D1Database, currentProfileId: string, limit: numb
   const result = await db.prepare(
     "SELECT i.id, i.type, i.polish, i.meaning_ja, i.meaning_en, i.grammar_note, i.topic, i.tags_json, i.accepted_answers_json, i.content_version, i.cefr_level, i.skills_json, i.scene, i.register, i.speaker_gender, i.dialogue_role, " +
     "rs.item_id, rs.due_at, rs.interval_days, rs.ease_factor, rs.repetitions, rs.lapses, rs.last_rating, rs.last_attempt_at, rs.status, rs.difficulty_level, rs.success_streak, rs.failure_streak, rs.last_question_type, rs.last_direction " +
-    "FROM pl_review_states rs JOIN pl_learning_items i ON i.id = rs.item_id WHERE rs.profile_id = ? AND rs.due_at <= ? AND i.status = 'published' ORDER BY rs.due_at LIMIT ?",
+    "FROM pl_review_states rs JOIN pl_learning_items i ON i.id = rs.item_id WHERE rs.profile_id = ? AND rs.due_at <= ? AND i.status = 'published' AND NOT EXISTS (SELECT 1 FROM pl_vocabulary_details d WHERE d.item_id = i.id) ORDER BY rs.due_at LIMIT ?",
   ).bind(currentProfileId, new Date().toISOString(), Math.max(1, Math.min(limit, 50))).all<ItemRow & ReviewRow>();
   const allItems = await publishedItems(db);
   return (result.results ?? []).map((row) => {
@@ -642,7 +644,7 @@ async function attemptResponse(db: D1Database, currentProfileId: string, request
   if (body.answer.length > 1000) throw new Error("回答が長すぎます。");
   const previousAttempt = await db.prepare("SELECT id, item_id, answer, expected_answer, is_correct, verdict, rating, question_type, direction, difficulty_before, difficulty_after, elapsed_ms, created_at FROM pl_attempts WHERE idempotency_key = ?").bind(body.idempotencyKey).first<AttemptRow>();
   if (previousAttempt) return resultFromAttempt(db, previousAttempt, await getReviewState(db, currentProfileId, previousAttempt.item_id));
-  const itemRow = await db.prepare("SELECT id, type, polish, meaning_ja, meaning_en, grammar_note, topic, tags_json, accepted_answers_json, content_version, cefr_level, skills_json, scene, register, speaker_gender, dialogue_role FROM pl_learning_items WHERE id = ? AND status = 'published'").bind(body.itemId).first<ItemRow>();
+  const itemRow = await db.prepare("SELECT id, type, polish, meaning_ja, meaning_en, grammar_note, topic, tags_json, accepted_answers_json, content_version, cefr_level, skills_json, scene, register, speaker_gender, dialogue_role FROM pl_learning_items WHERE id = ? AND status = 'published' AND NOT EXISTS (SELECT 1 FROM pl_vocabulary_details d WHERE d.item_id = pl_learning_items.id)").bind(body.itemId).first<ItemRow>();
   if (!itemRow) throw new Error("learning_item_not_found");
   const item = itemFromRow(itemRow);
   let step: StepRow | null = null;
@@ -855,13 +857,16 @@ async function exportResponse(db: D1Database, currentProfileId: string, format: 
     const result = await db.prepare(query).bind(currentProfileId).all<Record<string, unknown>>();
     data[table] = result.results ?? [];
   }
+  Object.assign(data, await vocabularyExport(db, currentProfileId));
   const exportedAt = new Date().toISOString();
   if (format === "csv") {
-    const headers = ["record_type", "id", "item_id", "mission_id", "answer", "expected_answer", "is_correct", "verdict", "rating", "question_type", "direction", "heard", "replied", "asked_back", "needs_restatement", "confidence", "source_kind", "external_result_id", "schema_version", "evaluated_at", "overall_score", "scores_json", "feedback_json", "notes", "created_at"];
+    const headers = ["record_type", "id", "item_id", "mission_id", "answer", "expected_answer", "is_correct", "verdict", "rating", "question_type", "direction", "heard", "replied", "asked_back", "needs_restatement", "confidence", "source_kind", "external_result_id", "schema_version", "evaluated_at", "overall_score", "scores_json", "feedback_json", "notes", "created_at", "polish", "meaning_ja", "meaning_en", "topic", "example_pl", "example_ja", "owner_profile_id", "profile_id", "due_at", "interval_days", "repetitions", "lapses", "last_rating", "updated_at", "sort_order", "grammar_note", "tags_json", "accepted_answers_json", "content_version", "status", "cefr_level", "skills_json", "scene", "register", "speaker_gender", "dialogue_role", "idempotency_key", "request_fingerprint"];
     const rows = [
       ...data.pl_attempts.map((row) => headers.map((header) => csvCell({ record_type: "attempt", ...row }[header])).join(",")),
       ...data.pl_voice_attempts.map((row) => headers.map((header) => csvCell({ record_type: "voice_result", needs_restatement: row.rephrased, ...row }[header])).join(",")),
       ...data.pl_cando_progress.map((row) => headers.map((header) => csvCell({ record_type: "cando", notes: row.evidence_notes, ...row }[header])).join(",")),
+      ...Object.entries({ pl_vocabulary_details: "vocabulary_details", pl_vocabulary_states: "vocabulary_state", pl_vocabulary_reviews: "vocabulary_review", pl_vocabulary_word_requests: "vocabulary_word_request", pl_vocabulary_learning_items: "vocabulary_word" }).flatMap(([table, type]) =>
+        data[table].map((row) => headers.map((header) => csvCell({ record_type: type, ...row }[header])).join(","))),
     ];
     return textResponse([headers.join(","), ...rows].join("\n"), "text/csv; charset=utf-8", { headers: { "content-disposition": "attachment; filename=\"polski-loop-export-" + exportedAt.slice(0, 10) + ".csv\"" } });
   }
@@ -884,6 +889,7 @@ async function apiFetch(request: Request, env: Env, ctx: ExecutionContext): Prom
   const path = url.pathname.replace(/^\/api\/v1/, "") || "/";
   const currentProfileId = profileId(env);
   if (request.method === "OPTIONS") return jsonResponse({ ok: true });
+  if (path === "/vocabulary" || path.startsWith("/vocabulary/")) return jsonResponse(await vocabularyRoute(request, env.DB, currentProfileId, path, url), { status: request.method === "POST" && path === "/vocabulary/words" ? 201 : 200 });
   if (request.method === "GET" && path === "/status") {
     const requestedTrack: TrackCode = url.searchParams.get("track") === "A2" ? "A2" : "A1";
     return jsonResponse(await statusResponse(env.DB, currentProfileId, requestedTrack));
@@ -964,6 +970,7 @@ export default {
     try { return await apiFetch(request, env, ctx); }
     catch (error) {
       const message = error instanceof Error ? error.message : "予期しないエラーが発生しました。";
+      if (error instanceof VocabularyError) return errorResponse(error.status, message);
       if (message === "seed_data_missing" || message === "lesson_seed_missing" || message === "mission_seed_missing") return errorResponse(500, "D1の初期データが不足しています。npm run db:migrateを実行してください。");
       if (message === "lesson_not_found" || message === "lesson_step_not_found" || message === "learning_item_not_found" || message === "attempt_not_found" || message === "mission_not_found" || message === "unit_not_found" || message === "cando_not_found") return errorResponse(404, "指定された教材、mission、Can-do、または履歴が見つかりません。");
       if (message === "tts_not_configured") return errorResponse(503, "音声サービスが設定されていません。");

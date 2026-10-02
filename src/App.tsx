@@ -3,6 +3,10 @@ import { BottomNav, type AppView } from "./components/BottomNav";
 import AIChat from "./components/AIChat";
 import PronunciationButton from "./components/PronunciationButton";
 import StudyFlow from "./components/StudyFlow";
+import VocabularyHome from "./components/VocabularyHome";
+import VocabularyLibrary from "./components/VocabularyLibrary";
+import VocabularyFlow from "./components/VocabularyFlow";
+import VocabularyRecords from "./components/VocabularyRecords";
 import { api, downloadExport } from "./lib/api";
 import { buildAppAiContext } from "./lib/ai-context";
 import { downloadTextFile } from "./lib/download";
@@ -21,6 +25,8 @@ import type {
   TimelineFilter,
   TrackCode,
   VoiceResultImport,
+  VocabularySummary,
+  VocabularyStudyRequest,
 } from "./lib/types";
 
 type StudyRequest = { mode: "lesson" | "review"; lessonId?: string };
@@ -37,6 +43,10 @@ const questionLabels: Record<QuestionType, string> = {
 
 function App() {
   const [status, setStatus] = useState<StatusResponse | null>(null);
+  const [vocabulary, setVocabulary] = useState<VocabularySummary | null>(null);
+  const [vocabularyStudy, setVocabularyStudy] = useState<VocabularyStudyRequest | null>(null);
+  const [libraryTopic, setLibraryTopic] = useState<string | undefined>();
+  const [addingWord, setAddingWord] = useState(false);
   const [activeTrack, setActiveTrack] = useState<TrackCode>("A1");
   const [view, setView] = useState<AppView>("today");
   const [progressTab, setProgressTab] = useState<ProgressTab>("overview");
@@ -51,7 +61,12 @@ function App() {
   const refreshStatus = useCallback(async () => {
     try {
       setError(null);
-      setStatus(await api.status(activeTrack));
+      const [nextStatus, nextVocabulary] = await Promise.all([
+        api.status(activeTrack),
+        api.vocabularySummary(),
+      ]);
+      setStatus(nextStatus);
+      setVocabulary(nextVocabulary);
     } catch (loadError) {
       setError(
         loadError instanceof Error
@@ -128,6 +143,29 @@ function App() {
     setNotice("学習履歴を保存しました。おつかれさまでした！");
   }
 
+  function openLibrary(topic?: string, add = false) {
+    setLibraryTopic(topic);
+    setAddingWord(add);
+    setView("library");
+  }
+
+  if (vocabularyStudy)
+    return (
+      <VocabularyFlow
+        request={vocabularyStudy}
+        onFinished={() => {
+          setVocabularyStudy(null);
+          setView("today");
+          void refreshStatus();
+          setNotice("おつかれさまでした！");
+        }}
+        onBack={() => {
+          setVocabularyStudy(null);
+          void refreshStatus();
+        }}
+      />
+    );
+
   if (study)
     return (
       <StudyFlow
@@ -145,7 +183,7 @@ function App() {
         読み込み中…
       </div>
     );
-  if (error || !status)
+  if (error || !status || !vocabulary)
     return (
       <div className="app-loading error-screen">
         <img className="brand-mark" src="/icon.svg" alt="" />
@@ -176,7 +214,7 @@ function App() {
           <img className="brand-mark" src="/icon.svg" alt="" />
           <div>
             <strong>Polski Loop</strong>
-            <span>A1 / A2 · 段階的な想起ループ</span>
+            <span>日常で使うポーランド語</span>
           </div>
         </div>
         <button
@@ -192,6 +230,10 @@ function App() {
           <SettingsMenu
             onExport={handleExport}
             onClose={() => setMenuOpen(false)}
+            onNavigate={(nextView) => {
+              setView(nextView);
+              setMenuOpen(false);
+            }}
           />
         )}
       </header>
@@ -204,6 +246,15 @@ function App() {
       )}
       <main className="main-content">
         {view === "today" && (
+          <VocabularyHome
+            summary={vocabulary}
+            onStart={setVocabularyStudy}
+            onLibrary={(topic) => openLibrary(topic)}
+            onLegacy={() => setView("lessonHome")}
+            onAdd={() => openLibrary(undefined, true)}
+          />
+        )}
+        {view === "lessonHome" && (
           <TodayView
             status={status}
             activeTrack={activeTrack}
@@ -218,12 +269,38 @@ function App() {
           />
         )}
         {view === "review" && (
+          <div className="page-stack">
+            <section className="page-intro">
+              <span className="eyebrow">思い出す練習</span>
+              <h1>単語の復習</h1>
+              <p>{vocabulary.due > 0 ? vocabulary.due + "語が、今の復習タイミングです。" : "今すぐ復習する単語はありません。次の予定は記録で確認できます。"}</p>
+            </section>
+            <section className="card">
+              <button className="button primary full-width" type="button" disabled={vocabulary.due === 0} onClick={() => setVocabularyStudy({ mode: "review" })}>
+                単語を復習する →
+              </button>
+              <button className="button secondary full-width" type="button" onClick={() => openLibrary()}>単語帳から練習する</button>
+            </section>
+            <button className="plain-button" type="button" onClick={() => setView("legacyReview")}>例文・表現の復習を見る（{status.progress.dueReviews}件）</button>
+          </div>
+        )}
+        {view === "legacyReview" && (
           <ReviewView
             dueCount={status.progress.dueReviews}
             onStart={() => setStudy({ mode: "review" })}
           />
         )}
-        {view === "library" && <LibraryView />}
+        {view === "library" && (
+          <VocabularyLibrary
+            key={(libraryTopic ?? "all") + (addingWord ? ":add" : "")}
+            summary={vocabulary}
+            initialTopic={libraryTopic}
+            initiallyAdding={addingWord}
+            onStart={setVocabularyStudy}
+            onChanged={() => void refreshStatus()}
+          />
+        )}
+        {view === "legacyLibrary" && <LibraryView />}
         {view === "curriculum" && (
           <CurriculumView
             status={status}
@@ -234,6 +311,9 @@ function App() {
           />
         )}
         {view === "progress" && (
+          <VocabularyRecords summary={vocabulary} onLegacy={() => setView("legacyProgress")} />
+        )}
+        {view === "legacyProgress" && (
           <ProgressView
             status={status}
             activeTab={progressTab}
@@ -242,13 +322,30 @@ function App() {
         )}
       </main>
       <AIChat
-        context={buildAppAiContext(
-          status,
-          view === "progress" && progressTab === "history" ? "history" : view,
-          activeTrack,
-        )}
+        context={view === "today" || view === "library" || view === "review" || view === "progress"
+          ? {
+              key: "vocabulary:" + view,
+              label: "ポーランド語の単語学習",
+              content: [
+                "画面: " + ({ today: "今日の単語", library: "単語帳", review: "単語の復習", progress: "単語の記録" }[view]),
+                "目的: ポーランドでの日常生活に必要な単語を覚える。",
+                "学習済み単語: " + vocabulary.started,
+                "今の復習対象: " + vocabulary.due,
+                "今日の単語: " + vocabulary.today.map((word) => word.polish + " = " + word.meaningJa).join(" / "),
+              ].join("\n"),
+            }
+          : buildAppAiContext(
+              status,
+              view === "legacyProgress" ? (progressTab === "history" ? "history" : "progress")
+                : view === "lessonHome" ? "today" : view === "legacyLibrary" ? "library"
+                : view === "legacyReview" ? "review" : view,
+              activeTrack,
+            )}
       />
-      <BottomNav current={view} onChange={setView} />
+      <BottomNav current={view} onChange={(nextView) => {
+        if (nextView === "library") openLibrary();
+        else setView(nextView);
+      }} />
     </div>
   );
 }
@@ -291,9 +388,11 @@ function AutoDismissNotice({
 function SettingsMenu({
   onExport,
   onClose,
+  onNavigate,
 }: {
   onExport: (format: "json" | "csv") => void;
   onClose: () => void;
+  onNavigate: (view: AppView) => void;
 }) {
   return (
     <div className="settings-menu" role="dialog" aria-label="設定メニュー">
@@ -305,6 +404,10 @@ function SettingsMenu({
       </div>
       <p>教材、回答、復習履歴はいつでも自分のデータとして持ち出せます。</p>
       <div className="menu-actions">
+        <button type="button" onClick={() => onNavigate("lessonHome")}>例文・レッスン</button>
+        <button type="button" onClick={() => onNavigate("curriculum")}>A1 / A2 コース</button>
+        <button type="button" onClick={() => onNavigate("legacyLibrary")}>表現・例文の辞書</button>
+        <button type="button" onClick={() => onNavigate("legacyProgress")}>これまでの学習履歴</button>
         <button type="button" onClick={() => onExport("json")}>
           JSONを書き出す
         </button>
@@ -313,9 +416,9 @@ function SettingsMenu({
         </button>
       </div>
       <div className="menu-note">
-        <strong>学習の段階</strong>
+        <strong>単語の覚え方</strong>
         <span>
-          4択 → 穴埋め・語順 → 自由入力。復習の成績で次の段階が変わります。
+          意味を思い出してから答えを開き、「わかった／もう一度」を選びます。単語ごとに次の復習タイミングを記録します。
         </span>
       </div>
       <div className="menu-note">

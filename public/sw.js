@@ -1,4 +1,4 @@
-const CACHE = "polski-loop-shell-v2";
+const CACHE = "polski-loop-shell-v3";
 const APP_SHELL = [
   "/",
   "/manifest.webmanifest",

@@ -6,7 +6,9 @@ import {
 } from "./pronunciation-config";
 
 const PRONUNCIATION_CACHE = "polski-loop-pronunciation-v2";
-const ENGINE_VERSION = "google-chirp3-hd-v1";
+declare const __LOCAL_NATIVE_TTS__: boolean | undefined;
+const LOCAL_NATIVE_TTS = typeof __LOCAL_NATIVE_TTS__ !== "undefined" && __LOCAL_NATIVE_TTS__ === true;
+const ENGINE_VERSION = LOCAL_NATIVE_TTS ? "macos-zosia-v1" : "google-chirp3-hd-v1";
 
 let persistenceRequested = false;
 
@@ -27,8 +29,8 @@ export { normalizePronunciationText } from "./pronunciation-config";
 export function pronunciationCachePath(text: string, genderHint: SpeakerGender = "any"): string {
   const normalized = normalizePronunciationText(text);
   const gender = resolveSpeakerGender(normalized, genderHint);
-  const voice = selectPolishVoice(normalized, gender);
-  return `/__pronunciation-cache/${ENGINE_VERSION}/${gender}/${voice.name}/${encodeURIComponent(normalized)}`;
+  const voiceName = LOCAL_NATIVE_TTS ? "Zosia" : selectPolishVoice(normalized, gender).name;
+  return `/__pronunciation-cache/${ENGINE_VERSION}/${gender}/${voiceName}/${encodeURIComponent(normalized)}`;
 }
 
 function cacheRequest(text: string, genderHint: SpeakerGender): Request {
