@@ -1,6 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
+import { DatabaseSync } from "node:sqlite";
 import { describe, expect, it } from "vitest";
 import { normalizeHeadword, renderVocabularyMigration, validateVocabulary, vocabularyTopicIds } from "../scripts/generate-vocabulary.mjs";
 
@@ -33,12 +34,13 @@ const existingMigrations = readdirSync(resolve(root, "migrations"))
 
 function queryMemoryDb(sql: string, seed = migration): Array<Record<string, unknown>> {
   // Every SQL operation is confined to a new, discarded in-memory database.
-  const output = execFileSync("sqlite3", ["-json", ":memory:"], {
-    input: `.bail on\n${existingMigrations}\n${seed}\n${sql}`,
-    encoding: "utf8",
-    maxBuffer: 10 * 1024 * 1024,
-  });
-  return output.trim() ? JSON.parse(output) as Array<Record<string, unknown>> : [];
+  const database = new DatabaseSync(":memory:");
+  try {
+    database.exec(`${existingMigrations}\n${seed}`);
+    return database.prepare(sql).all() as Array<Record<string, unknown>>;
+  } finally {
+    database.close();
+  }
 }
 
 describe("practical vocabulary content", () => {
