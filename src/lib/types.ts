@@ -510,6 +510,18 @@ export interface VocabularyTestAttempt {
   nextTestAt: string;
 }
 
+export interface VocabularyMasteryWord extends VocabularyRetentionWord {
+  firstMasteredAt: string;
+  needsRecheck: boolean;
+}
+
+export interface VocabularyMasterySummary {
+  total: number;
+  verified: number;
+  recheck: number;
+  words: VocabularyMasteryWord[];
+}
+
 export interface VocabularyRetentionSummary {
   due: number;
   totalTested: number;
@@ -519,6 +531,7 @@ export interface VocabularyRetentionSummary {
   recheck: number;
   words: VocabularyRetentionWord[];
   recentTests: VocabularyTestAttempt[];
+  mastery?: VocabularyMasterySummary;
 }
 
 // A question deliberately contains no Polish answer, examples, or accepted answers.

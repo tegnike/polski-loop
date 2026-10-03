@@ -1,6 +1,7 @@
 import type { VocabularyStudyRequest, VocabularySummary, VocabularyTestMode, VocabularyWord } from "../lib/types";
 import PronunciationButton from "./PronunciationButton";
 import VocabularyProgressCard from "./VocabularyProgressCard";
+import { VocabularyMasteryCard } from "./VocabularyMastery";
 import { VocabularyRetentionCard } from "./VocabularyRetention";
 import "./vocabulary.css";
 
@@ -11,6 +12,7 @@ interface VocabularyHomeProps {
   onLegacy: () => void;
   onAdd: () => void;
   onRecords: () => void;
+  onMastery: () => void;
   onTest: (mode: VocabularyTestMode, wordId?: string) => void;
 }
 
@@ -34,7 +36,7 @@ function TopicIcon({ name }: { name: string }) {
   return <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d={paths[name] ?? "M4 4h16v16H4V4Z"} /></svg>;
 }
 
-export default function VocabularyHome({ summary, onStart, onLibrary, onLegacy, onAdd, onRecords, onTest }: VocabularyHomeProps) {
+export default function VocabularyHome({ summary, onStart, onLibrary, onLegacy, onAdd, onRecords, onMastery, onTest }: VocabularyHomeProps) {
   const today = summary.today.slice(0, 5);
 
   return (
@@ -55,6 +57,7 @@ export default function VocabularyHome({ summary, onStart, onLibrary, onLegacy, 
         </button>
       </section>
 
+      {summary.retention?.mastery && <VocabularyMasteryCard summary={summary.retention.mastery} onMastery={onMastery} />}
       <VocabularyProgressCard progress={summary.progress} learnedWords={summary.started} totalWords={summary.total} compact onRecords={onRecords} />
       {summary.retention && <VocabularyRetentionCard summary={summary.retention} learnedWords={summary.started} onTest={onTest} />}
 

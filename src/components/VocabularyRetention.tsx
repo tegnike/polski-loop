@@ -41,7 +41,7 @@ export function VocabularyRetentionCard({ summary, learnedWords, onTest }: { sum
   );
 }
 
-function RetentionWord({ word, onTest }: { word: VocabularyRetentionWord; onTest?: StartTest }) {
+export function RetentionWord({ word, onTest, firstMasteredAt, needsRecheck }: { word: VocabularyRetentionWord; onTest?: StartTest; firstMasteredAt?: string; needsRecheck?: boolean }) {
   const [open, setOpen] = useState(false);
   const [history, setHistory] = useState<VocabularyTestAttempt[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -63,9 +63,11 @@ function RetentionWord({ word, onTest }: { word: VocabularyRetentionWord; onTest
   return (
     <li>
       <details className="vocab-retention-word" onToggle={(event) => setOpen(event.currentTarget.open)}>
-        <summary><span><strong lang="pl">{word.polish}</strong><small>{word.meaningJa}</small></span><VocabularyRetentionBadge word={word} /></summary>
+        <summary><span><strong lang="pl">{word.polish}</strong><small>{word.meaningJa}</small>{firstMasteredAt && <small className="vocab-mastery-registration">初回登録 <time dateTime={firstMasteredAt}>{vocabularyTestDate(firstMasteredAt)}</time></small>}</span>{firstMasteredAt ? <span className={`vocab-retention-badge ${needsRecheck ? "vocab-retention-recheck" : "vocab-retention-confirmed"}`}>{needsRecheck ? "再確認が必要" : "7日後まで確認済み"}</span> : <VocabularyRetentionBadge word={word} />}</summary>
         <div className="vocab-retention-word-body">
           <dl className="vocab-retention-word-facts">
+            {firstMasteredAt && <div><dt>初回登録</dt><dd><time dateTime={firstMasteredAt}>{vocabularyTestDate(firstMasteredAt)}</time></dd></div>}
+            {firstMasteredAt && <div><dt>現在の確認状況</dt><dd>{needsRecheck ? "再確認が必要です。累計登録には残ります。" : "7日後まで確認済みです。次の予定でまた確かめます。"}</dd></div>}
             <div><dt>日を空けた確認</dt><dd>{vocabularyRetentionLabel(word)}</dd></div>
             <div><dt>最後の正誤</dt><dd>{word.lastCorrect === null ? "テストはまだです" : word.lastCorrect ? "正解" : "不正解"}</dd></div>
             <div><dt>空けた日数</dt><dd>{word.lastGapDays === null ? "記録はまだです" : vocabularyGapDays(word.lastGapDays) + "日"}</dd></div>

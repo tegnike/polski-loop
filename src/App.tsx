@@ -53,6 +53,7 @@ function App() {
   const [addingWord, setAddingWord] = useState(false);
   const [activeTrack, setActiveTrack] = useState<TrackCode>("A1");
   const [view, setView] = useState<AppView>("today");
+  const [showMasteryRecord, setShowMasteryRecord] = useState(false);
   const [progressTab, setProgressTab] = useState<ProgressTab>("overview");
   const [study, setStudy] = useState<StudyRequest | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -84,6 +85,15 @@ function App() {
   useEffect(() => {
     void refreshStatus();
   }, [refreshStatus]);
+
+  useEffect(() => {
+    if (!showMasteryRecord || view !== "progress" || loading || study || vocabularyStudy || vocabularyTest) return;
+    const section = document.getElementById("vocab-mastery-records");
+    if (!section) return;
+    section.scrollIntoView({ block: "start" });
+    section.focus({ preventScroll: true });
+    setShowMasteryRecord(false);
+  }, [showMasteryRecord, view, loading, study, vocabularyStudy, vocabularyTest, vocabulary]);
 
   useEffect(() => {
     let refreshing = false;
@@ -300,6 +310,10 @@ function App() {
             onLegacy={() => setView("lessonHome")}
             onAdd={() => openLibrary(undefined, true)}
             onRecords={() => setView("progress")}
+            onMastery={() => {
+              setShowMasteryRecord(true);
+              setView("progress");
+            }}
             onTest={startVocabularyTest}
           />
         )}
@@ -393,6 +407,11 @@ function App() {
                   "日を空けた入力テスト: 1日後正解 " + vocabulary.retention.confirmed1 + "語、3日後正解 " + vocabulary.retention.confirmed3 + "語、7日後正解 " + vocabulary.retention.confirmed7 + "語",
                   "確認テストの期限到来: " + vocabulary.retention.due + "語、再確認が必要: " + vocabulary.retention.recheck + "語",
                   "学習済み・自己評価と、日を空けたテストで確認できた事実を区別する。完全に忘れないことは保証しない。",
+                ] : []),
+                ...(vocabulary.retention?.mastery ? [
+                  "定着した単語の累積記録（1日・3日・7日と空けたテストに正解）: " + vocabulary.retention.mastery.total + "語",
+                  "定着記録のうち現在確認できている語: " + vocabulary.retention.mastery.verified + "語、再確認が必要な語: " + vocabulary.retention.mastery.recheck + "語",
+                  "定着登録の履歴は再確認後も残す。累計数と現在の確認状況は区別する。",
                 ] : []),
               ].join("\n"),
             }

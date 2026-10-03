@@ -1,5 +1,6 @@
 import type { VocabularyProgress, VocabularySummary, VocabularyTestMode } from "../lib/types";
 import VocabularyProgressCard from "./VocabularyProgressCard";
+import { VocabularyMasteryDetails } from "./VocabularyMastery";
 import { VocabularyRetentionDetails } from "./VocabularyRetention";
 import "./vocabulary.css";
 
@@ -64,6 +65,7 @@ export default function VocabularyRecords({ summary, onLegacy, onTest }: Vocabul
   return (
     <div className="vocab-page">
       <section className="vocab-page-intro"><p className="vocab-eyebrow">Twoje postępy</p><h1>単語の記録</h1><p className="vocab-muted">覚えた言葉と、次に思い出す言葉。</p></section>
+      {summary.retention?.mastery && <VocabularyMasteryDetails summary={summary.retention.mastery} onTest={onTest} />}
       <VocabularyProgressCard progress={summary.progress} learnedWords={summary.started} totalWords={summary.total} />
       {summary.progress && <VocabularyWeek progress={summary.progress} />}
       {summary.retention && <VocabularyRetentionDetails summary={summary.retention} onTest={onTest} />}

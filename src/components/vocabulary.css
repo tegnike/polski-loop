@@ -88,6 +88,26 @@
 .vocab-progress-explanation { color: var(--vocab-muted); font-size: 10px; line-height: 1.7; }
 .vocab-progress-records { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: -5px; padding: 9px 0 0; border: 0; border-top: 1px solid #dbe4d7; color: var(--vocab-ink); background: transparent; font-size: 12px; font-weight: 650; }
 .vocab-progress-compact { gap: 13px; padding: 16px; }
+.vocab-mastery-card { display: grid; min-width: 0; gap: 13px; padding: 18px; border: 1px solid #a9c5b4; border-radius: 15px; background: #edf5ee; }
+.vocab-mastery-card h2 { color: var(--vocab-ink); font-size: 15px; }
+.vocab-mastery-count { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
+.vocab-mastery-count > strong { color: #285e4d; font-size: 44px; line-height: 1.1; }
+.vocab-mastery-count small { margin-left: 5px; font-size: 16px; font-weight: 500; }
+.vocab-mastery-count > span { color: var(--vocab-muted); font-size: 11px; }
+.vocab-mastery-criteria { color: var(--vocab-ink); font-size: 12px; line-height: 1.8; }
+.vocab-mastery-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin: 0; padding: 11px 0; border-top: 1px solid #cfdfd0; border-bottom: 1px solid #cfdfd0; list-style: none; }
+.vocab-mastery-steps > li { display: grid; min-width: 0; align-content: start; justify-items: center; gap: 7px; color: var(--vocab-ink); font-size: 11px; line-height: 1.5; text-align: center; overflow-wrap: anywhere; }
+.vocab-mastery-steps span { display: grid; width: 22px; height: 22px; place-items: center; border-radius: 50%; color: #fffefa; background: #3d7c68; font-size: 10px; }
+.vocab-mastery-recheck { padding: 9px 11px; border: 1px solid #e1cbb5; border-radius: 9px; color: #80532c; background: #fff0df; font-size: 11px; line-height: 1.7; }
+.vocab-mastery-empty, .vocab-mastery-list-help { color: var(--vocab-muted); font-size: 11px; line-height: 1.8; }
+.vocab-mastery-details { display: grid; min-width: 0; gap: 12px; scroll-margin-top: 16px; }
+.vocab-mastery-details:focus-visible { outline: 3px solid #c55c43; outline-offset: 3px; border-radius: 15px; }
+.vocab-mastery-current { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0; }
+.vocab-mastery-current dt { color: var(--vocab-muted); font-size: 11px; }
+.vocab-mastery-current dd { margin: 5px 0 0; color: var(--vocab-ink); font-size: 25px; }
+.vocab-mastery-current small { margin-left: 3px; font-size: 11px; }
+.vocab-mastery-list .vocab-retention-word > summary { min-height: 88px; }
+.vocab-mastery-list .vocab-mastery-registration { font-size: 10px; }
 .vocab-week-card { display: grid; min-width: 0; gap: 12px; padding: 17px; border: 1px solid var(--vocab-line); border-radius: 15px; background: #fffefa; }
 .vocab-week-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .vocab-week-heading h2 { font-size: 14px; }
@@ -302,7 +322,7 @@
   .vocab-retention-word { padding-right: 10px; padding-left: 10px; }
   .vocab-retention-word > summary { flex-wrap: wrap; gap: 6px; }
   .vocab-retention-word > summary > span:first-child { flex-basis: 100%; }
-  .vocab-progress-card, .vocab-week-card { padding: 14px; }
+  .vocab-progress-card, .vocab-week-card, .vocab-mastery-card { padding: 14px; }
   .vocab-progress-daily { gap: 12px; }
   .vocab-progress-streak { padding-left: 12px; }
   .vocab-week-chart { gap: 5px; }

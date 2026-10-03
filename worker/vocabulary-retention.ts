@@ -1,5 +1,5 @@
 import type {
-  VocabularyRetentionStage, VocabularyRetentionSummary, VocabularyRetentionWord, VocabularyTestAnswerResponse,
+  VocabularyMasteryWord, VocabularyRetentionStage, VocabularyRetentionSummary, VocabularyRetentionWord, VocabularyTestAnswerResponse,
   VocabularyTestAttempt, VocabularyTestMode, VocabularyTestQuestion, VocabularyTestStartResponse,
 } from "../src/lib/types";
 
@@ -29,6 +29,10 @@ interface AttemptRow {
   stage_after: VocabularyRetentionStage; next_test_at: string;
 }
 interface StartRow { id: string; mode: VocabularyTestMode; request_fingerprint: string }
+interface MasteryRow {
+  item_id: string; first_mastered_at: string; total_attempts: number; stage_after: VocabularyRetentionStage;
+  tested_at: string; is_correct: number; gap_days: number; last_review_at: string | null;
+}
 
 export function normalizeVocabularyTestAnswer(value: string): string {
   return value.normalize("NFKC").trim().replace(/\s+/gu, " ").toLocaleLowerCase("pl-PL");
@@ -83,17 +87,37 @@ function textInput(body: Record<string, unknown>, name: string, max: number, emp
 }
 
 export async function vocabularyRetentionSummary(db: D1Database, profile: string, now = new Date()): Promise<VocabularyRetentionSummary> {
-  const [rows, recent] = await Promise.all([
+  const timestamp = now.toISOString();
+  const [rows, recent, mastered] = await Promise.all([
     learnedWords(db, profile),
     db.prepare("SELECT a.*" + ATTEMPT_FROM + " AND a.tested_at <= ? ORDER BY a.tested_at DESC, a.id DESC LIMIT 20")
       .bind(profile, profile, now.toISOString()).all<AttemptRow>(),
+    db.prepare("WITH visible_attempts AS (SELECT a.*, a.rowid AS sequence" + ATTEMPT_FROM + " AND a.tested_at <= ?), firsts AS (SELECT item_id, MIN(CASE WHEN counts_for_retention = 1 AND stage_after = 3 THEN tested_at END) AS first_mastered_at, COUNT(*) AS total_attempts FROM visible_attempts GROUP BY item_id HAVING first_mastered_at IS NOT NULL) SELECT firsts.*, latest.stage_after, latest.tested_at, latest.is_correct, latest.gap_days, (SELECT MAX(r.created_at) FROM pl_vocabulary_reviews r WHERE r.profile_id = ? AND r.item_id = firsts.item_id AND r.created_at <= ?) AS last_review_at FROM firsts JOIN visible_attempts latest ON latest.id = (SELECT history.id FROM visible_attempts history WHERE history.item_id = firsts.item_id ORDER BY history.tested_at DESC, history.sequence DESC LIMIT 1)")
+      .bind(profile, profile, timestamp, profile, timestamp).all<MasteryRow>(),
   ]);
   const words = rows.map(retentionWord).sort((left, right) => left.nextTestAt.localeCompare(right.nextTestAt) || left.wordId.localeCompare(right.wordId));
+  const rowsById = new Map(rows.map((row) => [row.id, row]));
+  const masteryWords: VocabularyMasteryWord[] = [];
+  for (const evidence of mastered.results ?? []) {
+    const row = rowsById.get(evidence.item_id);
+    if (!row) continue;
+    // Future state writes must not override the latest test evidence that actually exists as of now.
+    const current = row.last_test_at && row.last_test_at > timestamp ? { ...row,
+      stage: evidence.stage_after, last_test_at: evidence.tested_at, last_correct: evidence.is_correct,
+      last_gap_days: evidence.gap_days, total_attempts: evidence.total_attempts } : row;
+    const word = retentionWord(current.self_updated_at > timestamp
+      ? { ...current, self_updated_at: evidence.last_review_at ?? evidence.tested_at } : current);
+    masteryWords.push({ ...word, firstMasteredAt: evidence.first_mastered_at,
+      needsRecheck: word.stage < 3 || word.lastCorrect === false });
+  }
+  masteryWords.sort((left, right) => right.firstMasteredAt.localeCompare(left.firstMasteredAt) || left.wordId.localeCompare(right.wordId));
+  const recheck = masteryWords.filter((word) => word.needsRecheck).length;
   return { due: words.filter((word) => word.nextTestAt <= now.toISOString()).length,
     totalTested: words.filter((word) => word.totalAttempts > 0).length,
     confirmed1: words.filter((word) => word.stage >= 1).length, confirmed3: words.filter((word) => word.stage >= 2).length,
     confirmed7: words.filter((word) => word.stage >= 3).length, recheck: words.filter((word) => word.lastCorrect === false).length,
-    words, recentTests: (recent.results ?? []).map(attempt) };
+    words, recentTests: (recent.results ?? []).map(attempt),
+    mastery: { total: masteryWords.length, verified: masteryWords.length - recheck, recheck, words: masteryWords } };
 }
 
 async function findStart(db: D1Database, profile: string, key: string): Promise<StartRow | null> {
