@@ -2,7 +2,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { renderVocabularyMigration, validateVocabulary } from "./generate-vocabulary.mjs";
+import { loadVocabularyBatches, renderVocabularyMigration, validateVocabularyCollection } from "./generate-vocabulary.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const a1Path = join(root, "content", "a1-curriculum.json");
@@ -17,8 +17,8 @@ const migrationA1 = readFileSync(migrationA1Path, "utf8");
 const correctionMigration = readFileSync(correctionMigrationPath, "utf8");
 const migrationA2 = readFileSync(migrationA2Path, "utf8");
 const migrationA2Fix = readFileSync(migrationA2FixPath, "utf8");
-const vocabulary = JSON.parse(readFileSync(join(root, "content", "vocabulary.json"), "utf8"));
-const vocabularyWords = (Array.isArray(vocabulary.topics) ? vocabulary.topics : []).flatMap((topic) => (Array.isArray(topic?.words) ? topic.words : []).map((word) => ({ ...word, topic: topic.id })));
+const vocabularyBatches = loadVocabularyBatches();
+const vocabularyWords = vocabularyBatches.flatMap(({ source }) => source.topics.flatMap((topic) => topic.words.map((word) => ({ ...word, topic: topic.id }))));
 const failures = [];
 const expectedA1Types = ["multiple_choice", "multiple_choice", "cloze", "unscramble", "free_input"];
 const expectedA2Types = [
@@ -32,9 +32,11 @@ function check(condition, message) {
 }
 function unique(values) { return new Set(values); }
 
-for (const failure of validateVocabulary(vocabulary)) check(false, `Vocabulary: ${failure}`);
+for (const failure of validateVocabularyCollection(vocabularyBatches.map(({ source }) => source))) check(false, `Vocabulary: ${failure}`);
 try {
-  check(readFileSync(join(root, "migrations", "0009_vocabulary_content.sql"), "utf8") === renderVocabularyMigration(vocabulary), "単語教材のmigrationがJSONと一致しません。node scripts/generate-vocabulary.mjsを実行してください。");
+  for (const batch of vocabularyBatches) {
+    check(readFileSync(join(root, batch.outputPath), "utf8") === renderVocabularyMigration(batch.source, batch.options), `${batch.outputPath}が単語教材JSONと一致しません。node scripts/generate-vocabulary.mjsを実行してください。`);
+  }
 } catch (error) {
   check(false, `単語教材を生成できません: ${error instanceof Error ? error.message : String(error)}`);
 }
@@ -115,8 +117,8 @@ function checkD1(dbPath) {
   check(counts.steps === 1140, `D1 step数が1140ではありません: ${counts.steps}`);
   check(counts.missions === 120, `D1 mission数が120ではありません: ${counts.missions}`);
   check(counts.cando === 60, `D1 Can-do数が60ではありません: ${counts.cando}`);
-  const seededVocabulary = queryDatabase(dbPath, "SELECT i.id, i.polish, i.meaning_ja, i.meaning_en, i.grammar_note, i.topic, i.tags_json, i.accepted_answers_json, d.example_pl, d.example_ja, d.sort_order FROM pl_learning_items i JOIN pl_vocabulary_details d ON d.item_id=i.id WHERE i.status='published' AND i.type='word' AND i.content_version='vocabulary-2026.1' AND d.owner_profile_id IS NULL;");
-  check(seededVocabulary.length >= 80, `D1の共有単語seedが80語未満です: ${seededVocabulary.length}`);
+  const seededVocabulary = queryDatabase(dbPath, "SELECT i.id, i.polish, i.meaning_ja, i.meaning_en, i.grammar_note, i.topic, i.tags_json, i.accepted_answers_json, d.example_pl, d.example_ja, d.sort_order FROM pl_learning_items i JOIN pl_vocabulary_details d ON d.item_id=i.id WHERE i.status='published' AND i.type='word' AND i.content_version LIKE 'vocabulary-%' AND d.owner_profile_id IS NULL;");
+  check(seededVocabulary.length >= vocabularyWords.length, `D1の共有単語seedが${vocabularyWords.length}語未満です: ${seededVocabulary.length}`);
   const seededById = new Map(seededVocabulary.map((row) => [row.id, row]));
   for (const [index, word] of vocabularyWords.entries()) {
     const stored = seededById.get(word.id);
@@ -196,4 +198,4 @@ if (failures.length > 0) {
   process.exit(1);
 }
 const suffix = process.argv.includes("--db") ? ", local D1 checked" : "";
-console.log(`教材整合性検査: PASS (A1 60 lessons/132 items, A2 60 lessons/360 items, 1,140 steps, vocabulary 80 words/8 topics${suffix})`);
+console.log(`教材整合性検査: PASS (A1 60 lessons/132 items, A2 60 lessons/360 items, 1,140 steps, vocabulary ${vocabularyWords.length} words/8 topics${suffix})`);

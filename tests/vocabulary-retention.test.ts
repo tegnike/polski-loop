@@ -75,7 +75,7 @@ beforeEach(() => {
   vi.useFakeTimers(); vi.setSystemTime(new Date(INITIAL));
   db = new SqliteD1();
   const directory = resolve(process.cwd(), "migrations");
-  for (const filename of readdirSync(directory).filter((name) => /^\d{4}_.*\.sql$/u.test(name) && !name.startsWith("0009_")).sort()) {
+  for (const filename of readdirSync(directory).filter((name) => /^\d{4}_.*\.sql$/u.test(name) && !/^(0009|0011)_/u.test(name)).sort()) {
     db.sqlite.exec(readFileSync(resolve(directory, filename), "utf8"));
   }
   db.sqlite.exec("INSERT INTO pl_profiles (id, display_name, created_at, updated_at) VALUES ('other', 'Other', '2026-01-01', '2026-01-01')");

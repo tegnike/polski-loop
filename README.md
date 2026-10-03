@@ -1,6 +1,6 @@
 # Polski Loop
 
-ポーランドでの生活に使う単語を、短い時間で覚える個人用PWAです。ホームから5語ずつカードを開き、発音を聞いて意味を思い出し、「わかった／もう一度」で次へ進みます。スーパー、カフェ・外食、移動、家の中、病院・薬局、手続き、人と会話、時間の8場面・80語を収録し、街で見かけた単語も自分の単語帳へ追加できます。
+ポーランドでの生活に使う単語を、短い時間で覚える個人用PWAです。ホームから5語ずつカードを開き、発音を聞いて意味を思い出し、「わかった／もう一度」で次へ進みます。スーパー、カフェ・外食、移動、家の中、病院・薬局、手続き、人と会話、時間の8場面・600語（各75語）を収録し、街で見かけた単語も自分の単語帳へ追加できます。名詞に加え、日常の動詞・形容詞・曜日・数字・疑問詞・前置詞なども含みます。
 
 単語カードの自己評価と復習予定はD1に保存し、入力問題の正誤とは分けて記録します。既存A1/A2教材と学習履歴は保持しており、ホームの「例文・レッスン」やメニューから引き続き開けます。
 
@@ -141,7 +141,10 @@ migrations/0006_fix_a2_item_situation.sql A2 situation metadata補正
 migrations/0007_voice_result_import.sql ChatGPT採点JSONの同期
 migrations/0008_vocabulary_schema.sql 単語の詳細・自己評価・復習予定
 migrations/0009_vocabulary_content.sql 生活単語80語の追加
-content/vocabulary.json           単語教材・短い使用例の正本
+migrations/0010_vocabulary_retention.sql 記憶確認テスト・定着履歴
+migrations/0011_vocabulary_expansion.sql 生活単語520語の追加（合計600語）
+content/vocabulary.json           最初の生活単語80語・短い使用例の正本
+content/vocabulary-expansion.json 追加の生活単語520語・短い使用例の正本
 scripts/generate-vocabulary.mjs   単語seed migrationの生成・検査
 worker/vocabulary.ts              単語API、個人単語、自己評価の冪等保存
 worker/index.ts                     Worker API、判定、復習計算、Access境界
