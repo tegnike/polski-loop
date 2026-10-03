@@ -24,7 +24,7 @@
 - mission末尾に5軸1〜5点の採点基準と`polski-loop.voice-result.v1` JSON仕様を含める。ChatGPTが生成した採点JSONはレッスン完了画面またはホームから読み込み、mission照合・入力検証・重複排除後にD1へ同期
 - レッスン完了後は「ChatGPT採点ファイルを同期」「あとで同期」の2択。手動のVoice自己評価フォームは表示しない
 - Unit単位のCan-do checklist。教材完了率、想起成績、ChatGPT Voice採点を分けて表示
-- 現在の画面・問題・回答・解説を固定コンテキストとして渡す一時AI会話。GPT-5.6 Luna、reasoning effort `medium`、OpenAI Responses APIをWorker側から使用
+- 現在の画面・問題・回答・解説を固定コンテキストとして渡す一時AI会話。GPT-5.6 Luna、reasoning effort `low`、OpenAI Responses APIをWorker側から使用
 - 今日、復習、辞書、進捗、A1/A2 Units、Can-do、mission、結果、履歴、検索、exportを375px幅のPWAで到達可能
 - Cloudflare Worker + D1、ローカルAccessバイパス、設定時のAccess JWT検証境界、キーボード操作・focus・`aria-live`
 

@@ -140,7 +140,7 @@ async function aiChatResponse(env: Env, currentProfileId: string, request: Reque
   const payload = validateAiChatRequest(await readJson<unknown>(request));
   const model = env.OPENAI_MODEL || "gpt-5.6-luna";
   const allowedEfforts = ["none", "low", "medium", "high", "xhigh", "max"];
-  const effort = allowedEfforts.includes(env.OPENAI_REASONING_EFFORT || "") ? env.OPENAI_REASONING_EFFORT : "medium";
+  const effort = allowedEfforts.includes(env.OPENAI_REASONING_EFFORT || "") ? env.OPENAI_REASONING_EFFORT : "low";
   const response = await fetch("https://api.openai.com/v1/responses", {
     method: "POST",
     headers: {

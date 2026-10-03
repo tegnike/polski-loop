@@ -60,7 +60,7 @@ Base pathは`/api/v1`です。ローカルではWorkerが`127.0.0.1:8787`で応�
 - `POST /ai/chat` — `{ context: { key, label, content }, messages: [{ role, content }] }`
   - `context`は最初の質問時点の画面・問題情報。1セッション中は固定する。
   - `messages`は利用者から始まり、user/assistantが交互に並ぶセッション内の全会話。D1へ保存しない。
-  - GPT-5.6 LunaのResponses APIを`reasoning.effort=medium`、`store=false`でWorkerから呼び出す。APIキーをブラウザへ返さない。
+  - GPT-5.6 LunaのResponses APIを`reasoning.effort=low`、`store=false`でWorkerから呼び出す。APIキーをブラウザへ返さない。
   - 最大40メッセージ、1メッセージ8,000文字、会話合計60,000文字。上限時は切り捨てず、新しい会話を案内する。
 
 同じprofileで同じidempotency keyを再送した場合、sessionとattemptは既存IDを返します。ChatGPT採点ファイルは`resultId`の再送時に既存結果を返します。
