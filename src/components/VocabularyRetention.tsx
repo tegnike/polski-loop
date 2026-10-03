@@ -30,8 +30,8 @@ export function VocabularyRetentionBadge({ word }: { word?: VocabularyRetentionW
 export function VocabularyRetentionCard({ summary, learnedWords, onTest }: { summary: VocabularyRetentionSummary; learnedWords: number; onTest: StartTest }) {
   return (
     <section className="vocab-retention-card" aria-labelledby="vocab-retention-home-heading">
-      <div className="vocab-section-heading"><h2 id="vocab-retention-home-heading">日を空けて確認</h2><span className="vocab-muted">{summary.due}語が確認の時期</span></div>
-      <p className="vocab-retention-copy">日本語の意味から、ヒントなしでポーランド語を声に出して答えます。1日 → 3日 → 7日と間隔を空けて確かめましょう。</p>
+      <div className="vocab-section-heading"><h2 id="vocab-retention-home-heading">今日の確認テスト</h2><span className="vocab-muted">{summary.due}語が確認の時期</span></div>
+      <p className="vocab-retention-copy">確認の時期になった単語を、日本語の意味から声で答えます。{summary.due === 0 ? learnedWords > 0 ? "次の予定までは、今すぐの練習もできます。" : "まず単語カードで学習すると、1日後からテストできます。" : "答えを見ずに思い出してみましょう。"}</p>
       <div className="vocab-retention-actions">
         <button className="vocab-button vocab-primary" type="button" disabled={summary.due === 0} onClick={() => onTest("due")}>日を空けてテストする{summary.due > 0 ? `（${summary.due}語）` : ""}</button>
         <button className="vocab-button vocab-secondary" type="button" disabled={learnedWords === 0} onClick={() => onTest("practice")}>今すぐ練習する</button>

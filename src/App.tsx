@@ -309,9 +309,8 @@ function App() {
             onLibrary={(topic) => openLibrary(topic)}
             onLegacy={() => setView("lessonHome")}
             onAdd={() => openLibrary(undefined, true)}
-            onRecords={() => setView("progress")}
-            onMastery={() => {
-              setShowMasteryRecord(true);
+            onRecords={() => {
+              setShowMasteryRecord(Boolean(vocabulary.retention?.mastery));
               setView("progress");
             }}
             onTest={startVocabularyTest}

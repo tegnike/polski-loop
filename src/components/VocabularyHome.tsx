@@ -1,7 +1,5 @@
 import type { VocabularyStudyRequest, VocabularySummary, VocabularyTestMode, VocabularyWord } from "../lib/types";
 import PronunciationButton from "./PronunciationButton";
-import VocabularyProgressCard from "./VocabularyProgressCard";
-import { VocabularyMasteryCard } from "./VocabularyMastery";
 import { VocabularyRetentionCard } from "./VocabularyRetention";
 import "./vocabulary.css";
 
@@ -12,7 +10,6 @@ interface VocabularyHomeProps {
   onLegacy: () => void;
   onAdd: () => void;
   onRecords: () => void;
-  onMastery: () => void;
   onTest: (mode: VocabularyTestMode, wordId?: string) => void;
 }
 
@@ -36,20 +33,30 @@ function TopicIcon({ name }: { name: string }) {
   return <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d={paths[name] ?? "M4 4h16v16H4V4Z"} /></svg>;
 }
 
-export default function VocabularyHome({ summary, onStart, onLibrary, onLegacy, onAdd, onRecords, onMastery, onTest }: VocabularyHomeProps) {
+export default function VocabularyHome({ summary, onStart, onLibrary, onLegacy, onAdd, onRecords, onTest }: VocabularyHomeProps) {
   const today = summary.today.slice(0, 5);
+  const goal = Math.max(1, summary.progress?.dailyGoal ?? 5);
+  const goalWords = Math.min(goal, Math.max(0, summary.learnedToday));
+  const goalReached = summary.learnedToday >= goal;
+  const mastery = summary.retention?.mastery;
 
   return (
     <div className="vocab-page">
       <section className="vocab-hero" aria-labelledby="vocab-home-title">
         <p className="vocab-eyebrow">Mały krok, każdego dnia</p>
         <div className="vocab-title-row">
-          <h1 id="vocab-home-title">今日の{today.length || ""}単語</h1>
-          <span className="vocab-daily-count">今日は{summary.learnedToday}語を学習</span>
+          <h1 id="vocab-home-title">今日の学習</h1>
         </div>
-        <p className="vocab-muted">生活で使う言葉を、少しずつ。</p>
+        <p className="vocab-muted">新しい単語を覚えて、日を空けたテストで確かめましょう。</p>
+        <div className="vocab-daily-goal vocab-today-goal">
+          <div className="vocab-progress-label"><span>今日の目標</span><strong>{summary.learnedToday}<small> / {goal}語</small></strong></div>
+          <div className="vocab-word-track vocab-goal-track" role="progressbar" aria-label="今日の単語学習の目標" aria-valuemin={0} aria-valuemax={goal} aria-valuenow={goalWords} aria-valuetext={`今日は${summary.learnedToday}語、目標${goal}語`}>
+            <span style={{ width: `${goalWords / goal * 100}%` }} />
+          </div>
+          <p>{goalReached ? "今日の目標、達成です。" : summary.learnedToday === 0 ? "まず1語から、始めましょう。" : `あと${goal - summary.learnedToday}語、少しずつ。`} 新規学習・復習・テストを含みます。</p>
+        </div>
         <button className="vocab-button vocab-primary" type="button" onClick={() => today.length > 0 ? onStart({ mode: "learn" }) : onLibrary()} disabled={summary.total === 0}>
-          <span>{today.length > 0 ? "単語を覚える" : "場面から単語を選ぶ"} <span aria-hidden="true">→</span></span>
+          <span>{today.length > 0 ? "新しい単語を覚える" : "場面から単語を選ぶ"} <span aria-hidden="true">→</span></span>
           <small>{today.length > 0 ? "1回、最大5語" : "単語帳へ"}</small>
         </button>
         <button className="vocab-quiet vocab-review-link" type="button" onClick={() => onStart({ mode: "review" })} disabled={summary.due === 0}>
@@ -57,13 +64,15 @@ export default function VocabularyHome({ summary, onStart, onLibrary, onLegacy, 
         </button>
       </section>
 
-      {summary.retention?.mastery && <VocabularyMasteryCard summary={summary.retention.mastery} onMastery={onMastery} />}
-      <VocabularyProgressCard progress={summary.progress} learnedWords={summary.started} totalWords={summary.total} compact onRecords={onRecords} />
       {summary.retention && <VocabularyRetentionCard summary={summary.retention} learnedWords={summary.started} onTest={onTest} />}
+      <button className="vocab-records-link" type="button" onClick={onRecords}>
+        <span>{mastery ? <>定着した単語 <strong>{mastery.total}語</strong>{mastery.recheck > 0 && <small>うち{mastery.recheck}語は再確認</small>}</> : "積み重ねた学習"}</span>
+        <span>記録を見る <span aria-hidden="true">→</span></span>
+      </button>
 
       <section aria-labelledby="vocab-today-heading">
         <div className="vocab-section-heading">
-          <h2 id="vocab-today-heading">今日の単語</h2>
+          <h2 id="vocab-today-heading">今日の新しい単語</h2>
           <button className="vocab-text-button" type="button" onClick={() => onLibrary()}>単語帳を見る <span aria-hidden="true">›</span></button>
         </div>
         {today.length > 0 ? (

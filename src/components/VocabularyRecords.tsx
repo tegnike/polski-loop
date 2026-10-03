@@ -64,7 +64,7 @@ function VocabularyWeek({ progress }: { progress: VocabularyProgress }) {
 export default function VocabularyRecords({ summary, onLegacy, onTest }: VocabularyRecordsProps) {
   return (
     <div className="vocab-page">
-      <section className="vocab-page-intro"><p className="vocab-eyebrow">Twoje postępy</p><h1>単語の記録</h1><p className="vocab-muted">覚えた言葉と、次に思い出す言葉。</p></section>
+      <section className="vocab-page-intro"><p className="vocab-eyebrow">Twoje postępy</p><h1>単語の記録</h1><p className="vocab-muted">これまで学んだ単語、定着の確認、学習の履歴を振り返ります。</p></section>
       {summary.retention?.mastery && <VocabularyMasteryDetails summary={summary.retention.mastery} onTest={onTest} />}
       <VocabularyProgressCard progress={summary.progress} learnedWords={summary.started} totalWords={summary.total} />
       {summary.progress && <VocabularyWeek progress={summary.progress} />}
@@ -72,11 +72,10 @@ export default function VocabularyRecords({ summary, onLegacy, onTest }: Vocabul
       <section aria-labelledby="vocab-rating-summary-heading">
         <div className="vocab-section-heading"><h2 id="vocab-rating-summary-heading">単語の自己評価</h2></div>
         <dl className="vocab-record-metrics">
-          <div><dt>学習した単語</dt><dd>{summary.started}<small> / {summary.total}語</small></dd></div>
-          <div><dt>自己評価でわかった単語</dt><dd>{summary.remembered}<small>語</small></dd></div>
-          <div><dt>復習する時期</dt><dd>{summary.due}<small>語</small></dd></div>
+          <div><dt>わかった</dt><dd>{summary.remembered}<small>語</small></dd></div>
+          <div><dt>もう一度</dt><dd>{Math.max(0, summary.started - summary.remembered)}<small>語</small></dd></div>
         </dl>
-        <p className="vocab-help vocab-rating-explanation">「わかった」「もう一度」の自己評価による記録です。テストの正解率ではありません。</p>
+        <p className="vocab-help vocab-rating-explanation">「わかった」「もう一度」の自己評価による記録です。テストで定着を確認した単語数とは別です。</p>
       </section>
       <section aria-labelledby="vocab-records-heading">
         <div className="vocab-section-heading"><h2 id="vocab-records-heading">最近のカード学習</h2><span className="vocab-muted">自己評価</span></div>
