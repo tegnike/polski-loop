@@ -105,12 +105,17 @@ export async function vocabularyWords(db: D1Database, profile: string, url: URL)
   if (search) { if (search.length > 100) throw new VocabularyError("検索語は100文字以内にしてください。"); clauses.push("(i.polish LIKE ? OR i.meaning_ja LIKE ?)"); values.push("%" + search + "%", "%" + search + "%"); }
   if (topic) { clauses.push("i.topic = ?"); values.push(topic); }
   const state = url.searchParams.get("state");
-  if (state && !["new", "learning", "remembered"].includes(state)) throw new VocabularyError("単語の学習状態が不正です。");
+  if (state && !["new", "learning", "confirmed", "remembered"].includes(state)) throw new VocabularyError("単語の学習状態が不正です。");
   if (state === "new") clauses.push("s.item_id IS NULL");
-  if (state === "learning") clauses.push("s.last_rating = 'again'");
   if (state === "remembered") clauses.push("s.last_rating = 'known'");
   if (url.searchParams.get("personal") === "true") { clauses.push("d.owner_profile_id = ?"); values.push(profile); }
-  return selectWords(db, profile, clauses, values);
+  const words = await selectWords(db, profile, clauses, values);
+  if (state === "learning" || state === "confirmed") {
+    const retention = await vocabularyRetentionSummary(db, profile);
+    const confirmed = new Set(retention.mastery?.words.filter((word) => !word.needsRecheck).map((word) => word.wordId));
+    return words.filter((word) => state === "confirmed" ? confirmed.has(word.id) : Boolean(word.state) && !confirmed.has(word.id));
+  }
+  return words;
 }
 
 export async function vocabularyQueue(db: D1Database, profile: string, url: URL, now = new Date()): Promise<VocabularyWord[]> {

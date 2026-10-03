@@ -72,6 +72,28 @@ beforeEach(() => {
 afterEach(() => { db.sqlite.close(); vi.useRealTimers(); });
 
 describe("cumulative vocabulary mastery", () => {
+  it("classifies learned words by spaced-test evidence and returns forgotten words to learning", async () => {
+    const ids = async (state: string) => (await call(`/vocabulary/words?state=${state}`)).map((word: { id: string }) => word.id);
+    expect(await ids("learning")).toEqual([]);
+    expect(await ids("confirmed")).toEqual([]);
+    await rate();
+    expect(await ids("learning")).toContain(BREAD);
+    expect(await ids("new")).not.toContain(BREAD);
+    expect(await ids("confirmed")).toEqual([]);
+    await test("practice");
+    expect(await ids("confirmed")).toEqual([]);
+    moveDays(1); await test();
+    moveDays(3); await test();
+    expect(await ids("learning")).toContain(BREAD);
+    expect(await ids("confirmed")).toEqual([]);
+    moveDays(7); await test();
+    expect(await ids("confirmed")).toEqual([BREAD]);
+    expect(await ids("learning")).not.toContain(BREAD);
+    moveDays(30); await test("due", BREAD, "wrong");
+    expect(await ids("confirmed")).toEqual([]);
+    expect(await ids("learning")).toContain(BREAD);
+    expect(await mastery()).toMatchObject({ total: 1, verified: 0, recheck: 1 });
+  });
   it("registers a word only after valid seven-day confirmation, independently of self-ratings or early practice", async () => {
     expect(await mastery()).toEqual({ total: 0, verified: 0, recheck: 0, words: [] });
     await rate(); await test("practice");
