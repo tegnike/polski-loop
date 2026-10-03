@@ -12,6 +12,7 @@ import { buildAppAiContext } from "./lib/ai-context";
 import { downloadTextFile } from "./lib/download";
 import { difficultyLabel, formatDueDate, formatDuration } from "./lib/learning";
 import { isActiveProgressDay, longestActivityStreak } from "./lib/progress";
+import { vocabularyDateKey } from "./lib/vocabulary";
 import type {
   CanDoUnit,
   DailyProgressActivity,
@@ -80,6 +81,25 @@ function App() {
   useEffect(() => {
     void refreshStatus();
   }, [refreshStatus]);
+
+  useEffect(() => {
+    let refreshing = false;
+    const refreshForNewDay = () => {
+      if (document.visibilityState !== "visible" || refreshing || !vocabulary?.progress
+        || vocabulary.progress.today === vocabularyDateKey(new Date())) return;
+      refreshing = true;
+      void refreshStatus().finally(() => { refreshing = false; });
+    };
+    const timer = window.setInterval(refreshForNewDay, 60_000);
+    window.addEventListener("focus", refreshForNewDay);
+    document.addEventListener("visibilitychange", refreshForNewDay);
+    refreshForNewDay();
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener("focus", refreshForNewDay);
+      document.removeEventListener("visibilitychange", refreshForNewDay);
+    };
+  }, [refreshStatus, vocabulary?.progress?.today]);
 
   async function handleExport(format: "json" | "csv") {
     try {
@@ -252,6 +272,7 @@ function App() {
             onLibrary={(topic) => openLibrary(topic)}
             onLegacy={() => setView("lessonHome")}
             onAdd={() => openLibrary(undefined, true)}
+            onRecords={() => setView("progress")}
           />
         )}
         {view === "lessonHome" && (
@@ -332,6 +353,13 @@ function App() {
                 "学習済み単語: " + vocabulary.started,
                 "今の復習対象: " + vocabulary.due,
                 "今日の単語: " + vocabulary.today.map((word) => word.polish + " = " + word.meaningJa).join(" / "),
+                ...(vocabulary.progress ? [
+                  "学習レベル（学習量による）: Lv." + vocabulary.progress.level,
+                  "累計学習ポイント: " + vocabulary.progress.totalPoints + "（同じ単語は1日1ポイント）",
+                  "今日の目標: " + vocabulary.learnedToday + " / " + vocabulary.progress.dailyGoal + "語",
+                  "連続学習: " + vocabulary.progress.currentStreak + "日",
+                  "直近7日間の記録: " + vocabulary.progress.activity.slice(-7).map((day) => day.date + " " + day.words + "ポイント、新しい単語" + day.newWords + "語").join(" / "),
+                ] : []),
               ].join("\n"),
             }
           : buildAppAiContext(

@@ -4,13 +4,17 @@ Base pathは`/api/v1`です。ローカルではWorkerが`127.0.0.1:8787`で応�
 
 ## Vocabulary
 
-- `GET /vocabulary` — 全語数、学習済み・覚えた・期限到来の語数、今日の学習語数、場面別の進捗、今日と最近の自己評価を返す。
+- `GET /vocabulary` — 全語数、学習済み・覚えた・期限到来の語数、今日の学習語数、場面別の進捗、今日と最近の自己評価、`progress`を返す。
 - `GET /vocabulary/words?search=...&topic=...&state=new|learning|remembered&personal=true` — 共有の80語と現在のprofileの個人単語を絞り込む。
 - `GET /vocabulary/queue?mode=learn|review&topic=...&wordId=...&limit=5` — 新規単語または期限到来の単語を返す。指定した単語からの練習も可能。
 - `POST /vocabulary/reviews` — `{ wordId, rating: "again"|"known", idempotencyKey, elapsedMs }` を保存し、`{ eventId, word }` を返す。同じprofile・keyの再送は同じ結果を返し、異なる内容では409となる。
 - `POST /vocabulary/words` — `{ polish, meaningJa, topic, examplePl?, exampleJa?, idempotencyKey }` から個人単語を作成する。同じkeyの再送と同じprofileの同一単語は重複登録しない。
 
 カードの評価は正誤判定とは別の自己評価として保存する。`again`は15分後、`known`は初回1日後、以降は間隔を2.5倍（最大365日）にする。今日の集計はEurope/Warsaw基準。個人単語とその履歴は他のprofileへ公開しない。既存のlesson進捗・正答率・復習キューには単語カードの評価を加算しない。
+
+`progress`は保存済みの単語カード履歴をEurope/Warsawの日付で集計する。`totalPoints`は全期間の「単語×日」の数で、同日の同じ単語の再評価には重複加点せず、翌日の復習には加点する。`level`は1から始まり、10ポイントごとに1上がる。`dailyGoal`は5語。`pointsIntoLevel`と`pointsToNextLevel`は次のレベルまでの進捗を示す。これらは学習量の指標で、自己評価による`remembered`とは別に返す。
+
+`activity`は今日を含む28日分の`{ date, words, newWords, reviews }`を古い順で返し、学習しなかった日も0で埋める。`words`は同日に取り組んだ異なる単語数（ポイント）、`newWords`は全履歴で初めて評価した単語数、`reviews`は保存イベント数。`currentStreak`は今日または昨日からの連続学習日数、`longestStreak`と`totalStudyDays`は全履歴から求める。未来のイベントは加算しない。追加のmigrationや履歴の書き換えは行わない。
 
 ## Pronunciation
 

@@ -1,4 +1,5 @@
-import { isVocabularyTopic, normalizeVocabularyPolish, vocabularyDateKey, VOCABULARY_TOPICS } from "../src/lib/vocabulary";
+import { isVocabularyTopic, normalizeVocabularyPolish, VOCABULARY_TOPICS } from "../src/lib/vocabulary";
+import { calculateVocabularyProgress } from "../src/lib/vocabulary-progress";
 import type { ItemRegister, ItemSkill, TrackCode, VocabularyRating, VocabularyReviewEntry, VocabularyState, VocabularySummary, VocabularyWord } from "../src/lib/types";
 
 export class VocabularyError extends Error {
@@ -78,19 +79,19 @@ function inputString(body: Record<string, unknown>, key: string, max: number, op
 
 export async function vocabularySummary(db: D1Database, profile: string, now = new Date()): Promise<VocabularySummary> {
   const reviewFrom = " FROM pl_vocabulary_reviews r JOIN pl_learning_items i ON i.id = r.item_id JOIN pl_vocabulary_details d ON d.item_id = i.id WHERE r.profile_id = ? AND " + VISIBLE;
-  const [words, reviews, recentActivity] = await Promise.all([
+  const [words, reviews, history] = await Promise.all([
     selectWords(db, profile),
-    db.prepare("SELECT r.id, r.item_id, i.polish, i.meaning_ja, r.rating, r.elapsed_ms, r.created_at, r.due_at" + reviewFrom + " ORDER BY r.created_at DESC, r.id DESC LIMIT 20")
-      .bind(profile, profile).all<ReviewRow>(),
-    db.prepare("SELECT r.item_id, r.created_at" + reviewFrom + " AND r.created_at >= ?")
-      .bind(profile, profile, new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString()).all<Pick<ReviewRow, "item_id" | "created_at">>(),
+    db.prepare("SELECT r.id, r.item_id, i.polish, i.meaning_ja, r.rating, r.elapsed_ms, r.created_at, r.due_at" + reviewFrom + " AND r.created_at <= ? ORDER BY r.created_at DESC, r.id DESC LIMIT 20")
+      .bind(profile, profile, now.toISOString()).all<ReviewRow>(),
+    db.prepare("SELECT r.item_id, r.created_at" + reviewFrom + " AND r.created_at <= ?")
+      .bind(profile, profile, now.toISOString()).all<Pick<ReviewRow, "item_id" | "created_at">>(),
   ]);
   const events = reviews.results ?? [];
-  const today = vocabularyDateKey(now);
+  const progress = calculateVocabularyProgress((history.results ?? []).map((event) => ({ wordId: event.item_id, createdAt: event.created_at })), now);
   return { total: words.length, started: words.filter((word) => word.state).length,
     remembered: words.filter((word) => word.state?.lastRating === "known").length,
     due: words.filter((word) => word.state && word.state.dueAt <= now.toISOString()).length,
-    learnedToday: new Set((recentActivity.results ?? []).filter((event) => vocabularyDateKey(event.created_at) === today).map((event) => event.item_id)).size,
+    learnedToday: progress.activity[progress.activity.length - 1].words, progress,
     topics: VOCABULARY_TOPICS.map((topic) => ({ ...topic, total: words.filter((word) => word.topic === topic.id).length,
       started: words.filter((word) => word.topic === topic.id && word.state).length })),
     today: words.filter((word) => !word.state).slice(0, 5), recentReviews: events.slice(0, 20).map(toReview) };

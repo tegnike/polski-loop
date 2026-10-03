@@ -444,12 +444,34 @@ export interface VocabularyReviewEntry {
   dueAt: string;
 }
 
+export interface VocabularyActivityDay {
+  date: string;
+  words: number;
+  newWords: number;
+  reviews: number;
+}
+
+export interface VocabularyProgress {
+  today: string;
+  dailyGoal: number;
+  totalPoints: number;
+  level: number;
+  pointsIntoLevel: number;
+  pointsToNextLevel: number;
+  pointsPerLevel: number;
+  currentStreak: number;
+  longestStreak: number;
+  totalStudyDays: number;
+  activity: VocabularyActivityDay[];
+}
+
 export interface VocabularySummary {
   total: number;
   started: number;
   remembered: number;
   due: number;
   learnedToday: number;
+  progress: VocabularyProgress;
   topics: VocabularyTopic[];
   today: VocabularyWord[];
   recentReviews: VocabularyReviewEntry[];

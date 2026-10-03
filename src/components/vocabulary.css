@@ -56,6 +56,58 @@
 .vocab-page-intro h1 { margin: 8px 0; }
 .vocab-page-intro > p:last-child { font-size: 13px; }
 .vocab-review-actions { display: grid; gap: 12px; padding: 16px; border: 1px solid var(--vocab-line); border-radius: 15px; background: #fffdf8; }
+.vocab-progress-card { display: grid; min-width: 0; gap: 15px; padding: 18px; border: 1px solid #cfdbd1; border-radius: 15px; background: #f2f7f0; }
+.vocab-progress-card h2 { color: var(--vocab-ink); font-size: 14px; }
+.vocab-progress-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.vocab-progress-heading > div { min-width: 0; }
+.vocab-progress-heading p { margin-top: 4px; color: var(--vocab-muted); font-size: 11px; }
+.vocab-level-badge { display: flex; flex: 0 0 auto; align-items: baseline; gap: 3px; color: var(--vocab-ink); font-size: 34px; line-height: 1.1; }
+.vocab-level-badge small { font-size: 13px; font-weight: 600; }
+.vocab-level-progress { display: grid; gap: 7px; }
+.vocab-progress-label { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 8px; font-size: 12px; }
+.vocab-progress-label > small { color: var(--vocab-muted); font-size: 10px; }
+.vocab-progress-label strong { color: var(--vocab-ink); font-size: 23px; line-height: 1.1; }
+.vocab-progress-label strong small { color: var(--vocab-muted); font-size: 11px; font-weight: 500; }
+.vocab-points-track { height: 7px; overflow: hidden; border-radius: 9px; background: #e1e7db; }
+.vocab-points-track > span { display: block; height: 100%; border-radius: inherit; background: var(--vocab-coral); }
+.vocab-progress-daily { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; padding-top: 14px; border-top: 1px solid #dbe4d7; }
+.vocab-daily-goal { display: grid; min-width: 0; gap: 7px; }
+.vocab-goal-track { height: 5px; }
+.vocab-goal-track > span { background: #3d7c68; }
+.vocab-daily-goal > p { color: var(--vocab-muted); font-size: 10px; }
+.vocab-progress-streak { display: grid; gap: 4px; padding-left: 16px; border-left: 1px solid #dbe4d7; text-align: center; }
+.vocab-progress-streak > span { color: var(--vocab-muted); font-size: 10px; }
+.vocab-progress-streak strong { font-size: 26px; line-height: 1.1; }
+.vocab-progress-streak small { margin-left: 3px; font-size: 11px; font-weight: 500; }
+.vocab-progress-totals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0; padding-top: 13px; border-top: 1px solid #dbe4d7; }
+.vocab-progress-totals > div { min-width: 0; }
+.vocab-progress-totals dt { color: var(--vocab-muted); font-size: 10px; }
+.vocab-progress-totals dd { margin: 5px 0 0; font-size: 23px; line-height: 1.2; overflow-wrap: anywhere; }
+.vocab-progress-totals small { margin-left: 3px; font-size: 10px; }
+.vocab-progress-explanation { color: var(--vocab-muted); font-size: 10px; line-height: 1.7; }
+.vocab-progress-records { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: -5px; padding: 9px 0 0; border: 0; border-top: 1px solid #dbe4d7; color: var(--vocab-ink); background: transparent; font-size: 12px; font-weight: 650; }
+.vocab-progress-compact { gap: 13px; padding: 16px; }
+.vocab-week-card { display: grid; min-width: 0; gap: 12px; padding: 17px; border: 1px solid var(--vocab-line); border-radius: 15px; background: #fffefa; }
+.vocab-week-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.vocab-week-heading h2 { font-size: 14px; }
+.vocab-week-heading > strong { font-size: 25px; line-height: 1.1; }
+.vocab-week-heading small { margin-left: 3px; color: var(--vocab-muted); font-size: 11px; font-weight: 500; }
+.vocab-week-period { margin-top: -7px; color: var(--vocab-muted); font-size: 10px; }
+.vocab-week-chart { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; margin: 5px 0 0; padding: 0; list-style: none; }
+.vocab-week-chart > li { display: grid; min-width: 0; grid-template-rows: auto 106px auto; gap: 7px; text-align: center; }
+.vocab-week-value { color: var(--vocab-ink); font-size: 13px; font-weight: 650; overflow-wrap: anywhere; }
+.vocab-week-value small { margin-left: 1px; color: var(--vocab-muted); font-size: 8px; font-weight: 500; }
+.vocab-week-track { display: flex; align-items: flex-end; width: 100%; overflow: hidden; border-radius: 6px; background: #f0eee6; }
+.vocab-week-track > span { display: block; width: 100%; border-radius: 6px; background: #3d7c68; }
+.vocab-week-chart time { color: var(--vocab-muted); font-size: 10px; white-space: nowrap; }
+.vocab-week-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin: 2px 0 0; padding-top: 14px; border-top: 1px solid var(--vocab-line); }
+.vocab-week-summary > div { min-width: 0; }
+.vocab-week-summary dt { color: var(--vocab-muted); font-size: 10px; }
+.vocab-week-summary dd { margin: 5px 0 0; color: var(--vocab-ink); font-size: 23px; line-height: 1.2; overflow-wrap: anywhere; }
+.vocab-week-summary small { margin-left: 2px; font-size: 10px; }
+.vocab-week-comparison { color: var(--vocab-muted); font-size: 10px; }
+.vocab-progress-empty { padding: 10px 12px; border-radius: 9px; color: var(--vocab-muted); background: var(--vocab-soft); font-size: 11px; line-height: 1.7; }
+.vocab-rating-explanation { margin-top: 10px; }
 .vocab-search { display: flex; min-height: 48px; align-items: center; gap: 9px; padding: 0 12px; border: 1px solid #cfdbd1; border-radius: 12px; background: #fffdf8; }
 .vocab-search > span { font-size: 22px; }
 .vocab-search input { width: 100%; min-width: 0; min-height: 46px; border: 0; border-radius: 6px; color: var(--vocab-ink); background: transparent; font-size: 14px; }
@@ -173,6 +225,11 @@
 }
 
 @media (max-width: 359px) {
+  .vocab-progress-card, .vocab-week-card { padding: 14px; }
+  .vocab-progress-daily { gap: 12px; }
+  .vocab-progress-streak { padding-left: 12px; }
+  .vocab-week-chart { gap: 5px; }
+  .vocab-week-chart time { font-size: 9px; }
   .vocab-topic { padding: 9px 7px; gap: 4px; }
   .vocab-topic-icon { flex-basis: 19px; font-size: 17px; }
   .vocab-topic strong { font-size: 11px; }

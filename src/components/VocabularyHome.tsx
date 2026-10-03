@@ -1,5 +1,6 @@
 import type { VocabularyStudyRequest, VocabularySummary, VocabularyWord } from "../lib/types";
 import PronunciationButton from "./PronunciationButton";
+import VocabularyProgressCard from "./VocabularyProgressCard";
 import "./vocabulary.css";
 
 interface VocabularyHomeProps {
@@ -8,6 +9,7 @@ interface VocabularyHomeProps {
   onLibrary: (topic?: string) => void;
   onLegacy: () => void;
   onAdd: () => void;
+  onRecords: () => void;
 }
 
 function wordState(word: VocabularyWord): string {
@@ -30,7 +32,7 @@ function TopicIcon({ name }: { name: string }) {
   return <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d={paths[name] ?? "M4 4h16v16H4V4Z"} /></svg>;
 }
 
-export default function VocabularyHome({ summary, onStart, onLibrary, onLegacy, onAdd }: VocabularyHomeProps) {
+export default function VocabularyHome({ summary, onStart, onLibrary, onLegacy, onAdd, onRecords }: VocabularyHomeProps) {
   const today = summary.today.slice(0, 5);
 
   return (
@@ -50,6 +52,8 @@ export default function VocabularyHome({ summary, onStart, onLibrary, onLegacy, 
           <span aria-hidden="true">↻</span> {summary.due > 0 ? `${summary.due}語を復習する` : "今は期限到来の復習なし"}
         </button>
       </section>
+
+      <VocabularyProgressCard progress={summary.progress} compact onRecords={onRecords} />
 
       <section aria-labelledby="vocab-today-heading">
         <div className="vocab-section-heading">

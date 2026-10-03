@@ -80,6 +80,8 @@ describe("vocabulary API", () => {
   it("starts with five globally ordered new words and filters the word library", async () => {
     const summary = (await jsonApi("/vocabulary")).body as VocabularySummary;
     expect(summary).toMatchObject({ total: 6, started: 0, remembered: 0, due: 0, learnedToday: 0 });
+    expect(summary.progress).toMatchObject({ today: "2026-10-03", dailyGoal: 5, totalPoints: 0, level: 1, currentStreak: 0, longestStreak: 0, totalStudyDays: 0 });
+    expect(summary.progress.activity).toHaveLength(28);
     expect(summary.today.map((word) => word.polish)).toEqual(["chleb", "woda", "mleko", "kawa", "sklep"]);
     expect(summary.topics.find((topic) => topic.id === "supermarket")).toMatchObject({ total: 4, started: 0 });
     expect((await jsonApi("/vocabulary/words?search=水")).body.map((word: VocabularyWord) => word.polish)).toEqual(["woda"]);
@@ -238,6 +240,64 @@ describe("vocabulary API", () => {
     expect((await jsonApi("/vocabulary")).body.recentReviews).toHaveLength(20);
     expect(vocabularyDateKey("2026-10-02T22:01:00.000Z")).toBe("2026-10-03");
     expect(vocabularyDateKey("2026-01-02T22:30:00.000Z")).toBe("2026-01-02");
+  });
+
+  it("restores progress from all saved history while keeping retries and repeated same-day ratings to one point", async () => {
+    for (let index = 0; index < 35; index++) {
+      vi.setSystemTime(new Date(Date.UTC(2026, 7, 1 + index, 12)));
+      await rate("v-test-1", "known", "history-" + index);
+    }
+    vi.setSystemTime(new Date("2026-10-02T21:59:00.000Z"));
+    await rate("v-test-1", "again", "yesterday-again");
+    vi.setSystemTime(new Date("2026-10-02T22:01:00.000Z"));
+    await rate("v-test-1", "again", "today-again");
+    await rate("v-test-1", "again", "today-again");
+    await rate("v-test-1", "known", "today-known");
+    await rate("v-test-2", "known", "today-new");
+    const summary = (await jsonApi("/vocabulary")).body as VocabularySummary;
+    expect(summary.learnedToday).toBe(2);
+    expect(summary.recentReviews).toHaveLength(20);
+    expect(summary.progress).toMatchObject({
+      today: "2026-10-03", totalPoints: 38, level: 4, pointsIntoLevel: 8, pointsToNextLevel: 2,
+      currentStreak: 2, longestStreak: 35, totalStudyDays: 37,
+    });
+    expect(summary.progress.activity.slice(-2)).toEqual([
+      { date: "2026-10-02", words: 1, newWords: 0, reviews: 1 },
+      { date: "2026-10-03", words: 2, newWords: 1, reviews: 3 },
+    ]);
+    expect(count("pl_attempts")).toBe(0);
+    expect(count("pl_review_states")).toBe(0);
+    vi.setSystemTime(new Date("2026-10-03T22:01:00.000Z"));
+    await rate("v-test-1", "known", "tomorrow-review");
+    const nextDay = (await jsonApi("/vocabulary")).body as VocabularySummary;
+    expect(nextDay.progress).toMatchObject({ totalPoints: 39, currentStreak: 3 });
+    expect(nextDay.progress.activity.at(-1)).toEqual({ date: "2026-10-04", words: 1, newWords: 0, reviews: 1 });
+  });
+
+  it("keeps progress profile-owned and excludes foreign, unpublished, non-word, and future events", async () => {
+    await rate("v-test-1", "known", "master-visible");
+    const own = (await add("own-progress")).body as VocabularyWord;
+    const foreign = (await add("foreign-progress", "other", { polish: "paragon", meaningJa: "レシート" })).body as VocabularyWord;
+    await rate(own.id, "again", "own-progress-review");
+    await rate("v-test-2", "known", "other-global", "other");
+    await rate(foreign.id, "known", "other-private", "other");
+    // Even malformed imported history must not make another profile's private word visible.
+    db.sqlite.prepare("INSERT INTO pl_vocabulary_reviews (id, profile_id, item_id, idempotency_key, rating, elapsed_ms, created_at, due_at) VALUES ('foreign-history', 'master', ?, 'foreign-history', 'known', 0, ?, ?)")
+      .run(foreign.id, new Date().toISOString(), new Date().toISOString());
+    await rate("v-test-3", "known", "unpublished-review");
+    await rate("v-test-4", "known", "non-word-review");
+    db.sqlite.prepare("UPDATE pl_learning_items SET status = 'draft' WHERE id = 'v-test-3'").run();
+    db.sqlite.prepare("UPDATE pl_learning_items SET type = 'phrase' WHERE id = 'v-test-4'").run();
+    vi.setSystemTime(new Date("2026-10-02T22:31:00.000Z"));
+    await rate("v-test-5", "known", "future-review");
+    vi.setSystemTime(new Date("2026-10-02T22:30:00.000Z"));
+    const summary = (await jsonApi("/vocabulary")).body as VocabularySummary;
+    expect(summary.progress).toMatchObject({ totalPoints: 2, totalStudyDays: 1, currentStreak: 1 });
+    expect(summary.progress.activity.at(-1)).toEqual({ date: "2026-10-03", words: 2, newWords: 2, reviews: 2 });
+    expect(summary.recentReviews.map((review) => review.wordId).sort()).toEqual(["v-test-1", own.id].sort());
+    const other = (await jsonApi("/vocabulary", { profile: "other" })).body as VocabularySummary;
+    expect(other.progress.totalPoints).toBe(2);
+    expect(other.recentReviews.map((review) => review.wordId).sort()).toEqual(["v-test-2", foreign.id].sort());
   });
 
   it("rolls back both the event and the state if one operation fails", async () => {
