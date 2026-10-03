@@ -26,4 +26,6 @@ A2のlearner itemは男性話者想定、partner itemは典型的な質問・返
 
 ## Migration境界
 
-`0001`〜`0004`は既存A1の正本であり編集・削除しない。`0005_a2_missions_content.sql`がA2教材とmission/Can-do/Voice結果のschema・seedを追加し、`0006_fix_a2_item_situation.sql`がA2の`scene`値だけを補正する。どのmigrationも既存ID、session、attempt、reviewを削除しない。
+`0001`〜`0004`は既存A1の正本であり編集・削除しない。`0005_a2_missions_content.sql`がA2教材とmission/Can-do/Voice結果のschema・seedを追加し、`0006_fix_a2_item_situation.sql`がA2の`scene`値だけを補正する。これらの教材migrationは既存ID、session、attempt、reviewを削除しない。
+
+`0012_clear_legacy_reviews.sql`はマスターの削除依頼により、単語帳に属さない旧例文・表現の`pl_review_states`と`pl_review_events`だけを削除する。教材、session、attempt、現在の`pl_vocabulary_*`学習・確認テスト・定着記録は保持する。2026-10-03に本番のバックアップ後に実行済み。再実行可能であり、旧レッスンを学習した場合は新しい旧教材復習が生成される。

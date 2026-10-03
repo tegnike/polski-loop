@@ -5,7 +5,7 @@ Base pathは`/api/v1`です。ローカルではWorkerが`127.0.0.1:8787`で応�
 ## Vocabulary
 
 - `GET /vocabulary` — 全語数、学習済み・覚えた・期限到来の語数、今日の学習語数、場面別の進捗、今日と最近の自己評価、`progress`を返す。
-- `GET /vocabulary/words?search=...&topic=...&state=new|learning|remembered&personal=true` — 共有の600語と現在のprofileの個人単語を絞り込む。
+- `GET /vocabulary/words?search=...&topic=...&state=new|learning|confirmed&personal=true` — 共有の600語と現在のprofileの個人単語を絞り込む。`new`はカード未学習、`learning`は学習済みで定着未確認または再確認が必要な語、`confirmed`は1日・3日・7日の確認テストに合格し現在も再確認不要な語。記録画面の`retention.mastery.words`と同じ根拠を使う。旧`remembered`は最後の自己評価が`known`の語を返す互換用フィルターとして保持する。
 - `GET /vocabulary/queue?mode=learn|review&topic=...&wordId=...&limit=5` — 新規単語または期限到来の単語を返す。指定した単語からの練習も可能。
 - `POST /vocabulary/reviews` — `{ wordId, rating: "again"|"known", idempotencyKey, elapsedMs }` を保存し、`{ eventId, word }` を返す。同じprofile・keyの再送は同じ結果を返し、異なる内容では409となる。
 - `POST /vocabulary/words` — `{ polish, meaningJa, topic, examplePl?, exampleJa?, idempotencyKey }` から個人単語を作成する。同じkeyの再送と同じprofileの同一単語は重複登録しない。
