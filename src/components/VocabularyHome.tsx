@@ -53,7 +53,7 @@ export default function VocabularyHome({ summary, onStart, onLibrary, onLegacy, 
         </button>
       </section>
 
-      <VocabularyProgressCard progress={summary.progress} compact onRecords={onRecords} />
+      <VocabularyProgressCard progress={summary.progress} learnedWords={summary.started} totalWords={summary.total} compact onRecords={onRecords} />
 
       <section aria-labelledby="vocab-today-heading">
         <div className="vocab-section-heading">

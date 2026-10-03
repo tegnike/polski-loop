@@ -350,15 +350,16 @@ function App() {
               content: [
                 "画面: " + ({ today: "今日の単語", library: "単語帳", review: "単語の復習", progress: "単語の記録" }[view]),
                 "目的: ポーランドでの日常生活に必要な単語を覚える。",
-                "学習済み単語: " + vocabulary.started,
-                "今の復習対象: " + vocabulary.due,
+                "これまで学習した単語（重複なし）: " + vocabulary.started + " / " + vocabulary.total + "語",
+                "最後の自己評価が「わかった」の単語: " + vocabulary.remembered + "語",
+                "未学習の単語: " + (vocabulary.total - vocabulary.started) + "語",
+                "今の復習対象: " + vocabulary.due + "語",
                 "今日の単語: " + vocabulary.today.map((word) => word.polish + " = " + word.meaningJa).join(" / "),
                 ...(vocabulary.progress ? [
-                  "学習レベル（学習量による）: Lv." + vocabulary.progress.level,
-                  "累計学習ポイント: " + vocabulary.progress.totalPoints + "（同じ単語は1日1ポイント）",
                   "今日の目標: " + vocabulary.learnedToday + " / " + vocabulary.progress.dailyGoal + "語",
                   "連続学習: " + vocabulary.progress.currentStreak + "日",
-                  "直近7日間の記録: " + vocabulary.progress.activity.slice(-7).map((day) => day.date + " " + day.words + "ポイント、新しい単語" + day.newWords + "語").join(" / "),
+                  "直近7日間で初めて学習した単語: " + vocabulary.progress.activity.slice(-7).reduce((sum, day) => sum + day.newWords, 0) + "語",
+                  "直近7日間の記録（同じ語は同日1回）: " + vocabulary.progress.activity.slice(-7).map((day) => day.date + " 学習" + day.words + "語（新しい単語" + day.newWords + "語、復習" + (day.words - day.newWords) + "語）").join(" / "),
                 ] : []),
               ].join("\n"),
             }

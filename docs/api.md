@@ -14,7 +14,9 @@ Base pathは`/api/v1`です。ローカルではWorkerが`127.0.0.1:8787`で応�
 
 `progress`は保存済みの単語カード履歴をEurope/Warsawの日付で集計する。`totalPoints`は全期間の「単語×日」の数で、同日の同じ単語の再評価には重複加点せず、翌日の復習には加点する。`level`は1から始まり、10ポイントごとに1上がる。`dailyGoal`は5語。`pointsIntoLevel`と`pointsToNextLevel`は次のレベルまでの進捗を示す。これらは学習量の指標で、自己評価による`remembered`とは別に返す。
 
-`activity`は今日を含む28日分の`{ date, words, newWords, reviews }`を古い順で返し、学習しなかった日も0で埋める。`words`は同日に取り組んだ異なる単語数（ポイント）、`newWords`は全履歴で初めて評価した単語数、`reviews`は保存イベント数。`currentStreak`は今日または昨日からの連続学習日数、`longestStreak`と`totalStudyDays`は全履歴から求める。未来のイベントは加算しない。追加のmigrationや履歴の書き換えは行わない。
+`activity`は今日を含む28日分の`{ date, words, newWords, reviews }`を古い順で返し、学習しなかった日も0で埋める。`words`は同日に取り組んだ異なる単語数、`newWords`は全履歴で初めて評価した単語数、`reviews`は保存イベント数。`currentStreak`は今日または昨日からの連続学習日数、`longestStreak`と`totalStudyDays`は全履歴から求める。未来のイベントは加算しない。追加のmigrationや履歴の書き換えは行わない。
+
+画面の主指標は`started / total`の重複しない学習済み単語数。週の新しい単語は7日分の`newWords`を合計し、グラフは日ごとに新規`newWords`と復習`words - newWords`を表示する。日をまたぐ復習を含む`words`の合計は延べ語数として表示する。レベル・ポイントのフィールドはAPI互換性のため保持するが、画面やAIの画面コンテキストには表示しない。
 
 ## Pronunciation
 

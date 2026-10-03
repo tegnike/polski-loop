@@ -61,15 +61,16 @@
 .vocab-progress-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .vocab-progress-heading > div { min-width: 0; }
 .vocab-progress-heading p { margin-top: 4px; color: var(--vocab-muted); font-size: 11px; }
-.vocab-level-badge { display: flex; flex: 0 0 auto; align-items: baseline; gap: 3px; color: var(--vocab-ink); font-size: 34px; line-height: 1.1; }
-.vocab-level-badge small { font-size: 13px; font-weight: 600; }
-.vocab-level-progress { display: grid; gap: 7px; }
+.vocab-learned-count { display: flex; align-items: baseline; gap: 3px; color: var(--vocab-ink); font-size: 34px; line-height: 1.1; }
+.vocab-learned-count small { font-size: 13px; font-weight: 500; }
+.vocab-coverage-progress { display: grid; gap: 8px; }
+.vocab-remaining-words { color: var(--vocab-muted); font-size: 11px; }
 .vocab-progress-label { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 8px; font-size: 12px; }
 .vocab-progress-label > small { color: var(--vocab-muted); font-size: 10px; }
 .vocab-progress-label strong { color: var(--vocab-ink); font-size: 23px; line-height: 1.1; }
 .vocab-progress-label strong small { color: var(--vocab-muted); font-size: 11px; font-weight: 500; }
-.vocab-points-track { height: 7px; overflow: hidden; border-radius: 9px; background: #e1e7db; }
-.vocab-points-track > span { display: block; height: 100%; border-radius: inherit; background: var(--vocab-coral); }
+.vocab-word-track { height: 7px; overflow: hidden; border-radius: 9px; background: #e1e7db; }
+.vocab-word-track > span { display: block; height: 100%; border-radius: inherit; background: #3d7c68; }
 .vocab-progress-daily { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; padding-top: 14px; border-top: 1px solid #dbe4d7; }
 .vocab-daily-goal { display: grid; min-width: 0; gap: 7px; }
 .vocab-goal-track { height: 5px; }
@@ -79,7 +80,7 @@
 .vocab-progress-streak > span { color: var(--vocab-muted); font-size: 10px; }
 .vocab-progress-streak strong { font-size: 26px; line-height: 1.1; }
 .vocab-progress-streak small { margin-left: 3px; font-size: 11px; font-weight: 500; }
-.vocab-progress-totals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0; padding-top: 13px; border-top: 1px solid #dbe4d7; }
+.vocab-progress-totals { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; padding-top: 13px; border-top: 1px solid #dbe4d7; }
 .vocab-progress-totals > div { min-width: 0; }
 .vocab-progress-totals dt { color: var(--vocab-muted); font-size: 10px; }
 .vocab-progress-totals dd { margin: 5px 0 0; font-size: 23px; line-height: 1.2; overflow-wrap: anywhere; }
@@ -93,18 +94,25 @@
 .vocab-week-heading > strong { font-size: 25px; line-height: 1.1; }
 .vocab-week-heading small { margin-left: 3px; color: var(--vocab-muted); font-size: 11px; font-weight: 500; }
 .vocab-week-period { margin-top: -7px; color: var(--vocab-muted); font-size: 10px; }
+.vocab-week-chart-title { color: var(--vocab-ink); font-size: 11px; font-weight: 650; }
 .vocab-week-chart { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; margin: 5px 0 0; padding: 0; list-style: none; }
 .vocab-week-chart > li { display: grid; min-width: 0; grid-template-rows: auto 106px auto; gap: 7px; text-align: center; }
 .vocab-week-value { color: var(--vocab-ink); font-size: 13px; font-weight: 650; overflow-wrap: anywhere; }
 .vocab-week-value small { margin-left: 1px; color: var(--vocab-muted); font-size: 8px; font-weight: 500; }
-.vocab-week-track { display: flex; align-items: flex-end; width: 100%; overflow: hidden; border-radius: 6px; background: #f0eee6; }
-.vocab-week-track > span { display: block; width: 100%; border-radius: 6px; background: #3d7c68; }
+.vocab-week-track { display: flex; flex-direction: column-reverse; justify-content: flex-start; width: 100%; overflow: hidden; border-radius: 6px; background: #f0eee6; }
+.vocab-week-track > span { display: block; flex: 0 0 auto; width: 100%; }
+.vocab-week-new { background: #3d7c68; }
+.vocab-week-review { background: #bed3c4; }
+.vocab-week-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px; color: var(--vocab-muted); font-size: 10px; }
+.vocab-week-legend > span { display: inline-flex; align-items: center; gap: 5px; }
+.vocab-week-legend i { width: 10px; height: 10px; border-radius: 2px; }
 .vocab-week-chart time { color: var(--vocab-muted); font-size: 10px; white-space: nowrap; }
 .vocab-week-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin: 2px 0 0; padding-top: 14px; border-top: 1px solid var(--vocab-line); }
 .vocab-week-summary > div { min-width: 0; }
 .vocab-week-summary dt { color: var(--vocab-muted); font-size: 10px; }
 .vocab-week-summary dd { margin: 5px 0 0; color: var(--vocab-ink); font-size: 23px; line-height: 1.2; overflow-wrap: anywhere; }
 .vocab-week-summary small { margin-left: 2px; font-size: 10px; }
+.vocab-week-summary .vocab-week-prefix { margin: 0 3px 0 0; }
 .vocab-week-comparison { color: var(--vocab-muted); font-size: 10px; }
 .vocab-progress-empty { padding: 10px 12px; border-radius: 9px; color: var(--vocab-muted); background: var(--vocab-soft); font-size: 11px; line-height: 1.7; }
 .vocab-rating-explanation { margin-top: 10px; }
