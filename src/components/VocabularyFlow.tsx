@@ -37,6 +37,7 @@ function dueTime(value: string): string {
 export default function VocabularyFlow({ request, onFinished, onBack }: VocabularyFlowProps) {
   const [queue, setQueue] = useState<QueueCard[]>([]);
   const [index, setIndex] = useState(0);
+  const [historyIndex, setHistoryIndex] = useState<number | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -49,9 +50,12 @@ export default function VocabularyFlow({ request, onFinished, onBack }: Vocabula
   const [reload, setReload] = useState(0);
   const [message, setMessage] = useState("");
   const revealRef = useRef<HTMLButtonElement>(null);
+  const historyNextRef = useRef<HTMLButtonElement>(null);
+  const ratingRef = useRef<HTMLButtonElement>(null);
   const saveLock = useRef(false);
   const pending = useRef<PendingRating | null>(null);
   const cardStartedAt = useRef(Date.now());
+  const historyStartedAt = useRef<number | null>(null);
   const savedEvents = useRef(new Set<string>());
   const generation = useRef(0);
 
@@ -63,6 +67,7 @@ export default function VocabularyFlow({ request, onFinished, onBack }: Vocabula
     setSaveError(null);
     setQueue([]);
     setIndex(0);
+    setHistoryIndex(null);
     setRevealed(false);
     setCompleted(false);
     setSavedWords({});
@@ -71,6 +76,7 @@ export default function VocabularyFlow({ request, onFinished, onBack }: Vocabula
     setMessage("");
     setSaving(false);
     pending.current = null;
+    historyStartedAt.current = null;
     savedEvents.current = new Set();
     saveLock.current = false;
     void api.vocabularyQueue({ mode: request.mode, topic: request.topic, wordId: request.wordId, limit: 5 })
@@ -86,14 +92,21 @@ export default function VocabularyFlow({ request, onFinished, onBack }: Vocabula
     return () => { cancelled = true; generation.current += 1; };
   }, [request.mode, request.topic, request.wordId, reload]);
 
-  const card = queue[index];
+  const displayIndex = historyIndex ?? index;
+  const viewingHistory = historyIndex !== null;
+  const card = queue[displayIndex];
+  const showMeaning = viewingHistory || revealed;
+  const navigationDisabled = saving || retryRating !== null;
 
   useEffect(() => {
-    if (!loading && !completed && card) revealRef.current?.focus({ preventScroll: true });
-  }, [card?.key, loading, completed]);
+    if (!loading && !completed && card) {
+      const target = viewingHistory ? historyNextRef.current : revealRef.current ?? ratingRef.current;
+      target?.focus({ preventScroll: true });
+    }
+  }, [card?.key, loading, completed, viewingHistory]);
 
   async function saveRating(rating: VocabularyRating) {
-    if (!card || !revealed || saveLock.current) return;
+    if (!card || viewingHistory || !revealed || saveLock.current) return;
     const run = generation.current;
     if (!pending.current || pending.current.idempotencyKey !== card.key) {
       pending.current = { wordId: card.word.id, rating, idempotencyKey: card.key, elapsedMs: Math.max(0, Date.now() - cardStartedAt.current) };
@@ -137,6 +150,25 @@ export default function VocabularyFlow({ request, onFinished, onBack }: Vocabula
     }
   }
 
+  function showPreviousWord() {
+    if (displayIndex === 0 || saveLock.current || pending.current) return;
+    if (historyStartedAt.current === null) historyStartedAt.current = Date.now();
+    setHistoryIndex(displayIndex - 1);
+    setMessage("");
+  }
+
+  function showNextWord() {
+    if (!viewingHistory || saveLock.current || pending.current) return;
+    if (displayIndex + 1 < index) {
+      setHistoryIndex(displayIndex + 1);
+    } else {
+      if (historyStartedAt.current !== null) cardStartedAt.current += Date.now() - historyStartedAt.current;
+      historyStartedAt.current = null;
+      setHistoryIndex(null);
+    }
+    setMessage("");
+  }
+
   const backButton = <button className="vocab-back-button" type="button" onClick={onBack} disabled={saving} aria-label="学習を終了して戻る"><span aria-hidden="true">‹</span></button>;
 
   if (loading || loadError || queue.length === 0) {
@@ -173,16 +205,16 @@ export default function VocabularyFlow({ request, onFinished, onBack }: Vocabula
 
   return (
     <div className="vocab-study">
-      <header className="vocab-study-header">{backButton}<strong>{request.mode === "review" ? "単語の復習" : "単語を覚える"}</strong><span>{index + 1} / {queue.length}{card.repeat ? " · もう一度" : ""}</span></header>
+      <header className="vocab-study-header">{backButton}<strong>{request.mode === "review" ? "単語の復習" : "単語を覚える"}</strong><span>{displayIndex + 1} / {queue.length}{card.repeat ? " · もう一度" : ""}</span></header>
       <div className="vocab-study-progress" role="progressbar" aria-label="保存済みカードの進捗" aria-valuemin={0} aria-valuemax={queue.length} aria-valuenow={index}><span style={{ width: `${index / queue.length * 100}%` }} /></div>
       <main className="vocab-card-area">
-        <p className="vocab-card-instruction">日本語の意味を思い出す</p>
+        <p className="vocab-card-instruction">{viewingHistory ? "前の単語を確認" : "日本語の意味を思い出す"}</p>
         <article className="vocab-flashcard" key={card.key}>
           <h1 className="vocab-headword" lang="pl">{card.word.polish}</h1>
           <div className="vocab-card-audio"><PronunciationButton text={card.word.polish} speakerGender={card.word.speakerGender} /><span>発音を聞く</span></div>
-          <div className="vocab-translation" aria-live="polite">{revealed ? <p className="vocab-card-meaning">{card.word.meaningJa}</p> : <button ref={revealRef} className="vocab-reveal-button" type="button" onClick={() => setRevealed(true)}>意味を表示</button>}</div>
+          <div className="vocab-translation" aria-live="polite">{showMeaning ? <p className="vocab-card-meaning">{card.word.meaningJa}</p> : <button ref={revealRef} className="vocab-reveal-button" type="button" onClick={() => setRevealed(true)}>意味を表示</button>}</div>
         </article>
-        {revealed && card.word.examplePl && (
+        {showMeaning && card.word.examplePl && (
           <details className="vocab-card-usage" key={`${card.key}:example`}>
             <summary>使い方を見る</summary>
             <div className="vocab-example-audio">
@@ -192,9 +224,17 @@ export default function VocabularyFlow({ request, onFinished, onBack }: Vocabula
             {card.word.exampleJa && <p>{card.word.exampleJa}</p>}
           </details>
         )}
-        <div className="vocab-rating-buttons" aria-label="思い出せたかを自己評価"><button className="vocab-button vocab-again" type="button" onClick={() => void saveRating("again")} disabled={!revealed || saving || retryRating !== null}>もう一度</button><button className="vocab-button vocab-primary" type="button" onClick={() => void saveRating("known")} disabled={!revealed || saving || retryRating !== null}>わかった</button></div>
-        {!revealed && <p className="vocab-help">意味を確認すると、自己評価を選べます。</p>}
-        {revealed && !saving && !saveError && <p className="vocab-help">{card.repeat ? "自己評価を選ぶと、次の復習予定を保存します。" : "「もう一度」の単語は、この回でもう1回練習します。"}</p>}
+        <div className="vocab-word-navigation" role="group" aria-label="単語間の移動">
+          <button className="vocab-quiet" type="button" onClick={showPreviousWord} disabled={displayIndex === 0 || navigationDisabled}>← 前の単語へ</button>
+          {viewingHistory && <button ref={historyNextRef} className="vocab-quiet" type="button" onClick={showNextWord} disabled={navigationDisabled}>次の単語へ →</button>}
+        </div>
+        {viewingHistory ? <p className="vocab-help">評価済みの単語です。「次の単語へ」で学習を続けられます。</p> : (
+          <>
+            <div className="vocab-rating-buttons" aria-label="思い出せたかを自己評価"><button ref={ratingRef} className="vocab-button vocab-again" type="button" onClick={() => void saveRating("again")} disabled={!revealed || saving || retryRating !== null}>もう一度</button><button className="vocab-button vocab-primary" type="button" onClick={() => void saveRating("known")} disabled={!revealed || saving || retryRating !== null}>わかった</button></div>
+            {!revealed && <p className="vocab-help">意味を確認すると、自己評価を選べます。</p>}
+            {revealed && !saving && !saveError && <p className="vocab-help">{card.repeat ? "自己評価を選ぶと、次の復習予定を保存します。" : "「もう一度」の単語は、この回でもう1回練習します。"}</p>}
+          </>
+        )}
         {saving && <p className="vocab-save-status" role="status">自己評価を保存しています…</p>}
         {saveError && <div className="vocab-save-error"><p className="vocab-error" role="alert">{saveError}</p><p className="vocab-help">保存を確認できるまで、次のカードには進みません。</p><button className="vocab-button vocab-secondary" type="button" onClick={() => { if (retryRating) void saveRating(retryRating); }} disabled={saving}>同じ評価で保存し直す</button></div>}
         <p className="vocab-card-message" role="status">{message}</p>
