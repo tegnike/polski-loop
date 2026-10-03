@@ -55,6 +55,7 @@
 .vocab-page-intro { padding: 7px 0 0; }
 .vocab-page-intro h1 { margin: 8px 0; }
 .vocab-page-intro > p:last-child { font-size: 13px; }
+.vocab-review-actions { display: grid; gap: 12px; padding: 16px; border: 1px solid var(--vocab-line); border-radius: 15px; background: #fffdf8; }
 .vocab-search { display: flex; min-height: 48px; align-items: center; gap: 9px; padding: 0 12px; border: 1px solid #cfdbd1; border-radius: 12px; background: #fffdf8; }
 .vocab-search > span { font-size: 22px; }
 .vocab-search input { width: 100%; min-width: 0; min-height: 46px; border: 0; border-radius: 6px; color: var(--vocab-ink); background: transparent; font-size: 14px; }

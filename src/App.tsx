@@ -269,19 +269,19 @@ function App() {
           />
         )}
         {view === "review" && (
-          <div className="page-stack">
-            <section className="page-intro">
-              <span className="eyebrow">思い出す練習</span>
+          <div className="vocab-page">
+            <section className="vocab-page-intro">
+              <p className="vocab-eyebrow">思い出す練習</p>
               <h1>単語の復習</h1>
-              <p>{vocabulary.due > 0 ? vocabulary.due + "語が、今の復習タイミングです。" : "今すぐ復習する単語はありません。次の予定は記録で確認できます。"}</p>
+              <p className="vocab-muted">{vocabulary.due > 0 ? vocabulary.due + "語が、今の復習タイミングです。" : "今すぐ復習する単語はありません。次の予定は記録で確認できます。"}</p>
             </section>
-            <section className="card">
-              <button className="button primary full-width" type="button" disabled={vocabulary.due === 0} onClick={() => setVocabularyStudy({ mode: "review" })}>
+            <section className="vocab-review-actions" aria-label="単語の復習メニュー">
+              <button className="vocab-button vocab-primary" type="button" disabled={vocabulary.due === 0} onClick={() => setVocabularyStudy({ mode: "review" })}>
                 単語を復習する →
               </button>
-              <button className="button secondary full-width" type="button" onClick={() => openLibrary()}>単語帳から練習する</button>
+              <button className="vocab-button vocab-secondary" type="button" onClick={() => openLibrary()}>単語帳から練習する</button>
             </section>
-            <button className="plain-button" type="button" onClick={() => setView("legacyReview")}>例文・表現の復習を見る（{status.progress.dueReviews}件）</button>
+            <button className="vocab-legacy-link" type="button" onClick={() => setView("legacyReview")}>例文・表現の復習を見る（{status.progress.dueReviews}件）</button>
           </div>
         )}
         {view === "legacyReview" && (
