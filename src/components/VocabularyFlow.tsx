@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { api } from "../lib/api";
-import type { VocabularyRating, VocabularyStudyRequest, VocabularyWord } from "../lib/types";
+import type { AiPageContext, VocabularyRating, VocabularyStudyRequest, VocabularyWord } from "../lib/types";
+import { VOCABULARY_TOPICS } from "../lib/vocabulary";
+import AIChat from "./AIChat";
 import PronunciationButton from "./PronunciationButton";
 import "./vocabulary.css";
 
@@ -97,6 +99,34 @@ export default function VocabularyFlow({ request, onFinished, onBack }: Vocabula
   const card = queue[displayIndex];
   const showMeaning = viewingHistory || revealed;
   const navigationDisabled = saving || retryRating !== null;
+  const aiContext: AiPageContext = completed ? {
+    key: "vocabulary-study:completed",
+    label: "単語学習のふり返り",
+    content: [
+      "画面: 単語学習の完了",
+      "この回で学習した単語: " + Object.values(savedWords).map(({ word }) => word.polish + " = " + word.meaningJa).join(" / "),
+      "自己評価の保存回数: " + savedCount,
+    ].join("\n"),
+  } : card ? {
+    key: "vocabulary-study:" + card.key + (viewingHistory ? ":history" : ":active"),
+    label: card.word.polish + " · " + (displayIndex + 1) + " / " + queue.length,
+    content: [
+      "画面: " + (viewingHistory ? "前の単語を確認" : request.mode === "review" ? "単語の復習" : "単語を覚える"),
+      "目的: ポーランドの日常生活で使う単語を覚え、関連する言葉や使い方を知る。",
+      "表示中の単語: " + card.word.polish,
+      "日本語の意味: " + card.word.meaningJa,
+      "場面: " + (VOCABULARY_TOPICS.find((topic) => topic.id === card.word.topic)?.label ?? card.word.topic),
+      ...(card.word.examplePl ? ["例文: " + card.word.examplePl] : []),
+      ...(card.word.exampleJa ? ["例文の日本語訳: " + card.word.exampleJa] : []),
+      "会話開始時の意味の表示状態: " + (showMeaning ? "表示済み" : "まだ表示していない"),
+      "カードの状態: " + (viewingHistory ? "評価済みの単語を見直し中" : card.repeat ? "この回でもう一度練習中" : "自己評価前"),
+    ].join("\n"),
+  } : {
+    key: "vocabulary-study:" + (loading ? "loading" : loadError ? "error" : "empty"),
+    label: "ポーランド語の単語学習",
+    content: "画面: 単語学習\n状態: " + (loading ? "単語を読み込み中" : loadError ? "単語を読み込めなかった" : "今回学習する単語はありません"),
+  };
+  const aiChat = <AIChat context={aiContext} withBottomNav={false} suggestedQuestions={card && !completed ? ["関連する単語を教えて", "日常で使う例文を教えて"] : undefined} />;
 
   useEffect(() => {
     if (!loading && !completed && card) {
@@ -178,6 +208,7 @@ export default function VocabularyFlow({ request, onFinished, onBack }: Vocabula
         <main className="vocab-study-state">
           {loading ? <p role="status">単語を準備しています…</p> : loadError ? <><p className="vocab-error" role="alert">{loadError}</p><button className="vocab-button vocab-primary" type="button" onClick={() => setReload((value) => value + 1)}>もう一度読み込む</button></> : <><span className="vocab-complete-icon" aria-hidden="true">✓</span><h1>{request.mode === "review" ? "今は復習なし" : "この場面はひと区切り"}</h1><p>{request.mode === "review" ? "次の復習時期に、また思い出してみましょう。" : "単語帳で別の場面を選ぶか、見かけた単語を追加できます。"}</p><button className="vocab-button vocab-primary" type="button" onClick={onFinished}>今日へ戻る</button></>}
         </main>
+        {aiChat}
       </div>
     );
   }
@@ -199,6 +230,7 @@ export default function VocabularyFlow({ request, onFinished, onBack }: Vocabula
           {nextDue && <p className="vocab-next-due">次の復習予定：{dueTime(nextDue)}</p>}
           <button className="vocab-button vocab-primary" type="button" onClick={onFinished}>今日へ戻る <span aria-hidden="true">→</span></button>
         </main>
+        {aiChat}
       </div>
     );
   }
@@ -239,6 +271,7 @@ export default function VocabularyFlow({ request, onFinished, onBack }: Vocabula
         {saveError && <div className="vocab-save-error"><p className="vocab-error" role="alert">{saveError}</p><p className="vocab-help">保存を確認できるまで、次のカードには進みません。</p><button className="vocab-button vocab-secondary" type="button" onClick={() => { if (retryRating) void saveRating(retryRating); }} disabled={saving}>同じ評価で保存し直す</button></div>}
         <p className="vocab-card-message" role="status">{message}</p>
       </main>
+      {aiChat}
     </div>
   );
 }

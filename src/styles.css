@@ -439,6 +439,8 @@ h1, h2, strong { letter-spacing: -.025em; }
 .ai-chat-welcome > span { display: grid; width: 44px; height: 44px; place-items: center; margin-bottom: 5px; border-radius: 15px; color: var(--yellow); background: var(--teal); font-size: 21px; }
 .ai-chat-welcome strong { font-size: 15px; }
 .ai-chat-welcome p { color: var(--muted); font-size: 11px; line-height: 1.6; }
+.ai-chat-suggestions { display: grid; gap: 8px; width: 100%; margin-top: 12px; }
+.ai-chat-suggestions button { min-height: 44px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; color: var(--teal); background: var(--paper-strong); font-size: 12px; font-weight: 750; }
 .ai-chat-message { display: grid; max-width: min(88%, 560px); gap: 3px; }
 .ai-chat-message.user { align-self: flex-end; }
 .ai-chat-message.assistant { align-self: flex-start; }

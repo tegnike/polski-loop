@@ -97,7 +97,7 @@
 .vocab-form-actions > .vocab-primary { flex: 1; }
 .vocab-help { color: var(--vocab-muted); font-size: 11px; line-height: 1.8; text-align: center; }
 
-.vocab-study { min-height: 100vh; min-height: 100dvh; padding: 17px 20px calc(26px + env(safe-area-inset-bottom)); background: var(--vocab-paper); }
+.vocab-study { min-height: 100vh; min-height: 100dvh; padding: 17px 20px calc(96px + env(safe-area-inset-bottom)); background: var(--vocab-paper); }
 .vocab-study-header { display: flex; max-width: 540px; align-items: center; gap: 12px; margin: 0 auto; }
 .vocab-back-button { display: grid; width: 44px; flex: 0 0 44px; place-items: center; padding: 0; border: 1px solid var(--vocab-line); border-radius: 12px; color: var(--vocab-ink); background: transparent; font-size: 30px; }
 .vocab-study-header strong { flex: 1; font-size: 14px; }
