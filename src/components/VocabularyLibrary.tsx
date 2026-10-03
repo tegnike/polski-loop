@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { api } from "../lib/api";
-import type { VocabularyStudyRequest, VocabularySummary, VocabularyWord } from "../lib/types";
+import type { VocabularyRetentionWord, VocabularyStudyRequest, VocabularySummary, VocabularyWord } from "../lib/types";
 import PronunciationButton from "./PronunciationButton";
+import { VocabularyRetentionBadge } from "./VocabularyRetention";
 import "./vocabulary.css";
 
 interface VocabularyLibraryProps {
@@ -133,17 +134,18 @@ export default function VocabularyLibrary({ summary, initialTopic, initiallyAddi
       ) : words.length === 0 ? (
         <div className="vocab-empty"><h2>単語が見つかりませんでした</h2><p>{personal ? "自分の単語を追加するか、絞り込みを変えてください。" : "検索語や場面、学習状態を変えてみてください。"}</p></div>
       ) : (
-        <section aria-labelledby="vocab-library-heading"><div className="vocab-section-heading"><h2 id="vocab-library-heading">{summary.topics.find((item) => item.id === topic)?.label ?? "すべての単語"}</h2><span className="vocab-muted">{words.length}語</span></div><div className="vocab-library-list">{words.map((word) => <VocabularyLibraryWord key={word.id} word={word} onStart={onStart} />)}</div></section>
+        <section aria-labelledby="vocab-library-heading"><div className="vocab-section-heading"><h2 id="vocab-library-heading">{summary.topics.find((item) => item.id === topic)?.label ?? "すべての単語"}</h2><span className="vocab-muted">{words.length}語</span></div><div className="vocab-library-list">{words.map((word) => <VocabularyLibraryWord key={word.id} word={word} retention={summary.retention?.words.find((entry) => entry.wordId === word.id)} showRetention={summary.retention !== undefined} onStart={onStart} />)}</div></section>
       )}
     </div>
   );
 }
 
-function VocabularyLibraryWord({ word, onStart }: { word: VocabularyWord; onStart: (request: VocabularyStudyRequest) => void }) {
+function VocabularyLibraryWord({ word, retention, showRetention, onStart }: { word: VocabularyWord; retention?: VocabularyRetentionWord; showRetention: boolean; onStart: (request: VocabularyStudyRequest) => void }) {
   const stateLabel = !word.state ? "未学習" : word.state.lastRating === "again" ? "練習中" : "わかった";
   return (
     <article className="vocab-library-word">
       <div className="vocab-word-top"><span className={`vocab-state${word.state?.lastRating === "again" ? " vocab-state-again" : word.state ? " vocab-state-known" : ""}`}>{stateLabel}</span>{word.personal && <span className="vocab-personal-label">自分の単語</span>}</div>
+      {showRetention && <div className="vocab-library-retention"><VocabularyRetentionBadge word={retention} /></div>}
       <div className="vocab-word-heading"><h3 lang="pl">{word.polish}</h3><PronunciationButton text={word.polish} speakerGender={word.speakerGender} /></div>
       <p className="vocab-word-meaning">{word.meaningJa}</p>
       {word.examplePl && (

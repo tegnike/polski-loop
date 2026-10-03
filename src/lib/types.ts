@@ -475,6 +475,72 @@ export interface VocabularySummary {
   topics: VocabularyTopic[];
   today: VocabularyWord[];
   recentReviews: VocabularyReviewEntry[];
+  retention?: VocabularyRetentionSummary;
+}
+
+export type VocabularyRetentionStage = 0 | 1 | 2 | 3;
+export type VocabularyTestMode = "due" | "practice";
+
+export interface VocabularyRetentionWord {
+  wordId: string;
+  polish: string;
+  meaningJa: string;
+  stage: VocabularyRetentionStage;
+  requiredDays: number;
+  nextTestAt: string;
+  lastTestAt: string | null;
+  lastCorrect: boolean | null;
+  lastGapDays: number | null;
+  totalAttempts: number;
+}
+
+export interface VocabularyTestAttempt {
+  id: string;
+  wordId: string;
+  polish: string;
+  meaningJa: string;
+  answer: string;
+  isCorrect: boolean;
+  testedAt: string;
+  gapDays: number;
+  requiredDays: number;
+  countsForRetention: boolean;
+  stageBefore: VocabularyRetentionStage;
+  stageAfter: VocabularyRetentionStage;
+  nextTestAt: string;
+}
+
+export interface VocabularyRetentionSummary {
+  due: number;
+  totalTested: number;
+  confirmed1: number;
+  confirmed3: number;
+  confirmed7: number;
+  recheck: number;
+  words: VocabularyRetentionWord[];
+  recentTests: VocabularyTestAttempt[];
+}
+
+// A question deliberately contains no Polish answer, examples, or accepted answers.
+export interface VocabularyTestQuestion {
+  id: string;
+  promptJa: string;
+  requiredDays: number;
+  dueAt: string;
+  eligibleForRetention: boolean;
+  createdAt: string;
+}
+
+export interface VocabularyTestStartResponse {
+  mode: VocabularyTestMode;
+  questions: VocabularyTestQuestion[];
+}
+
+export interface VocabularyTestAnswerResponse {
+  attempt: VocabularyTestAttempt;
+  correctPolish: string;
+  meaningJa: string;
+  acceptedAnswers: string[];
 }
 
 export interface VocabularyStudyRequest {

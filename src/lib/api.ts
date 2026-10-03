@@ -21,6 +21,10 @@ import type {
   VocabularySummary,
   VocabularyStudyRequest,
   VocabularyRating,
+  VocabularyTestMode,
+  VocabularyTestStartResponse,
+  VocabularyTestAnswerResponse,
+  VocabularyTestAttempt,
 } from "./types";
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -62,6 +66,15 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
+  startVocabularyTest: (payload: { mode: VocabularyTestMode; wordId?: string; limit?: number; idempotencyKey: string }) =>
+    request<VocabularyTestStartResponse>("/vocabulary/tests/start", {
+      method: "POST", body: JSON.stringify(payload),
+    }),
+  answerVocabularyTest: (payload: { questionId: string; answer: string; idempotencyKey: string; elapsedMs: number }) =>
+    request<VocabularyTestAnswerResponse>("/vocabulary/tests/answer", {
+      method: "POST", body: JSON.stringify(payload),
+    }),
+  vocabularyTestHistory: (wordId: string) => request<VocabularyTestAttempt[]>("/vocabulary/tests/history?wordId=" + encodeURIComponent(wordId)),
   addVocabularyWord: (payload: {
     polish: string;
     meaningJa: string;

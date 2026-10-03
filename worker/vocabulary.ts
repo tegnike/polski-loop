@@ -1,5 +1,6 @@
 import { isVocabularyTopic, normalizeVocabularyPolish, VOCABULARY_TOPICS } from "../src/lib/vocabulary";
 import { calculateVocabularyProgress } from "../src/lib/vocabulary-progress";
+import { answerVocabularyTest, startVocabularyTest, vocabularyRetentionSummary, vocabularyTestHistory, VocabularyRetentionError } from "./vocabulary-retention";
 import type { ItemRegister, ItemSkill, TrackCode, VocabularyRating, VocabularyReviewEntry, VocabularyState, VocabularySummary, VocabularyWord } from "../src/lib/types";
 
 export class VocabularyError extends Error {
@@ -79,19 +80,20 @@ function inputString(body: Record<string, unknown>, key: string, max: number, op
 
 export async function vocabularySummary(db: D1Database, profile: string, now = new Date()): Promise<VocabularySummary> {
   const reviewFrom = " FROM pl_vocabulary_reviews r JOIN pl_learning_items i ON i.id = r.item_id JOIN pl_vocabulary_details d ON d.item_id = i.id WHERE r.profile_id = ? AND " + VISIBLE;
-  const [words, reviews, history] = await Promise.all([
+  const [words, reviews, history, retention] = await Promise.all([
     selectWords(db, profile),
     db.prepare("SELECT r.id, r.item_id, i.polish, i.meaning_ja, r.rating, r.elapsed_ms, r.created_at, r.due_at" + reviewFrom + " AND r.created_at <= ? ORDER BY r.created_at DESC, r.id DESC LIMIT 20")
       .bind(profile, profile, now.toISOString()).all<ReviewRow>(),
-    db.prepare("SELECT r.item_id, r.created_at" + reviewFrom + " AND r.created_at <= ?")
-      .bind(profile, profile, now.toISOString()).all<Pick<ReviewRow, "item_id" | "created_at">>(),
+    db.prepare("SELECT r.item_id, r.created_at" + reviewFrom + " AND r.created_at <= ? UNION ALL SELECT t.item_id, t.tested_at AS created_at FROM pl_vocabulary_test_attempts t JOIN pl_learning_items i ON i.id = t.item_id JOIN pl_vocabulary_details d ON d.item_id = i.id WHERE t.profile_id = ? AND " + VISIBLE + " AND t.tested_at <= ?")
+      .bind(profile, profile, now.toISOString(), profile, profile, now.toISOString()).all<Pick<ReviewRow, "item_id" | "created_at">>(),
+    vocabularyRetentionSummary(db, profile, now),
   ]);
   const events = reviews.results ?? [];
   const progress = calculateVocabularyProgress((history.results ?? []).map((event) => ({ wordId: event.item_id, createdAt: event.created_at })), now);
   return { total: words.length, started: words.filter((word) => word.state).length,
     remembered: words.filter((word) => word.state?.lastRating === "known").length,
     due: words.filter((word) => word.state && word.state.dueAt <= now.toISOString()).length,
-    learnedToday: progress.activity[progress.activity.length - 1].words, progress,
+    learnedToday: progress.activity[progress.activity.length - 1].words, progress, retention,
     topics: VOCABULARY_TOPICS.map((topic) => ({ ...topic, total: words.filter((word) => word.topic === topic.id).length,
       started: words.filter((word) => word.topic === topic.id && word.state).length })),
     today: words.filter((word) => !word.state).slice(0, 5), recentReviews: events.slice(0, 20).map(toReview) };
@@ -194,6 +196,10 @@ export async function vocabularyExport(db: D1Database, profile: string): Promise
     pl_vocabulary_details: "SELECT d.* FROM pl_vocabulary_details d JOIN pl_learning_items i ON i.id = d.item_id WHERE " + VISIBLE,
     pl_vocabulary_states: "SELECT s.* FROM pl_vocabulary_states s JOIN pl_vocabulary_details d ON d.item_id = s.item_id JOIN pl_learning_items i ON i.id = d.item_id WHERE s.profile_id = ? AND " + VISIBLE,
     pl_vocabulary_reviews: "SELECT r.* FROM pl_vocabulary_reviews r JOIN pl_vocabulary_details d ON d.item_id = r.item_id JOIN pl_learning_items i ON i.id = d.item_id WHERE r.profile_id = ? AND " + VISIBLE,
+    pl_vocabulary_retention_states: "SELECT r.* FROM pl_vocabulary_retention_states r JOIN pl_vocabulary_details d ON d.item_id = r.item_id JOIN pl_learning_items i ON i.id = d.item_id WHERE r.profile_id = ? AND " + VISIBLE,
+    pl_vocabulary_test_starts: "SELECT t.* FROM pl_vocabulary_test_starts t WHERE t.profile_id = ? AND t.profile_id = ?",
+    pl_vocabulary_test_challenges: "SELECT c.* FROM pl_vocabulary_test_challenges c JOIN pl_vocabulary_details d ON d.item_id = c.item_id JOIN pl_learning_items i ON i.id = d.item_id WHERE c.profile_id = ? AND " + VISIBLE,
+    pl_vocabulary_test_attempts: "SELECT a.* FROM pl_vocabulary_test_attempts a JOIN pl_vocabulary_details d ON d.item_id = a.item_id JOIN pl_learning_items i ON i.id = d.item_id WHERE a.profile_id = ? AND " + VISIBLE,
     pl_vocabulary_word_requests: "SELECT w.* FROM pl_vocabulary_word_requests w JOIN pl_vocabulary_details d ON d.item_id = w.item_id JOIN pl_learning_items i ON i.id = d.item_id WHERE w.profile_id = ? AND " + VISIBLE,
     pl_vocabulary_learning_items: "SELECT i.* FROM pl_learning_items i JOIN pl_vocabulary_details d ON d.item_id = i.id WHERE " + VISIBLE,
     pl_personal_learning_items: "SELECT i.* FROM pl_learning_items i JOIN pl_vocabulary_details d ON d.item_id = i.id WHERE " + VISIBLE + " AND d.owner_profile_id = ?",
@@ -207,6 +213,16 @@ export async function vocabularyExport(db: D1Database, profile: string): Promise
 }
 
 export async function vocabularyRoute(request: Request, db: D1Database, profile: string, path: string, url: URL): Promise<unknown> {
+  if (path.startsWith("/vocabulary/tests/")) {
+    try {
+      if (request.method === "POST" && path === "/vocabulary/tests/start") return await startVocabularyTest(db, profile, request);
+      if (request.method === "POST" && path === "/vocabulary/tests/answer") return await answerVocabularyTest(db, profile, request);
+      if (request.method === "GET" && path === "/vocabulary/tests/history") return await vocabularyTestHistory(db, profile, url);
+    } catch (error) {
+      if (error instanceof VocabularyRetentionError) throw new VocabularyError(error.message, error.status);
+      throw error;
+    }
+  }
   if (request.method === "GET" && (path === "/vocabulary" || path === "/vocabulary/")) return vocabularySummary(db, profile);
   if (request.method === "GET" && path === "/vocabulary/words") return vocabularyWords(db, profile, url);
   if (request.method === "GET" && path === "/vocabulary/queue") return vocabularyQueue(db, profile, url);

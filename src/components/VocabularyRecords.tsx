@@ -1,10 +1,12 @@
-import type { VocabularyProgress, VocabularySummary } from "../lib/types";
+import type { VocabularyProgress, VocabularySummary, VocabularyTestMode } from "../lib/types";
 import VocabularyProgressCard from "./VocabularyProgressCard";
+import { VocabularyRetentionDetails } from "./VocabularyRetention";
 import "./vocabulary.css";
 
 interface VocabularyRecordsProps {
   summary: VocabularySummary;
   onLegacy: () => void;
+  onTest?: (mode: VocabularyTestMode, wordId?: string) => void;
 }
 
 function reviewDate(value: string): string {
@@ -58,17 +60,18 @@ function VocabularyWeek({ progress }: { progress: VocabularyProgress }) {
   );
 }
 
-export default function VocabularyRecords({ summary, onLegacy }: VocabularyRecordsProps) {
+export default function VocabularyRecords({ summary, onLegacy, onTest }: VocabularyRecordsProps) {
   return (
     <div className="vocab-page">
       <section className="vocab-page-intro"><p className="vocab-eyebrow">Twoje postępy</p><h1>単語の記録</h1><p className="vocab-muted">覚えた言葉と、次に思い出す言葉。</p></section>
       <VocabularyProgressCard progress={summary.progress} learnedWords={summary.started} totalWords={summary.total} />
       {summary.progress && <VocabularyWeek progress={summary.progress} />}
+      {summary.retention && <VocabularyRetentionDetails summary={summary.retention} onTest={onTest} />}
       <section aria-labelledby="vocab-rating-summary-heading">
         <div className="vocab-section-heading"><h2 id="vocab-rating-summary-heading">単語の自己評価</h2></div>
         <dl className="vocab-record-metrics">
           <div><dt>学習した単語</dt><dd>{summary.started}<small> / {summary.total}語</small></dd></div>
-          <div><dt>覚えている単語</dt><dd>{summary.remembered}<small>語</small></dd></div>
+          <div><dt>自己評価でわかった単語</dt><dd>{summary.remembered}<small>語</small></dd></div>
           <div><dt>復習する時期</dt><dd>{summary.due}<small>語</small></dd></div>
         </dl>
         <p className="vocab-help vocab-rating-explanation">「わかった」「もう一度」の自己評価による記録です。テストの正解率ではありません。</p>

@@ -6,6 +6,7 @@ import StudyFlow from "./components/StudyFlow";
 import VocabularyHome from "./components/VocabularyHome";
 import VocabularyLibrary from "./components/VocabularyLibrary";
 import VocabularyFlow from "./components/VocabularyFlow";
+import VocabularyTestFlow from "./components/VocabularyTestFlow";
 import VocabularyRecords from "./components/VocabularyRecords";
 import { api, downloadExport } from "./lib/api";
 import { buildAppAiContext } from "./lib/ai-context";
@@ -28,6 +29,7 @@ import type {
   VoiceResultImport,
   VocabularySummary,
   VocabularyStudyRequest,
+  VocabularyTestMode,
 } from "./lib/types";
 
 type StudyRequest = { mode: "lesson" | "review"; lessonId?: string };
@@ -46,6 +48,7 @@ function App() {
   const [status, setStatus] = useState<StatusResponse | null>(null);
   const [vocabulary, setVocabulary] = useState<VocabularySummary | null>(null);
   const [vocabularyStudy, setVocabularyStudy] = useState<VocabularyStudyRequest | null>(null);
+  const [vocabularyTest, setVocabularyTest] = useState<{ mode: VocabularyTestMode; wordId?: string } | null>(null);
   const [libraryTopic, setLibraryTopic] = useState<string | undefined>();
   const [addingWord, setAddingWord] = useState(false);
   const [activeTrack, setActiveTrack] = useState<TrackCode>("A1");
@@ -85,8 +88,10 @@ function App() {
   useEffect(() => {
     let refreshing = false;
     const refreshForNewDay = () => {
-      if (document.visibilityState !== "visible" || refreshing || !vocabulary?.progress
-        || vocabulary.progress.today === vocabularyDateKey(new Date())) return;
+      if (document.visibilityState !== "visible" || refreshing || !vocabulary?.progress) return;
+      const dayChanged = vocabulary.progress.today !== vocabularyDateKey(new Date());
+      const dueChanged = vocabulary.retention && vocabulary.retention.words.filter((word) => word.nextTestAt <= new Date().toISOString()).length !== vocabulary.retention.due;
+      if (!dayChanged && !dueChanged) return;
       refreshing = true;
       void refreshStatus().finally(() => { refreshing = false; });
     };
@@ -99,7 +104,7 @@ function App() {
       window.removeEventListener("focus", refreshForNewDay);
       document.removeEventListener("visibilitychange", refreshForNewDay);
     };
-  }, [refreshStatus, vocabulary?.progress?.today]);
+  }, [refreshStatus, vocabulary?.progress?.today, vocabulary?.retention]);
 
   async function handleExport(format: "json" | "csv") {
     try {
@@ -168,6 +173,28 @@ function App() {
     setAddingWord(add);
     setView("library");
   }
+
+  function startVocabularyTest(mode: VocabularyTestMode, wordId?: string) {
+    setVocabularyTest({ mode, wordId });
+  }
+
+  if (vocabularyTest)
+    return (
+      <VocabularyTestFlow
+        mode={vocabularyTest.mode}
+        wordId={vocabularyTest.wordId}
+        onFinished={() => {
+          setVocabularyTest(null);
+          setView("today");
+          void refreshStatus();
+          setNotice("確認テストの結果を記録しました。");
+        }}
+        onBack={() => {
+          setVocabularyTest(null);
+          void refreshStatus();
+        }}
+      />
+    );
 
   if (vocabularyStudy)
     return (
@@ -273,6 +300,7 @@ function App() {
             onLegacy={() => setView("lessonHome")}
             onAdd={() => openLibrary(undefined, true)}
             onRecords={() => setView("progress")}
+            onTest={startVocabularyTest}
           />
         )}
         {view === "lessonHome" && (
@@ -332,7 +360,7 @@ function App() {
           />
         )}
         {view === "progress" && (
-          <VocabularyRecords summary={vocabulary} onLegacy={() => setView("legacyProgress")} />
+          <VocabularyRecords summary={vocabulary} onLegacy={() => setView("legacyProgress")} onTest={startVocabularyTest} />
         )}
         {view === "legacyProgress" && (
           <ProgressView
@@ -360,6 +388,11 @@ function App() {
                   "連続学習: " + vocabulary.progress.currentStreak + "日",
                   "直近7日間で初めて学習した単語: " + vocabulary.progress.activity.slice(-7).reduce((sum, day) => sum + day.newWords, 0) + "語",
                   "直近7日間の記録（同じ語は同日1回）: " + vocabulary.progress.activity.slice(-7).map((day) => day.date + " 学習" + day.words + "語（新しい単語" + day.newWords + "語、復習" + (day.words - day.newWords) + "語）").join(" / "),
+                ] : []),
+                ...(vocabulary.retention ? [
+                  "日を空けた入力テスト: 1日後正解 " + vocabulary.retention.confirmed1 + "語、3日後正解 " + vocabulary.retention.confirmed3 + "語、7日後正解 " + vocabulary.retention.confirmed7 + "語",
+                  "確認テストの期限到来: " + vocabulary.retention.due + "語、再確認が必要: " + vocabulary.retention.recheck + "語",
+                  "学習済み・自己評価と、日を空けたテストで確認できた事実を区別する。完全に忘れないことは保証しない。",
                 ] : []),
               ].join("\n"),
             }
