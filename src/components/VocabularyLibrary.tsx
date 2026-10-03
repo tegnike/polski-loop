@@ -127,6 +127,7 @@ export default function VocabularyLibrary({ summary, initialTopic, initiallyAddi
       <div className="vocab-search"><span aria-hidden="true">⌕</span><label className="visually-hidden" htmlFor="vocab-search-input">単語を検索</label><input id="vocab-search-input" type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="ポーランド語・日本語で検索" /></div>
       <label className="vocab-filter-label" htmlFor="vocab-topic-filter">場面<select id="vocab-topic-filter" value={topic} onChange={(event) => setTopic(event.target.value)}><option value="">すべての場面</option>{summary.topics.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
       <div className="vocab-filters" role="group" aria-label="学習状態で絞り込む">{stateFilters.map((filter) => <button className={`vocab-filter${stateFilter === filter.value ? " vocab-filter-active" : ""}`} type="button" key={filter.value} aria-pressed={stateFilter === filter.value} onClick={() => setStateFilter(filter.value)}>{filter.label}</button>)}</div>
+      <p className="vocab-muted">未学習：まだ回答していない単語。練習中：最後に「もう一度」を選んだ単語。わかった：最後に「わかった」を選んだ単語。定着度は確認テストの結果で別に表示します。</p>
       <label className="vocab-own-filter"><input type="checkbox" checked={personal} onChange={(event) => setPersonal(event.target.checked)} />自分で追加した単語だけ</label>
 
       {loading ? <p className="vocab-loading" role="status">単語を探しています…</p> : error ? (

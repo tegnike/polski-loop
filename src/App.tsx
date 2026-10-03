@@ -343,7 +343,6 @@ function App() {
               </button>
               <button className="vocab-button vocab-secondary" type="button" onClick={() => openLibrary()}>単語帳から練習する</button>
             </section>
-            <button className="vocab-legacy-link" type="button" onClick={() => setView("legacyReview")}>例文・表現の復習を見る（{status.progress.dueReviews}件）</button>
           </div>
         )}
         {view === "legacyReview" && (
