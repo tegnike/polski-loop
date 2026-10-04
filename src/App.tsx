@@ -132,7 +132,7 @@ function App() {
   async function downloadPrompt() {
     if (!status) return;
     try {
-      downloadTextFile(
+      await downloadTextFile(
         `polski-loop-${status.nextMission.difficultyLevel}-${status.nextMission.title}`,
         status.nextMission.promptText,
       );

@@ -1,0 +1,19 @@
+{
+  "appId": "com.tegnike.polskiloop",
+  "appName": "Polski Loop",
+  "webDir": "dist",
+  "server": {
+    "url": "https://polski-loop.o3nike-teg-14.workers.dev",
+    "allowNavigation": [
+      "polski-loop.o3nike-teg-14.workers.dev",
+      "*.cloudflareaccess.com",
+      "dash.cloudflare.com",
+      "*.cloudflare.com"
+    ]
+  },
+  "ios": {
+    "scheme": "Polski Loop",
+    "backgroundColor": "#f4efe7",
+    "limitsNavigationsToAppBoundDomains": false
+  }
+}

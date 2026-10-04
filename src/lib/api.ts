@@ -1,3 +1,4 @@
+import { saveFile } from "./download";
 import type {
   AiChatRequest,
   AiChatResponse,
@@ -157,13 +158,5 @@ export const api = {
 export async function downloadExport(format: "json" | "csv"): Promise<void> {
   const response = await fetch(`/api/v1/export?format=${format}`);
   if (!response.ok) throw new Error("エクスポートに失敗しました。");
-  const blob = await response.blob();
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `polski-loop-export.${format}`;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
+  await saveFile(`polski-loop-export.${format}`, await response.blob());
 }

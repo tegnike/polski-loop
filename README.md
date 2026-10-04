@@ -93,6 +93,28 @@ OpenAI APIキーはリポジトリへ保存せず、production Worker Secretへ�
 npx wrangler secret put OPENAI_API_KEY --env production
 ```
 
+## iPhoneアプリ
+
+`ios/`はCapacitorでPolski LoopをiPhoneアプリとして包むXcodeプロジェクトです。アプリは本番URL（`capacitor.config.json`の`server.url`）を読み込むため、`master`へのpushで本番が更新されれば、アプリを入れ直さなくても画面と機能が更新されます。初回起動時にCloudflare Accessへログインすると、ログイン状態はアプリ内に保持されます。
+
+App Store・TestFlightは有料のApple Developer Programが必要なため使いません。Xcodeの無料Personal Team（`DEVELOPMENT_TEAM = W3ZMGDZU2Y`）で署名し、USB接続したiPhoneへ直接インストールします。
+
+```bash
+npm run ios:sync   # Webをビルドし、iOSプロジェクトへ設定とプラグインを反映
+npm run ios:open   # Xcodeで ios/App/App.xcworkspace を開く
+```
+
+ネイティブ依存はCocoaPodsで管理します。`pod`はrbenvのRuby 3.3.0にあるため、`ios/App/.ruby-version`で固定しています。XcodeにiOSプラットフォームが無い場合は、先に`xcodebuild -downloadPlatform iOS`を実行します。
+
+
+1. iPhoneをMacへUSB接続し、iPhoneの「設定 > プライバシーとセキュリティ > デベロッパモード」をオンにする
+2. Xcodeで実行先に接続したiPhoneを選び、Runする（Signing & CapabilitiesのTeamはPersonal Team）
+3. 初回だけiPhoneの「設定 > 一般 > VPNとデバイス管理」で開発元のApple IDを信頼する
+
+無料署名のアプリは7日で期限が切れて起動できなくなります。期限切れ後もiPhoneを接続してXcodeから再度Runすれば、アプリ内のログイン状態や学習データ（D1保存）はそのまま使えます。`ios/`のネイティブ設定（アイコン、権限文言、プラグイン）を変えたときだけ`npm run ios:sync`後に再インストールが必要です。
+
+アプリ内では、ChatGPT Voice用`.txt`とJSON/CSVの書き出しを共有シートで渡します。音声入力のためにマイクと音声認識の許可を求めます。
+
 ## API
 
 単語・表現の再生ボタンは、初回クリック時にWorker経由でGoogle Cloud Text-to-Speechのポーランド語Chirp 3 HD音声をMP3合成します。教材の`speakerGender`を優先し、男性・女性それぞれの音声プールから文字列に応じて安定選択します。性別不明の表現は強い一人称語尾だけを自動判定し、それ以外は全音声へ分散します。生成音声はCloudflareのCache APIとブラウザのCache Storageへ保存され、同じ文字列・性別・音声では再合成しません。

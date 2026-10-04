@@ -345,7 +345,7 @@ function VoiceMissionCard({ mission, completion = false }: { mission: VoiceMissi
   const [downloadState, setDownloadState] = useState<string | null>(null);
   async function downloadMission() {
     try {
-      downloadTextFile(`polski-loop-${mission.difficultyLevel}-${mission.title}`, mission.promptText);
+      await downloadTextFile(`polski-loop-${mission.difficultyLevel}-${mission.title}`, mission.promptText);
       await api.savePromptCopy(mission.title, mission.promptText, mission.id).catch(() => undefined);
       setDownloadState("ファイルを保存しました");
     } catch {

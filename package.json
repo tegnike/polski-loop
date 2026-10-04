@@ -18,14 +18,21 @@
     "db:migrate": "wrangler d1 migrations apply polish-loop-local --local",
     "db:migrate:remote": "wrangler d1 migrations apply DB --remote --env production",
     "deploy:production": "npm run build && wrangler deploy --env production",
+    "ios:sync": "npm run build && cap sync ios",
+    "ios:open": "cap open ios",
     "db:export": "wrangler d1 export polish-loop-local --local --output=tmp/polish-loop-local.sql"
   },
   "dependencies": {
+    "@capacitor/core": "^8.5.2",
+    "@capacitor/filesystem": "^8.1.4",
+    "@capacitor/ios": "^8.5.2",
+    "@capacitor/share": "^8.0.3",
     "@vitejs/plugin-react": "^5.0.4",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.5.2",
     "@cloudflare/workers-types": "^5.20260821.1",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
